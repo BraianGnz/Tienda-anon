@@ -82,3 +82,11 @@ function anon_theme_register_sidebars() {
     ));
 }
 add_action('widgets_init', 'anon_theme_register_sidebars');
+
+function anon_theme_fallback_menu() {
+    echo '<nav class="desktop-navigation-menu">';
+    echo '<ul class="desktop-menu-category-list">';
+    echo '<li class="menu-category"><a href="' . esc_url(home_url('/')) . '" class="menu-title">Home</a></li>';
+    echo '</ul>';
+    echo '</nav>';
+}
