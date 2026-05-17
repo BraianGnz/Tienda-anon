@@ -53,21 +53,12 @@ function anon_theme_scripts() {
     );
 
     wp_enqueue_script(
-        'anon-theme-ionicons-esm',
-        'https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js',
-        array(),
-        '5.5.2',
-        true
-    );
-
-    wp_enqueue_script(
         'anon-theme-ionicons',
         'https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js',
         array(),
         '5.5.2',
         true
     );
-    wp_script_add_data('anon-theme-ionicons', 'nomodule', true);
 
     wp_enqueue_script(
         'anon-theme-script',
