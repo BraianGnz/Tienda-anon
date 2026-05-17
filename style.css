@@ -973,6 +973,28 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   color: var(--sonic-silver);
 }
 
+.product-minimal .price-box .woocommerce-Price-amount {
+  font-size: var(--fs-7);
+  font-weight: var(--weight-700);
+  color: var(--salmon-pink);
+}
+
+.product-minimal .price-box del .woocommerce-Price-amount {
+  font-size: var(--fs-9);
+  font-weight: var(--weight-400);
+  color: var(--sonic-silver);
+}
+
+.product-minimal .price-box ins {
+  text-decoration: none;
+}
+
+.product-minimal .price-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /*-----------------------------------*\
   #PRODUCT FEATURED
 \*-----------------------------------*/
@@ -1268,6 +1290,29 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
 .product-grid .price { font-weight: var(--weight-700); }
 
 .product-grid del { color: var(--sonic-silver); }
+
+.product-grid .price-box .woocommerce-Price-amount {
+  font-size: var(--fs-7);
+  color: var(--eerie-black);
+}
+
+.product-grid .price-box .woocommerce-Price-amount {
+  font-weight: var(--weight-700);
+}
+
+.product-grid .price-box del .woocommerce-Price-amount {
+  font-weight: var(--weight-400);
+  color: var(--sonic-silver);
+}
+
+.product-grid .price-box ins {
+  text-decoration: none;
+}
+
+.product-grid .showcase-actions .btn-action,
+.product-featured .add-cart-btn {
+  cursor: pointer;
+}
 
 /*-----------------------------------*\
   #TESTIMONIAL
