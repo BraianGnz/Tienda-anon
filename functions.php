@@ -90,3 +90,8 @@ function anon_theme_fallback_menu() {
     echo '</ul>';
     echo '</nav>';
 }
+
+function anon_theme_wc_setup() {
+    remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+}
+add_action('wp', 'anon_theme_wc_setup');
