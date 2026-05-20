@@ -946,13 +946,37 @@
               if ($new_products->have_posts()) :
                 while ($new_products->have_posts()) : $new_products->the_post();
                   global $product;
-                  $sale_price    = $product->get_sale_price();
-                  $regular_price = $product->get_regular_price();
-                  $sale_badge    = '';
-                  if ($sale_price && $regular_price && $regular_price > 0) {
-                    $discount = round((($regular_price - $sale_price) / $regular_price) * 100);
-                    $sale_badge = '<p class="showcase-badge">' . $discount . '%</p>';
+
+                  // ========================================
+                  // BADGE LOGIC
+                  // Priority: Out of Stock > Sale > New
+                  // Only one badge is displayed per product
+                  // ========================================
+
+                  $badge_html = '';
+
+                  // 1. Out of stock badge (highest priority)
+                  if (!$product->is_in_stock()) {
+                    $badge_html = '<span class="showcase-badge out-of-stock">Agotado</span>';
                   }
+                  // 2. Sale discount badge
+                  elseif ($product->is_on_sale()) {
+                    $sale_price    = $product->get_sale_price();
+                    $regular_price = $product->get_regular_price();
+                    if ($sale_price && $regular_price && $regular_price > 0) {
+                      $discount = round((($regular_price - $sale_price) / $regular_price) * 100);
+                      $badge_html = '<span class="showcase-badge discount">' . $discount . '% OFF</span>';
+                    }
+                  }
+                  // 3. New product badge (products published within last 30 days)
+                  else {
+                    $post_date = get_post_time('U', false, get_the_ID());
+                    $thirty_days_ago = strtotime('-30 days');
+                    if ($post_date && $post_date > $thirty_days_ago) {
+                      $badge_html = '<span class="showcase-badge new">Nuevo</span>';
+                    }
+                  }
+
                   $categories = wp_get_post_terms(get_the_ID(), 'product_cat');
                   $cat_name   = '';
                   $cat_link   = '#';
@@ -972,7 +996,7 @@
                         echo woocommerce_get_product_thumbnail('woocommerce_catalog', array('class' => 'product-img hover'));
                       }
                       ?>
-                      <?php echo $sale_badge; ?>
+                      <?php echo $badge_html; ?>
                       <div class="showcase-actions">
                         <button class="btn-action">
                           <ion-icon name="heart-outline"></ion-icon>

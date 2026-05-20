@@ -1197,30 +1197,66 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
 
 .product-grid .showcase:hover .product-img { transform: scale(1.1); }
 
+/* ========================================
+   PRODUCT BADGES
+   - Sale discount (% OFF)
+   - Sale ribbon (SALE text)
+   - Out of stock
+   - New product
+   ======================================== */
+
+/* Base badge styles - shared properties for all badge variants */
 .product-grid .showcase-badge {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background: var(--ocean-green);
+  top: 12px;
+  left: 12px;
   font-size: var(--fs-8);
-  font-weight: var(--weight-500);
+  font-weight: var(--weight-600);
+  line-height: 1.8;
   color: var(--white);
-  padding: 0 8px;
+  padding: 2px 10px;
   border-radius: var(--border-radius-sm);
-  z-index: 3;
+  z-index: 5;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.15);
 }
 
+/* Discount badge - green background with % OFF */
+.product-grid .showcase-badge.discount {
+  background: var(--ocean-green);
+}
+
+/* Sale ribbon - angled black badge */
+.product-grid .showcase-badge.sale {
+  background: var(--eerie-black);
+}
+
+/* Out of stock badge - gray/davy's gray */
+.product-grid .showcase-badge.out-of-stock {
+  background: var(--davys-gray);
+}
+
+/* New product badge - salmon pink */
+.product-grid .showcase-badge.new {
+  background: var(--salmon-pink);
+}
+
+/* Angled ribbon variant - corner placement */
 .product-grid .showcase-badge.angle {
-  top: 8px;
-  left: -29px;
+  top: 10px;
+  left: -32px;
   transform: rotate(-45deg);
   text-transform: uppercase;
-  font-size: 11px;
-  padding: 5px 40px;
+  font-size: var(--fs-10);
+  font-weight: var(--weight-600);
+  letter-spacing: 0.5px;
+  padding: 4px 40px;
+  box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.2);
 }
 
+/* Legacy color variant classes (backward compatibility) */
 .product-grid .showcase-badge.black { background: var(--eerie-black); }
-
 .product-grid .showcase-badge.pink { background: var(--salmon-pink); }
 
 .product-grid .showcase-actions {
@@ -1736,6 +1772,20 @@ footer {
     gap: 30px;
   }
 
+  /* Badge adjustments for 2-column layout */
+  .product-grid .showcase-badge {
+    top: 10px;
+    left: 10px;
+    font-size: var(--fs-9);
+    padding: 2px 8px;
+  }
+
+  .product-grid .showcase-badge.angle {
+    top: 8px;
+    left: -30px;
+    font-size: var(--fs-10);
+  }
+
   .cta-content { padding: 40px; }
 
   .cta-content .discount {
@@ -2159,6 +2209,20 @@ footer {
 
   .product-grid { grid-template-columns: repeat(3, 1fr); }
 
+  /* Badge adjustments for 3-column layout */
+  .product-grid .showcase-badge {
+    top: 8px;
+    left: 8px;
+    font-size: var(--fs-9);
+  }
+
+  .product-grid .showcase-badge.angle {
+    top: 6px;
+    left: -28px;
+    font-size: 10px;
+    padding: 3px 35px;
+  }
+
   .testimonials-box {
     display: flex;
     flex-wrap: wrap;
@@ -2216,6 +2280,20 @@ footer {
   .product-featured .display-number { --fs-5: 1.125rem; }
 
   .product-grid { grid-template-columns: repeat(4, 1fr); }
+
+  /* Badge adjustments for 4-column layout */
+  .product-grid .showcase-badge {
+    top: 8px;
+    left: 8px;
+    font-size: var(--fs-9);
+  }
+
+  .product-grid .showcase-badge.angle {
+    top: 6px;
+    left: -28px;
+    font-size: 10px;
+    padding: 3px 35px;
+  }
 
   .testimonial, .service {
     min-width: calc(25% - 20px);
