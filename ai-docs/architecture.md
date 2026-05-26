@@ -124,6 +124,24 @@ Una sola arquitectura reusable para:
 * relacionados
 * upsells
 
+## Estrategia de layout (2026-05-26)
+
+Ambos contextos (shop y homepage) comparten:
+
+- **Flexbox vertical** en la card (`display: flex; flex-direction: column`)
+- **Imágenes con aspect-ratio 4:3** (`object-fit: cover`) para altura uniforme
+- **Último elemento anclado al fondo** via `margin-top: auto`
+
+Contextos:
+
+| Contexto | Contenedor | Card | Imagen | Anclaje fondo |
+|---|---|---|---|---|
+| Shop | `ul.products` (CSS grid) | `li.product` | `a img` | `.button` |
+| Homepage | `.product-grid` (CSS grid) | `.showcase` | `.showcase-banner` | `.price-box` |
+
+No se requiere flexbox grid externo — el grid de columnas lo da el padre (CSS grid).
+El flexbox es solo interno de la card para alinear contenido verticalmente.
+
 ---
 
 # Riesgo actual importante (RESUELTO 2026-05-26)

@@ -152,6 +152,28 @@ Características:
 
 ---
 
+# Product Cards estabilizadas (2026-05-26)
+
+Mejorada la consistencia visual de product cards en ambos contextos:
+
+- **WooCommerce shop (`ul.products > li.product`)**:
+  - `li.product` convertido a `display: flex; flex-direction: column;`
+  - Imágenes con `aspect-ratio: 4/3; object-fit: cover;` — altura uniforme
+  - Botón add-to-cart con `margin-top: auto` — siempre al fondo de la card
+
+- **Homepage grid (`.product-grid > .showcase`)**:
+  - `.showcase` convertido a `display: flex; flex-direction: column;`
+  - `.showcase-banner` con `aspect-ratio: 4/3` — altura de imagen consistente
+  - `.showcase-content` con `flex: 1; display: flex; flex-direction: column;`
+  - `.price-box` con `margin-top: auto` — precio siempre al fondo
+
+Ambos contextos ahora comparten misma estrategia de layout: flexbox vertical
+con imágenes aspect-ratio 4:3 y último elemento (botón/precio) anclado al fondo.
+
+Sin cambios en la lógica WooCommerce, hooks, add-to-cart, ni templates.
+
+---
+
 # Riesgos técnicos actuales
 
 ## RESUELTO (2026-05-26)

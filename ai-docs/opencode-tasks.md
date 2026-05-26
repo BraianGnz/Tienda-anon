@@ -29,7 +29,7 @@ NUNCA:
 
 ## ~~Alta prioridad~~ (COMPLETADO 2026-05-26)
 
-Estabilización shop page completada:
+### Shop page estabilizada
 
 1. ✅ Desactivado CSS nativo WooCommerce (functions.php filter)
 2. ✅ ul.products convertido a CSS grid con breakpoints responsive
@@ -45,6 +45,21 @@ Estabilización shop page completada:
 Decisión: NO crear overrides de templates WC.
 Se mantiene ul.products/li.product default + CSS puro.
 No hay nesting inválido (son contextos separados).
+
+---
+
+## ~~Media prioridad~~ (COMPLETADO 2026-05-26)
+
+### Product cards consistency
+
+1. ✅ Flexbox vertical en `li.product` (WooCommerce shop grid)
+2. ✅ `aspect-ratio: 4/3 + object-fit: cover` en imágenes del shop
+3. ✅ `.button` con `margin-top: auto` (siempre al fondo del card)
+4. ✅ Flexbox vertical en `.product-grid .showcase` (homepage grid)
+5. ✅ `aspect-ratio: 4/3` en `.showcase-banner`
+6. ✅ `flex: 1 + flex-direction: column` en `.showcase-content`
+7. ✅ `.price-box` con `margin-top: auto` (siempre al fondo)
+8. ✅ Sin cambios en lógica WooCommerce, hooks, ni templates
 
 ---
 
