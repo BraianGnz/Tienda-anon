@@ -30,18 +30,19 @@ anon-theme/
 │   ├── js/
 │   ├── images/
 │
-├── woocommerce/
-│   ├── archive-product.php
-│   └── content-product.php
-│
 ├── ai-docs/
 │
-├── front-page.php
+├── front-page.php          # Homepage: banner, categorías, 3 secciones producto
+├── woocommerce.php          # Thin wrapper → woocommerce_content()
 ├── header.php
 ├── footer.php
 ├── functions.php
-├── style.css
+├── style.css                # Monolítico, incluye #WOOCOMMERCE section
 ```
+
+NOTA: No existe directorio woocommerce/ con overrides.
+El shop usa templates default de WooCommerce.
+Los estilos WC están en style.css (#WOOCOMMERCE section).
 
 ---
 
@@ -93,11 +94,22 @@ Evitar:
 
 ## Enfoque actual
 
-Usar WooCommerce clásico:
+Usar WooCommerce clásico sin overrides de templates:
 
-* templates override mínimos
-* compatibilidad estándar
-* evitar copiar templates innecesarios
+* NO hay woocommerce/archive-product.php ni woocommerce/content-product.php
+* Se usa renderizado default de WC (ul.products > li.product)
+* Estilos CSS en style.css (#WOOCOMMERCE section)
+* CSS plugin nativo desactivado (woocommerce_enqueue_styles filter)
+* front-page.php usa queries custom con .product-grid > .showcase (contexto separado)
+
+## Shop page vs Homepage
+
+Ambos contextos conviven sin nesting inválido porque:
+
+* Shop page: ul.products > li.product (default WC)
+* Homepage: .product-grid > .showcase (custom query en front-page.php)
+
+Visualmente alineados mediante CSS grid y mismas variables de diseño.
 
 ---
 
@@ -114,19 +126,13 @@ Una sola arquitectura reusable para:
 
 ---
 
-# Riesgo actual importante
+# Riesgo actual importante (RESUELTO 2026-05-26)
 
-archive-product.php puede estar entrando en conflicto con:
+No existe archive-product.php en el theme.
+No hay conflicto con ul.products/li.product porque no hay overrides.
+El shop usa templates default WC + CSS del theme.
 
-* ul.products
-* li.product
-* woocommerce_product_loop_start()
-
-Necesario validar:
-
-* HTML final renderizado
-* nesting válido
-* compatibilidad WooCommerce
+Ver: project-status.md → "Shop page estabilizada"
 
 ---
 

@@ -27,14 +27,24 @@ NUNCA:
 
 # Tareas pendientes
 
-## Alta prioridad
+## ~~Alta prioridad~~ (COMPLETADO 2026-05-26)
 
-* validar arquitectura WooCommerce actual
-* revisar conflicto entre product-grid y ul.products
-* validar HTML renderizado real
-* revisar nesting inválido
-* estabilizar content-product.php
-* estabilizar archive-product.php
+Estabilización shop page completada:
+
+1. ✅ Desactivado CSS nativo WooCommerce (functions.php filter)
+2. ✅ ul.products convertido a CSS grid con breakpoints responsive
+3. ✅ li.product estilizado como card (border, radius, shadow, hover zoom)
+4. ✅ .onsale badge estilizado (posición absolute, color ocean-green)
+5. ✅ .star-rating estilizado (sandy-brown)
+6. ✅ price-box con flex, ins/del
+7. ✅ button integrado al card
+8. ✅ toolbar (result-count + ordering) con float left/right
+9. ✅ page title estilizado
+10. ✅ breakpoints 480px/768px/1024px para ul.products
+
+Decisión: NO crear overrides de templates WC.
+Se mantiene ul.products/li.product default + CSS puro.
+No hay nesting inválido (son contextos separados).
 
 ---
 

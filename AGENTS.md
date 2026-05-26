@@ -6,7 +6,8 @@ WordPress + WooCommerce starter theme. LocalWP on Windows.
 
 - **Path**: `wp-content/themes/anon-theme`
 - **No build step**. Plain PHP + CSS. Edit files, refresh browser.
-- **No `woocommerce/` overrides**. WooCommerce uses its default templates.
+- - **NO existen overrides en `woocommerce/`** — ese directorio no existe.
+El shop usa templates default de WooCommerce. Todo el estilo se controla desde la sección `#WOOCOMMERCE` en `style.css`.
 - **No JS framework**. Vanilla JS from `html-template/assets/js/script.js`.
 - **No package manager**. No `package.json`, no `composer.json`.
 
@@ -62,11 +63,14 @@ Detailed context lives in `ai-docs/`:
 
 Read these before making structural changes.
 
+
 ## WooCommerce quirks
 
 - Sidebar removed via `remove_action('woocommerce_sidebar', ...)` in `functions.php`.
-- Product grid CSS targets `.product-grid .showcase` (front-page custom), NOT WooCommerce's default `ul.products li.product`.
-- Potential conflict between `.product-grid` and `ul.products`/`li.product` selectors — validate HTML nesting in DevTools after WC changes.
+- **CSS plugin nativo DESACTIVADO** via `woocommerce_enqueue_styles` filter en `functions.php`.
+- Shop page usa `ul.products > li.product` default de WC, estilizado con CSS grid en `style.css` (#WOOCOMMERCE).
+- Front-page.php usa `.product-grid > .showcase` (custom query). Son contextos separados, NO hay nesting inválido.
+- Ambos grids son visualmente consistentes (mismas variables de diseño, mismos breakpoints).
 - Uses Ionicons 5.5.2 from unpkg CDN.
 
 ## CSS custom properties

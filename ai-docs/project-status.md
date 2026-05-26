@@ -91,19 +91,43 @@ SÍ priorizar:
 
 # Arquitectura WooCommerce actual
 
-## Templates creados
+## Estado override templates
 
-* woocommerce/content-product.php
-* woocommerce/archive-product.php
+NO existen overrides en woocommerce/.
+Se usa renderizado default WooCommerce (ul.products > li.product).
 
-Objetivo:
-Unificar arquitectura de product cards entre:
+El front-page.php usa queries custom con .product-grid > .showcase.
+Ambos conviven sin nesting inválido porque son contextos separados.
 
-* homepage
-* shop
-* categorías
-* archivos WooCommerce
+## Shop page estabilizada (2026-05-26)
 
+Cambios aplicados:
+
+1. Desactivados estilos CSS nativos de WooCommerce via filter en functions.php
+   (woocommerce_enqueue_styles → array vacío). Esto evita que floats/widths
+   del plugin rompan el CSS grid del theme.
+
+2. ul.products convertido a CSS grid con columnas responsive:
+   - < 480px: 1 columna
+   - 480px+: 2 columnas
+   - 768px+: 3 columnas
+   - 1024px+: 4 columnas
+
+3. li.product estilizado como card consistente:
+   - border, border-radius, overflow hidden, box-shadow hover
+   - position: relative (para badge absolute)
+   - image hover zoom (scale 1.1)
+
+4. Agregados estilos faltantes:
+   - .onsale badge (position absolute, estilo .showcase-badge)
+   - .star-rating (color sandy-brown, spacing)
+   - price-box (flex, gap, ins/del)
+   - .button (margin dentro de card)
+   - page title
+   - toolbar (result-count float left, ordering float right)
+
+No se requirieron overrides de templates WC.
+No se modificó front-page.php.
 ---
 
 # Sistema de badges implementado
@@ -130,25 +154,19 @@ Características:
 
 # Riesgos técnicos actuales
 
-## IMPORTANTE
+## RESUELTO (2026-05-26)
 
-Validar arquitectura WooCommerce actual.
+Conflicto shop page estabilizado:
 
-Posible conflicto entre:
+* ✅ Se desactivó CSS nativo de WooCommerce
+* ✅ ul.products usa CSS grid con breakpoints consistentes
+* ✅ li.product estilizado como card visualmente consistente
+* ✅ No existe nesting inválido (front-page y shop son contextos separados)
+* ✅ Sin overrides de templates WC — se mantiene compatibilidad máxima
 
-* .product-grid
-* woocommerce_product_loop_start()
-* ul.products
-* li.product
-
-Necesario revisar:
-
-* HTML renderizado real
-* nesting inválido
-* wrappers WooCommerce
-* compatibilidad futura
-
-NO continuar con features complejas hasta estabilizar esto.
+La decisión arquitectónica es mantener ul.products/li.product default
+y controlar todo via CSS. front-page.php sigue usando .product-grid > .showcase
+como custom query independiente.
 
 ---
 

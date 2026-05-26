@@ -1786,6 +1786,11 @@ footer {
     font-size: var(--fs-10);
   }
 
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .cta-content { padding: 40px; }
 
   .cta-content .discount {
@@ -2351,6 +2356,14 @@ footer {
   #WOOCOMMERCE
 \*-----------------------------------*/
 
+.woocommerce-products-header__title.page-title,
+.woocommerce-page .woocommerce-products-header__title.page-title {
+  font-size: var(--fs-3);
+  font-weight: var(--weight-700);
+  color: var(--eerie-black);
+  margin-bottom: 20px;
+}
+
 .woocommerce .woocommerce-breadcrumb,
 .woocommerce-page .woocommerce-breadcrumb {
   font-size: var(--fs-7);
@@ -2371,7 +2384,7 @@ footer {
 .woocommerce ul.products,
 .woocommerce-page ul.products {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 20px;
   padding: 0;
   margin: 0;
@@ -2380,17 +2393,42 @@ footer {
 
 .woocommerce ul.products li.product,
 .woocommerce-page ul.products li.product {
+  border: 1px solid var(--cultured);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  transition: var(--transition-timing);
+  background: var(--white);
+  padding: 0;
   width: auto;
   margin: 0;
   float: none;
+  position: relative;
+}
+
+.woocommerce ul.products li.product:hover,
+.woocommerce-page ul.products li.product:hover {
+  box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.1);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__link,
+.woocommerce-page ul.products li.product .woocommerce-loop-product__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .woocommerce ul.products li.product a img,
 .woocommerce-page ul.products li.product a img {
   width: 100%;
   height: auto;
-  border-radius: var(--border-radius-md);
-  margin: 0 0 15px;
+  margin: 0;
+  border-radius: 0;
+  transition: var(--transition-timing);
+}
+
+.woocommerce ul.products li.product:hover a img,
+.woocommerce-page ul.products li.product:hover a img {
+  transform: scale(1.1);
 }
 
 .woocommerce ul.products li.product .woocommerce-loop-product__title,
@@ -2398,15 +2436,60 @@ footer {
   font-size: var(--fs-7);
   font-weight: var(--weight-600);
   color: var(--eerie-black);
-  padding: 0;
-  margin-bottom: 5px;
+  padding: 15px 20px 5px;
+  margin: 0;
+}
+
+.woocommerce ul.products li.product .star-rating,
+.woocommerce-page ul.products li.product .star-rating {
+  margin: 0 20px 5px;
+  font-size: var(--fs-8);
+  color: var(--sandy-brown);
 }
 
 .woocommerce ul.products li.product .price,
 .woocommerce-page ul.products li.product .price {
   font-size: var(--fs-7);
-  color: var(--salmon-pink);
+  color: var(--eerie-black);
   font-weight: var(--weight-700);
+  padding: 0 20px 15px;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.woocommerce ul.products li.product .price del,
+.woocommerce-page ul.products li.product .price del {
+  color: var(--sonic-silver);
+  font-weight: var(--weight-400);
+}
+
+.woocommerce ul.products li.product .price ins,
+.woocommerce-page ul.products li.product .price ins {
+  text-decoration: none;
+}
+
+.woocommerce ul.products li.product .onsale,
+.woocommerce-page ul.products li.product .onsale {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: var(--fs-8);
+  font-weight: var(--weight-600);
+  line-height: 1.8;
+  color: var(--white);
+  padding: 2px 10px;
+  border-radius: var(--border-radius-sm);
+  z-index: 5;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.15);
+  background: var(--ocean-green);
+  min-height: auto;
+  margin: 0;
+  text-transform: none;
+  right: auto;
 }
 
 .woocommerce ul.products li.product .button,
@@ -2420,6 +2503,9 @@ footer {
   border-radius: var(--border-radius-sm);
   border: none;
   transition: var(--transition-timing);
+  margin: 0 20px 15px;
+  display: inline-block;
+  text-decoration: none;
 }
 
 .woocommerce ul.products li.product .button:hover,
@@ -2431,11 +2517,15 @@ footer {
 .woocommerce-page .woocommerce-result-count {
   font-size: var(--fs-7);
   color: var(--sonic-silver);
+  float: left;
+  margin: 0 0 20px;
 }
 
 .woocommerce .woocommerce-ordering,
 .woocommerce-page .woocommerce-ordering {
   font-size: var(--fs-7);
+  float: right;
+  margin: 0 0 20px;
 }
 
 .woocommerce .woocommerce-ordering select,
