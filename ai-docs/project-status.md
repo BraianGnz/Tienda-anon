@@ -75,6 +75,7 @@ SÍ priorizar:
 * carrito WooCommerce básico
 * grids WooCommerce básicos
 * estilos WooCommerce personalizados básicos
+* sidebar categories dinámicas con product_cat real
 
 ---
 
@@ -107,11 +108,12 @@ Cambios aplicados:
    (woocommerce_enqueue_styles → array vacío). Esto evita que floats/widths
    del plugin rompan el CSS grid del theme.
 
-2. ul.products convertido a CSS grid con columnas responsive:
-   - < 480px: 1 columna
-   - 480px+: 2 columnas
-   - 768px+: 3 columnas
-   - 1024px+: 4 columnas
+ 2. ul.products convertido a CSS grid con columnas responsive:
+    - < 480px: 1 columna
+    - 480px+: 2 columnas
+    - 768px+: 3 columnas
+    - 1024px+: 3 columnas
+    - 1200px+: 4 columnas
 
 3. li.product estilizado como card consistente:
    - border, border-radius, overflow hidden, box-shadow hover
@@ -198,7 +200,7 @@ a cada lado, comprimiendo el grid de productos (4 columnas en ~950px =
 
 ## Resultado
 
-- Shop: 4 columnas a ~252px/card en 1024px (vs ~222px antes)
+- Shop: 3 columnas a ~332px/card en 1024px, 4 columnas a ~305px/card en 1200px
 - Homepage: product-grid 3 columnas a ~240px/card en 1024px (vs ~220px antes)
 - Sin scrollbar horizontal en homepage
 - Sin cambios en márgenes, paddings ni gaps del diseño original
@@ -280,6 +282,89 @@ contra el ancho del container sin padding.
 - Container fluido se adapta a cualquier resolución
 - Layout consistente entre secciones (misma alineación base)
 - Sin cambios en el diseño visual del template Anon
+
+---
+
+# Related / Upsells grid corregido (2026-05-27)
+
+## Problema
+
+`.woocommerce .related ul.products` y `.woocommerce .upsells ul.products`
+tenían `grid-template-columns: repeat(4, 1fr)` en base (sin media query)
+y en 768px. Esto forzaba 4 columnas incluso en mobile/tablet donde el container
+es pequeño (320-750px), produciendo cards de ~71px/card en mobile.
+
+Además, estas reglas tienen **mayor especificidad** (3 clases `.woocommerce .related ul.products`)
+que las reglas responsive del main grid (`.woocommerce ul.products` con 2 clases),
+por lo que los breakpoints del main grid no se aplicaban a related/upsells.
+
+## Cambios aplicados
+
+| Breakpoint | Main grid | Related/Upsells |
+|---|---|---|
+| Base (<480px) | 1 columna | 1 columna (hereda de main) |
+| 480px+ | 2 columnas | 2 columnas (hereda de main) |
+| 768px+ | 3 columnas | 3 columnas (hereda de main) |
+| 1024px+ | 3 columnas | 3 columnas (hereda de main) |
+| 1200px+ | 4 columnas | 4 columnas |
+
+La regla base `repeat(4, 1fr)` para related/upsells fue **eliminada**.
+La regla de 768px `repeat(4, 1fr)` para related/upsells fue **eliminada**.
+La regla de 1024px `repeat(4, 1fr)` para main grid fue cambiada a **3 columnas**.
+La regla de 4 columnas para **main grid** y **related/upsells** se agregó solo
+dentro de `@media (min-width: 1200px)`.
+
+## Resultado
+
+- Related/upsells ahora siguen el mismo responsive que el main grid
+- En mobile/tablet: cards con tamaño adecuado (~140-230px) en lugar de 71px
+- En laptop común (1280-1366px): 3 columnas (~280-300px/card) en lugar de 4 columnas (~210px)
+- En desktop grandes (1400px+): 4 columnas (~305px/card)
+
+---
+
+# Sidebar categories dinámicas (2026-05-27)
+
+## Cambio aplicado
+
+Reemplazadas las categorías hardcodeadas del sidebar (7 grupos con subcategorías
+fake, stock fake, links "#") por datos dinámicos de WooCommerce taxonomy
+`product_cat`.
+
+### Qué se reemplazó
+
+Todo el contenido de `ul.sidebar-menu-category-list` en `front-page.php`
+(originalmente ~350 líneas de HTML estático con 7 accordion groups + subcategorías)
+fue reemplazado por un loop PHP con `get_terms()`.
+
+### Cómo funciona
+
+```php
+$product_cats = get_terms(array(
+    'taxonomy'   => 'product_cat',
+    'hide_empty' => true,
+));
+```
+
+- Trae todas las categorías de productos WooCommerce con al menos 1 producto
+- Cada una se renderiza como `<a href="...">` con link real a la página de archivo
+- Muestra nombre real de categoría + cantidad real de productos
+- Excluye categorías vacías (`hide_empty => true`)
+
+### Estructura visual mantenida
+
+- Mismas clases CSS: `.sidebar-menu-category`, `.sidebar-accordion-menu`, `.menu-title-flex`, `.menu-title`, `.stock`
+- Mismo wrapper: `.sidebar-category` > `.sidebar-top` + `.sidebar-menu-category-list`
+- El accordion JS (`[data-accordion-btn]`) queda sin elementos target → NodeList vacío → sin errores
+- Las subcategorías (ul.sidebar-submenu-category-list) se eliminaron porque ahora son categorías planas
+
+### Lo que NO se tocó
+
+- `.product-showcase` (best sellers) se mantiene intacto
+- `.sidebar-top` (título + close button) intacto
+- No se modificó CSS
+- No se modificó JS
+- No se modificaron otras secciones de front-page.php
 
 ---
 
