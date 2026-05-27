@@ -13,10 +13,11 @@ El shop usa templates default de WooCommerce. Todo el estilo se controla desde l
 
 ## Key files
 
-| File | Role |
+| File/Dir | Role |
 |---|---|
 | `functions.php` | Theme setup: WooCommerce support, menus, scripts, sidebars. Removes default WC sidebar. |
-| `front-page.php` | Homepage: banner, categories, 3 product sections (minimal, featured, grid). Main place product cards are rendered. |
+| `front-page.php` | Homepage layout — thin orchestrator. Uses `get_template_part()` for all sections. |
+| `template-parts/home/` | Modular homepage sections: hero, categories, sidebar, product-minimal, product-featured, product-grid, banners, testimonials, blog. |
 | `woocommerce.php` | Thin wrapper — calls `woocommerce_content()`. |
 | `style.css` | Monolithic stylesheet. CSS custom properties at top. All component + WC styles here. |
 | `header.php` / `footer.php` | Global header/footer with navigation, search, cart. |

@@ -87,6 +87,7 @@ SÍ priorizar:
 * wrappers WooCommerce básicos
 * rutas hardcodeadas assets
 * conflictos básicos del theme
+* front-page.php monolítico → modularizado en template-parts/home/
 
 ---
 
@@ -322,6 +323,45 @@ dentro de `@media (min-width: 1200px)`.
 - En desktop grandes (1400px+): 4 columnas (~305px/card)
 
 ---
+
+# Modularización de front-page.php (2026-05-27)
+
+## Cambio aplicado
+
+`front-page.php` fue reestructurado de ~988 líneas monolíticas a un orquestador
+de 27 líneas que incluye 9 `get_template_part()` calls.
+
+### Estructura resultante
+
+```
+template-parts/home/
+├── hero.php                # Banner slider (3 slides)
+├── categories.php          # Horizontal icon categories (8 items)
+├── sidebar.php             # Sidebar: category menu (product_cat dinámico) + best sellers
+├── product-minimal.php     # New Arrivals (WP_Query dinámico)
+├── product-featured.php    # Deal of the day (WP_Query featured + fallback)
+├── product-grid.php        # New Products grid (12 productos con badge logic)
+├── banners.php             # CTA banner (25% Discount Summer Collection)
+├── testimonials.php        # Testimonial + Service sections
+└── blog.php                # Blog cards (4 hardcoded)
+```
+
+### Reglas aplicadas
+
+1. **Sin cambios visuales**: Todo el HTML/CSS/ clases existentes se preservan exactamente
+2. **Cada sección define su propio `$img`**: `get_template_part()` corre en scope global, por lo que cada template part que necesita imágenes define `$img = get_template_directory_uri() . '/html-template/assets/images'` en su primera línea
+3. **Wrappers estructurales preservados en front-page.php**: `<main>`, `.product-container > .container`, `.product-box`, `.testimonials-box`, `</main>` — todo lo que agrupa secciones permanece en el orquestador
+4. **Sin tocar WooCommerce logic**: Las queries de productos (`WP_Query`, `global $product`, badge logic) están intactas dentro de sus respectivos template parts
+5. **Sin modificar CSS, JS ni functions.php**
+
+### Riesgos
+
+- `get_template_part()` carga archivos en scope global → las variables definidas dentro de un template part NO están disponibles en front-page.php ni en otros template parts. Esto es correcto y evita contaminación.
+- Si un template part no existe, WordPress silencia el error (`get_template_part()` no lanza warning). Verificar que los 9 archivos existen.
+- Los template parts que usan `WP_Query` con `while (have_posts())` llaman a `wp_reset_postdata()` al final, restaurando el `$post` global correctamente.
+
+---
+
 
 # Sidebar categories dinámicas (2026-05-27)
 

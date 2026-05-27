@@ -32,7 +32,19 @@ anon-theme/
 │
 ├── ai-docs/
 │
-├── front-page.php          # Homepage: banner, categorías, 3 secciones producto
+├── template-parts/
+│   └── home/
+│       ├── hero.php
+│       ├── categories.php
+│       ├── sidebar.php
+│       ├── product-minimal.php
+│       ├── product-featured.php
+│       ├── product-grid.php
+│       ├── banners.php
+│       ├── testimonials.php
+│       └── blog.php
+│
+├── front-page.php          # Homepage orchestrator (get_template_part calls)
 ├── woocommerce.php          # Thin wrapper → woocommerce_content()
 ├── header.php
 ├── footer.php
@@ -64,6 +76,16 @@ anon-theme/
 │   ├── helpers/
 │
 ├── template-parts/
+│   └── home/
+│       ├── hero.php
+│       ├── categories.php
+│       ├── sidebar.php
+│       ├── product-minimal.php
+│       ├── product-featured.php
+│       ├── product-grid.php
+│       ├── banners.php
+│       ├── testimonials.php
+│       └── blog.php
 │
 ├── woocommerce/
 │
@@ -91,6 +113,16 @@ Evitar:
 ---
 
 # WooCommerce
+
+## Homepage architecture
+
+`front-page.php` ahora es un orquestador delgado. Cada sección de la homepage
+vive en `template-parts/home/` y se incluye via `get_template_part()`.
+
+Los wrappers estructurales que agrupan secciones se mantienen en el orquestador:
+`<main>`, `.product-container > .container`, `.product-box`, `.testimonials-box`.
+
+Cada template part que usa imágenes define su propio `$img` local.
 
 ## Enfoque actual
 

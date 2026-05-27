@@ -93,6 +93,34 @@ Esto simplifica el mantenimiento y evita inconsistencias entre grids.
 
 ---
 
+## ~~Alta prioridad~~ (COMPLETADO 2026-05-27)
+
+### Modularización de front-page.php
+
+1. ✅ Auditada estructura completa de front-page.php (988 líneas → 9 secciones lógicas)
+2. ✅ Creado directorio `template-parts/home/` con 9 archivos:
+   - `hero.php` — banner slider
+   - `categories.php` — icon categories row
+   - `sidebar.php` — category menu + best sellers
+   - `product-minimal.php` — New Arrivals (WP_Query dinámico)
+   - `product-featured.php` — Deal of the day (WP_Query + fallback)
+   - `product-grid.php` — New Products grid + badge logic
+   - `banners.php` — CTA banner
+   - `testimonials.php` — testimonial + service sections
+   - `blog.php` — blog cards
+3. ✅ front-page.php reducido a orquestador de 27 líneas con `get_template_part()` calls
+4. ✅ Sin cambios visuales — todo HTML/CSS/clases preservadas exactamente
+5. ✅ Sin modificar CSS, JS, WooCommerce logic, ni functions.php
+6. ✅ PHP syntax validado en los 10 archivos
+7. ✅ Cada template part define su propio `$img` (get_template_directory_uri)
+8. ✅ Wrappers estructurales preservados en front-page.php (main, .product-container, .product-box, .testimonials-box)
+
+Decisión: La homepage ahora sigue el patrón WordPress estándar de template parts.
+Cada sección es aislada, reutilizable y mantenible individualmente.
+Próximo paso: fase 2 (dinamizar secciones restantes).
+
+---
+
 ## ~~Media prioridad~~ (COMPLETADO 2026-05-27)
 
 ### Sidebar categories dinámicas
