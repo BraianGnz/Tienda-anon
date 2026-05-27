@@ -63,6 +63,20 @@ No hay nesting inválido (son contextos separados).
 
 ---
 
+## ~~Media prioridad~~ (COMPLETADO 2026-05-26)
+
+### Layout global responsive estabilizado
+
+1. ✅ `overflow-x: hidden` en `<html>` — elimina scrollbar horizontal homepage
+2. ✅ `.container` en 1024px: `980px → 1100px` — shop 4 cols a 252px/card
+3. ✅ `.container` en 1200px: `1200px → 1260px`
+4. ✅ `.container` en 1400px: `1350px → 1400px`
+5. ✅ Sin cambios en márgenes, paddings, gaps ni diseño original
+
+Causa raíz: container max-width 980px en 1024px comprimía el layout en pantallas 1280-1366px.
+
+---
+
 # Media prioridad
 
 * mini-cart dinámico

@@ -85,6 +85,7 @@ span { display: inline-block; }
 html {
   font-family: "Poppins", sans-serif;
   overscroll-behavior: contain;
+  overflow-x: hidden;
 }
 
 input {
@@ -1975,7 +1976,7 @@ footer {
     --fs-2: 1.125rem;
   }
 
-  .container { max-width: 980px; }
+  .container { max-width: 1100px; }
 
   .notification-toast { bottom: 30px; }
 
@@ -2281,7 +2282,7 @@ footer {
 
 @media (min-width: 1200px) {
 
-  .container { max-width: 1200px; }
+  .container { max-width: 1260px; }
 
   .desktop-menu-category-list { gap: 45px; }
 
@@ -2352,7 +2353,7 @@ footer {
 
   html { font-size: 18px; }
 
-  .container { max-width: 1350px; }
+  .container { max-width: 1400px; }
 
   .slider-item { height: 450px; }
 

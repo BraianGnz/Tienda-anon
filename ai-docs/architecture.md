@@ -160,6 +160,20 @@ Actualmente:
 
 * CSS monolítico en style.css
 
+## Container
+
+El `.container` usa `padding: 0 15px` en mobile.
+En desktop se centra con `margin: auto` y `max-width` progresivo:
+
+| Breakpoint | max-width | % del viewport |
+|---|---|---|
+| 768px | 750px | ~97.6% |
+| 1024px | 1100px | ~85.9% (1280px ref) |
+| 1200px | 1260px | ~92.3% (1366px ref) |
+| 1400px | 1400px | 100% |
+
+`html { overflow-x: hidden }` previene scrollbar horizontal.
+
 Objetivo futuro:
 modularizar CSS por:
 

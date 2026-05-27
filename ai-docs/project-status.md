@@ -174,6 +174,36 @@ Sin cambios en la lógica WooCommerce, hooks, add-to-cart, ni templates.
 
 ---
 
+# Layout global estabilizado (2026-05-26)
+
+Corregido el ancho del layout responsive:
+
+## Causa raíz
+
+El `.container` tenía `max-width: 980px` en el breakpoint 1024px.
+En pantallas comunes (1280-1366px) esto dejaba 150-193px de espacio vacío
+a cada lado, comprimiendo el grid de productos (4 columnas en ~950px =
+~222px/card en shop).
+
+## Cambios aplicados
+
+| Breakpoint | Antes | Después |
+|---|---|---|
+| 1024px | `max-width: 980px` | `max-width: 1100px` |
+| 1200px | `max-width: 1200px` | `max-width: 1260px` |
+| 1400px | `max-width: 1350px` | `max-width: 1400px` |
+
+- `html { overflow-x: hidden; }` — elimina scrollbar horizontal en homepage
+
+## Resultado
+
+- Shop: 4 columnas a ~252px/card en 1024px (vs ~222px antes)
+- Homepage: product-grid 3 columnas a ~240px/card en 1024px (vs ~220px antes)
+- Sin scrollbar horizontal en homepage
+- Sin cambios en márgenes, paddings ni gaps del diseño original
+
+---
+
 # Riesgos técnicos actuales
 
 ## RESUELTO (2026-05-26)
