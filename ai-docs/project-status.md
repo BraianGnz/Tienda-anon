@@ -189,9 +189,10 @@ a cada lado, comprimiendo el grid de productos (4 columnas en ~950px =
 
 | Breakpoint | Antes | Después |
 |---|---|---|
-| 1024px | `max-width: 980px` | `max-width: 1100px` |
-| 1200px | `max-width: 1200px` | `max-width: 1260px` |
-| 1400px | `max-width: 1350px` | `max-width: 1400px` |
+| 768px | `max-width: 750px` | `width: calc(100% - 48px); max-width: 750px` |
+| 1024px | `max-width: 980px` | `width: calc(100% - 60px); max-width: 1100px` |
+| 1200px | `max-width: 1200px` | `width: calc(100% - 60px); max-width: 1260px` |
+| 1400px | `max-width: 1350px` | `width: calc(100% - 60px); max-width: 1400px` |
 
 - `html { overflow-x: hidden; }` — elimina scrollbar horizontal en homepage
 
@@ -201,6 +202,84 @@ a cada lado, comprimiendo el grid de productos (4 columnas en ~950px =
 - Homepage: product-grid 3 columnas a ~240px/card en 1024px (vs ~220px antes)
 - Sin scrollbar horizontal en homepage
 - Sin cambios en márgenes, paddings ni gaps del diseño original
+
+---
+
+# Layout audit — Estructura real y corrección de overflow (2026-05-26)
+
+## Problemas estructurales encontrados
+
+### 1. Overflow horizontal (causa raíz real)
+
+Tres elementos `position: fixed` usaban `left: -100%` para ocultarse fuera
+de pantalla. En Chrome, los elementos `position: fixed` con box model que
+excede el viewport son incluidos en el cálculo del área scrolleable,
+generando scrollbar horizontal:
+
+| Elemento | Problema | Fix |
+|---|---|---|
+| `.sidebar` | `left: -100%` → box de 100vw se extiende fuera del viewport | `left: -9999px` |
+| `.mobile-navigation-menu` | mismo caso | `left: -9999px` |
+| `.notification-toast` | `position: fixed` + `left/right: 20px` + `transform: translateX(...)` — el box model permanece en el viewport aunque esté transformado off-screen | se mantiene, el `overflow-x: hidden` de html lo contiene |
+
+Al mover estos elementos a `-9999px`, se elimina la causa raíz del scrollbar
+horizontal. El `overflow-x: hidden` en `html` se mantiene como safety net.
+
+### 2. Container fijo en lugar de fluido
+
+El `.container` usaba `max-width` fijos (980px, 1200px, 1350px) sin `width`.
+En pantallas intermedias (1024-1200px), el container se quedaba en 980px
+dejando 150-193px de espacio vacío a cada lado.
+
+Fix: usar `width: calc(100% - 60px)` junto con `max-width`. Así el container
+siempre mantiene 30px de margen a cada lado hasta llegar al límite máximo.
+
+Ejemplo: en 1280px viewport → container = 1220px (30px margin) vs 980px antes.
+
+### 3. `.product-container .container` sin padding
+
+A 1024px+, `.product-container .container` tiene `display: flex; gap: 30px;`
+que sobreescribe el `padding: 0 15px` del `.container` base. Esto hace que
+el contenido de la sección de productos arranque pegado al borde del container,
+mientras que otras secciones (banner, categorías) tienen 15px de padding interno.
+
+Esto es intencional del diseño original — permite que el grid de productos
+aproveche el ancho completo. No se corrige porque rompería los cálculos de
+`.sidebar` y `.product-box` que usan `calc(25% - 15px)` / `calc(75% - 15px)`
+contra el ancho del container sin padding.
+
+## Wrappers analizados y estado
+
+| Wrapper | Estado | Notas |
+|---|---|---|
+| `body` | ✅ Ok | Sin width fijo, overflow natural |
+| `main` | ✅ Ok | Sin estilo propio, ok |
+| `.container` | ✅ Corregido | Ahora fluido con calc + max-width |
+| `.banner > .container` | ✅ Ok | Hereda container fluido |
+| `.category > .container` | ✅ Ok | Hereda container fluido |
+| `.product-container > .container` | ⚠️ Sin padding | Intencional, ok |
+| `.product-box` | ✅ Ok | Flex child, min-width 75% |
+| `.product-main` | ✅ Ok | margin-bottom solo |
+| `.product-grid` | ✅ Ok | CSS grid interno |
+| `.product-minimal > .showcase-wrapper` | ✅ Ok | overflow-x: auto controlado |
+| `.product-featured > .showcase-wrapper` | ✅ Ok | overflow-x: auto controlado |
+| `.sidebar (base)` | ✅ Corregido | left: -9999px elimina overflow |
+| `.sidebar (1024px+)` | ✅ Ok | position: sticky normal |
+| `.mobile-navigation-menu` | ✅ Corregido | left: -9999px elimina overflow |
+| `.notification-toast` | ⚠️ Safety net | overflow-x: hidden lo contiene |
+| `.footer-category > .container` | ✅ Ok | Hereda container fluido |
+| `.footer-nav > .container` | ✅ Ok | Hereda container fluido |
+| `.footer-bottom > .container` | ✅ Ok | Hereda container fluido |
+| `.blog > .container` | ✅ Ok | Hereda container fluido |
+| `.testimonials-box` | ✅ Ok | Flex layout dentro de container |
+
+## Resultado visual
+
+- Shop usa ancho completo disponible con márgenes consistentes de 30px
+- Homepage sin scrollbar horizontal
+- Container fluido se adapta a cualquier resolución
+- Layout consistente entre secciones (misma alineación base)
+- Sin cambios en el diseño visual del template Anon
 
 ---
 

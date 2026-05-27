@@ -65,15 +65,16 @@ No hay nesting inválido (son contextos separados).
 
 ## ~~Media prioridad~~ (COMPLETADO 2026-05-26)
 
-### Layout global responsive estabilizado
+### Layout audit — Estructura real, overflow y container fluido
 
-1. ✅ `overflow-x: hidden` en `<html>` — elimina scrollbar horizontal homepage
-2. ✅ `.container` en 1024px: `980px → 1100px` — shop 4 cols a 252px/card
-3. ✅ `.container` en 1200px: `1200px → 1260px`
-4. ✅ `.container` en 1400px: `1350px → 1400px`
-5. ✅ Sin cambios en márgenes, paddings, gaps ni diseño original
+1. ✅ Detectado: `position: fixed; left: -100%` en `.sidebar` y `.mobile-navigation-menu` causaban overflow horizontal (Chrome incluye fixed elements en scrollable area)
+2. ✅ Corregido: `left: -100% → left: -9999px` en ambos
+3. ✅ Container ahora fluido: `width: calc(100% - 60px)` + `max-width` en 768px/1024px/1200px/1400px — siempre mantiene márgenes consistentes
+4. ✅ Sin cambios en diseño visual, paddings, gaps del template Anon
+5. ✅ Documentados todos los wrappers y su estado en project-status.md
 
-Causa raíz: container max-width 980px en 1024px comprimía el layout en pantallas 1280-1366px.
+Causa raíz overflow: `position: fixed` con `left: -100%` (sidebar, mobile-nav).
+Causa raíz espacio vacío: `max-width` fijo sin `width` fluido.
 
 ---
 

@@ -461,7 +461,7 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   background: var(--white);
   position: fixed;
   top: 0;
-  left: -100%;
+  left: -9999px;
   width: 100%;
   max-width: 320px;
   height: 100vh;
@@ -738,7 +738,7 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   background: var(--white);
   position: fixed;
   top: 0;
-  left: -100%;
+  left: -9999px;
   bottom: 0;
   width: 100%;
   max-width: 320px;
@@ -1888,6 +1888,7 @@ footer {
   html { font-size: 17px; }
 
   .container {
+    width: calc(100% - 48px);
     max-width: 750px;
     margin: auto;
   }
@@ -1976,7 +1977,7 @@ footer {
     --fs-2: 1.125rem;
   }
 
-  .container { max-width: 1100px; }
+  .container { width: calc(100% - 60px); max-width: 1100px; }
 
   .notification-toast { bottom: 30px; }
 
@@ -2282,7 +2283,7 @@ footer {
 
 @media (min-width: 1200px) {
 
-  .container { max-width: 1260px; }
+  .container { width: calc(100% - 60px); max-width: 1260px; }
 
   .desktop-menu-category-list { gap: 45px; }
 
@@ -2353,7 +2354,7 @@ footer {
 
   html { font-size: 18px; }
 
-  .container { max-width: 1400px; }
+  .container { width: calc(100% - 60px); max-width: 1400px; }
 
   .slider-item { height: 450px; }
 

@@ -163,16 +163,28 @@ Actualmente:
 ## Container
 
 El `.container` usa `padding: 0 15px` en mobile.
-En desktop se centra con `margin: auto` y `max-width` progresivo:
+En desktop se centra con `margin: auto` y es fluido con `width: calc(100% - X)`:
 
-| Breakpoint | max-width | % del viewport |
-|---|---|---|
-| 768px | 750px | ~97.6% |
-| 1024px | 1100px | ~85.9% (1280px ref) |
-| 1200px | 1260px | ~92.3% (1366px ref) |
-| 1400px | 1400px | 100% |
+| Breakpoint | width | max-width | Margen c/lado |
+|---|---|---|---|
+| 768px | `calc(100% - 48px)` | 750px | 24px |
+| 1024px | `calc(100% - 60px)` | 1100px | 30px hasta 1160px vp |
+| 1200px | `calc(100% - 60px)` | 1260px | 30px hasta 1320px vp |
+| 1400px | `calc(100% - 60px)` | 1400px | 30px hasta 1460px vp |
 
-`html { overflow-x: hidden }` previene scrollbar horizontal.
+Esto asegura que el container siempre use el ancho disponible (con márgenes
+consistentes) hasta alcanzar el límite máximo de diseño.
+
+`html { overflow-x: hidden }` previene scrollbar horizontal (safety net).
+La causa raíz del overflow era `position: fixed; left: -100%` en `.sidebar`
+y `.mobile-navigation-menu`, corregido a `left: -9999px`.
+
+## `.product-container .container`
+
+A 1024px+ tiene `display: flex; gap: 30px;` que sobreescribe el `padding` base.
+Esto es intencional: permite que sidebar + product-box calculados con
+`calc(25% - 15px)` / `calc(75% - 15px)` ocupen el 100% exacto del container.
+Agregar padding rompería estos cálculos.
 
 Objetivo futuro:
 modularizar CSS por:
