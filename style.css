@@ -465,7 +465,7 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   background: var(--white);
   position: fixed;
   top: 0;
-  left: -9999px;
+  left: 0;
   width: 100%;
   max-width: 320px;
   height: 100vh;
@@ -474,13 +474,16 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   overflow-y: scroll;
   overscroll-behavior: contain;
   visibility: hidden;
-  transition: 0.5s ease;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: transform 0.5s ease, visibility 0.5s ease, opacity 0.5s ease;
   z-index: 20;
 }
 
 .mobile-navigation-menu.active {
-  left: 0;
+  transform: translateX(0);
   visibility: visible;
+  opacity: 1;
 }
 
 .menu-top {
@@ -742,7 +745,7 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   background: var(--white);
   position: fixed;
   top: 0;
-  left: -9999px;
+  left: 0;
   bottom: 0;
   width: 100%;
   max-width: 320px;
@@ -750,13 +753,16 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   overflow-y: scroll;
   overscroll-behavior: contain;
   visibility: hidden;
-  transition: 0.5s ease;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: transform 0.5s ease, visibility 0.5s ease, opacity 0.5s ease;
   z-index: 20;
 }
 
 .sidebar.active {
-  left: 0;
+  transform: translateX(0);
   visibility: visible;
+  opacity: 1;
 }
 
 .sidebar-category {
@@ -1161,8 +1167,8 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
 
 .product-grid .showcase {
@@ -1222,9 +1228,9 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   left: 12px;
   font-size: var(--fs-8);
   font-weight: var(--weight-600);
-  line-height: 1.8;
+  line-height: 1;
   color: var(--white);
-  padding: 2px 10px;
+  padding: 4px 10px;
   border-radius: var(--border-radius-sm);
   z-index: 5;
   white-space: nowrap;
@@ -1783,21 +1789,7 @@ footer {
 
   .banner-btn { padding: 7px 20px; }
 
-  .product-grid { gap: 30px; }
 
-  /* Badge adjustments for 2-column layout */
-  .product-grid .showcase-badge {
-    top: 10px;
-    left: 10px;
-    font-size: var(--fs-9);
-    padding: 2px 8px;
-  }
-
-  .product-grid .showcase-badge.angle {
-    top: 8px;
-    left: -30px;
-    font-size: var(--fs-10);
-  }
 
 
 
@@ -1815,6 +1807,12 @@ footer {
   .cta-btn { --fs-9: 1rem; }
 
   .copyright { --fs-8: 0.875rem; }
+
+  .product-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
 }
 
@@ -2183,8 +2181,6 @@ footer {
   }
 
   .sidebar {
-    --fs-5: 0.941rem;
-
     position: sticky;
     top: 30px;
     width: 260px;
@@ -2192,6 +2188,8 @@ footer {
     padding: 0;
     margin-bottom: 30px;
     visibility: visible;
+    opacity: 1;
+    transform: none;
     overflow-y: auto;
     overscroll-behavior: auto;
     z-index: 0;
@@ -2220,19 +2218,7 @@ footer {
 
 
 
-  /* Badge adjustments for 3-column layout */
-  .product-grid .showcase-badge {
-    top: 8px;
-    left: 8px;
-    font-size: var(--fs-9);
-  }
 
-  .product-grid .showcase-badge.angle {
-    top: 6px;
-    left: -28px;
-    font-size: 10px;
-    padding: 3px 35px;
-  }
 
   .testimonials-box {
     display: grid;
@@ -2265,6 +2251,12 @@ footer {
 
   .footer-bottom { margin-bottom: 0; }
 
+  .product-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
 }
 
 @media (min-width: 1200px) {
@@ -2281,19 +2273,7 @@ footer {
 
 
 
-  /* Badge adjustments for 4-column layout */
-  .product-grid .showcase-badge {
-    top: 8px;
-    left: 8px;
-    font-size: var(--fs-9);
-  }
 
-  .product-grid .showcase-badge.angle {
-    top: 6px;
-    left: -28px;
-    font-size: 10px;
-    padding: 3px 35px;
-  }
 
   .testimonials-box {
     grid-template-columns: repeat(4, 1fr);
@@ -2339,6 +2319,12 @@ footer {
     max-width: 460px;
   }
 
+  .product-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
 }
 
 /*-----------------------------------*\
@@ -2373,7 +2359,7 @@ footer {
 .woocommerce ul.products,
 .woocommerce-page ul.products {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 20px;
   padding: 0;
   margin: 0;
@@ -2411,7 +2397,6 @@ footer {
 .woocommerce ul.products li.product a img,
 .woocommerce-page ul.products li.product a img {
   width: 100%;
-  height: auto;
   margin: 0;
   border-radius: 0;
   transition: var(--transition-timing);
@@ -2470,9 +2455,9 @@ footer {
   left: 12px;
   font-size: var(--fs-8);
   font-weight: var(--weight-600);
-  line-height: 1.8;
+  line-height: 1;
   color: var(--white);
-  padding: 2px 10px;
+  padding: 4px 10px;
   border-radius: var(--border-radius-sm);
   z-index: 5;
   white-space: nowrap;
@@ -3065,16 +3050,6 @@ footer {
 
 @media (min-width: 1200px) {
 
-  .woocommerce ul.products,
-  .woocommerce-page ul.products {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  }
 
-  .woocommerce .related ul.products,
-  .woocommerce .upsells ul.products,
-  .woocommerce-page .related ul.products,
-  .woocommerce-page .upsells ul.products {
-    grid-template-columns: repeat(4, 1fr);
-  }
 
 }
