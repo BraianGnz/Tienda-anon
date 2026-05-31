@@ -231,19 +231,27 @@ En desktop se centra con `margin: auto` y ancho fluido:
 
 Ya no usa `width: calc(100% - 60px)` — se simplificó a `width: 100%` + `padding`.
 
-## Responsive grid system (2026-05-28 rebuild)
+## Responsive grid system (2026-05-31 rebuild)
 
-Todos los grids responsivos se manejan con **CSS Grid `auto-fit/minmax`** o **Flexbox limpio**:
+Todos los product grids usan **breakpoints explícitos mobile-first** con `repeat()`.
 
-### Product grids
+### Problema del sistema anterior
 
-| Contexto | Grid rule |
-|---|---|
-| `.product-grid` (homepage) | `repeat(auto-fit, minmax(220px, 1fr))` gap 25px (30px ≥480px) |
-| `ul.products` (shop/archive) | `repeat(auto-fit, minmax(220px, 1fr))` gap 20px |
-| `ul.products` ≥1200px | `repeat(auto-fit, minmax(240px, 1fr))` — min slightly wider on large screens |
+`auto-fit, minmax(220px, 1fr)` delega al browser la decisión de columnas. En resoluciones intermedias (480-600px) el browser forzaba 2 columnas de ~220px, comprimiendo cards que necesitan ~260px+ para mostrar imagen + título + precio + botón legibles. Además, los gaps eran inconsistentes entre homepage (25px), shop (20px) y related/upsells (sin gap propio).
 
-**Sin breakpoints de columnas fijas** — el `auto-fit` + `minmax` adapta automáticamente el número de columnas al ancho disponible.
+### Sistema actual — breakpoints explícitos
+
+Todos los product grids (`.product-grid`, `ul.products`, related, upsells) comparten **exactamente la misma lógica**:
+
+| Breakpoint | Columnas | gap | Razón |
+|---|---|---|---|
+| Base (<480px) | 1 | 20px | Mobile angosto |
+| 480px+ | 2 | 20px | Tablet chico / landscape |
+| 1024px+ | 2 | 20px | Sidebar visible (~260px), espacio limitado |
+| 1200px+ | 3 | 20px | Desktop amplio |
+| 1400px+ | 4 | 20px | Ultra wide |
+
+### Section grids
 
 ### Section grids
 
@@ -278,11 +286,19 @@ WooCommerce toolbar (`.woocommerce-result-count` + `.woocommerce-ordering`) usa 
 
 Reemplaza el anterior `min-width: calc(25% - 15px)` / `calc(75% - 15px)`.
 
-### `overflow-x: hidden` eliminado
+### `overflow-x: hidden` eliminado + sidebar/mobile-nav mejorados (2026-05-31)
 
 La safety net `html { overflow-x: hidden }` fue removida (2026-05-28).
-Los elementos `position: fixed` (sidebar, mobile-nav) usan `left: -9999px`
-en lugar de `left: -100%` — no generan overflow horizontal.
+
+Los elementos `position: fixed` (sidebar, mobile-nav) ahora usan `transform: translateX(-100%)`
+en lugar de `left: -9999px` o `left: -100%`. Beneficios:
+
+1. `transform` es solo visual — no afecta el document scroll width
+2. Animación GPU-accelerated (más suave que animar `left`)
+3. El box model permanece en `left: 0`, eliminando cualquier overflow
+
+A 1024px+, sidebar resetea a `transform: none; position: sticky;` para su funcionamiento normal.
+
 El `.notification-toast` usa `position: fixed` + `translateX` para animación,
 que no contribuye al document scroll width.
 

@@ -166,6 +166,27 @@ Decisión: Todos los layouts responsivos se manejan con CSS Grid `auto-fit/minma
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-05-31)
+
+### Responsive product grid rebuild — breakpoints explícitos, sidebar fix, grids unificados
+
+1. ✅ **Eliminado**: `auto-fit/minmax(220px, 1fr)` de todos los product grids
+2. ✅ **Implementado**: breakpoints explícitos mobile-first: 1fr (<480px) → 2fr (480px+) → 2fr (1024px+) → 3fr (1200px+) → 4fr (1400px+)
+3. ✅ **Unificado**: misma lógica de grid para `.product-grid`, `ul.products`, related y upsells
+4. ✅ **Unificado**: `gap: 20px` en todos los product grids
+5. ✅ **Corregido**: `height: auto` eliminado de imágenes `ul.products li.product a img` — ahora solo usa `aspect-ratio: 4/3` + `object-fit: cover`
+6. ✅ **Reemplazado**: `left: -9999px` → `transform: translateX(-100%)` en sidebar y mobile-navigation-menu. Más suave, sin overflow.
+7. ✅ **Simplificados**: badges sin overrides por breakpoint — un solo `line-height: 1; padding: 4px 10px` para todos
+8. ✅ **Eliminados**: reglas legacy de related/upsells a 1200px (`repeat(4, 1fr)`) — ahora heredan del main grid
+9. ✅ **Eliminado**: `ul.products` minmax override a 1200px — ahora usa el mismo breakpoint que el resto
+10. ✅ **Eliminado**: `--fs-5: 0.941rem` en sidebar 1024px+
+11. ✅ **Sidebar a 1024px+**: resetea `transform: none; opacity: 1` para funcionar con `position: sticky`
+12. ✅ **Documentación actualizada**: architecture.md, project-status.md
+
+Decisión: Los breakpoints explícitos mobile-first dan comportamiento predecible en todas las resoluciones. El sidebar a 1024px reduce espacio disponible, por lo que se mantienen 2 columnas hasta 1200px donde hay suficiente ancho para 3. El sistema unificado elimina inconsistencias visuales entre homepage, shop, related y upsells.
+
+---
+
 # Baja prioridad
 
 * wishlist real

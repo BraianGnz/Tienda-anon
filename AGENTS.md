@@ -73,15 +73,15 @@ Read these before making structural changes.
 - Front-page.php usa `.product-grid > .showcase` (custom query). Son contextos separados, NO hay nesting inválido.
 - Uses Ionicons 5.5.2 from unpkg CDN.
 
-## Responsive layout system (2026-05-28)
+## Responsive layout system (2026-05-31)
 
 - **Container**: `width: 100%; max-width: 1400px; padding: 0 15px; margin: 0 auto` — breakpoints solo cambian padding (24px at 768px, 30px at 1024px+).
-- **CSS Grid with `auto-fit/minmax()`**: `.product-grid` and `ul.products` use `repeat(auto-fit, minmax(220px, 1fr))`. No fixed-column breakpoints — grid adapts automatically.
+- **Product grids — breakpoints explícitos mobile-first**: Todos los product grids (`.product-grid`, `ul.products`, related, upsells) comparten misma lógica: 1 col (<480px) → 2 cols (480px+) → 2 cols (1024px+, sidebar presente) → 3 cols (1200px+) → 4 cols (1400px+). Gap unificado: 20px. Sin `auto-fit/minmax`.
 - **Section grids**: `.category-item-container`, `.blog-container` switch from horizontal scroll (mobile) to grid `auto-fit/minmax` at 570px+.
-- **Sidebar + product-box** (≥1024px): sidebar `width: 260px; flex-shrink: 0`, product-box `flex: 1; min-width: 0`. No calc().
+- **Sidebar + product-box** (≥1024px): sidebar `width: 260px; flex-shrink: 0`, product-box `flex: 1; min-width: 0`.
+- **Sidebar/mobile-nav**: `position: fixed; transform: translateX(-100%)` en vez de `left: -9999px`. Sin overflow, animación GPU.
 - **Toolbar**: flex scoped to `.woocommerce-shop .woocommerce`. No floats.
 - **No `calc()` in layout**: All `min-width: calc()` and `width: calc()` removed. Only `translateX(calc())` remains for notification-toast animation.
-- **`html { overflow-x: hidden }` removed**: Fixed elements use `left: -9999px` instead of `left: -100%`.
 
 ## CSS custom properties
 

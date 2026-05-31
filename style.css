@@ -2254,7 +2254,7 @@ footer {
   .product-grid,
   .woocommerce ul.products,
   .woocommerce-page ul.products {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
 }
@@ -2271,9 +2271,11 @@ footer {
 
   .product-featured .display-number { --fs-5: 1.125rem; }
 
-
-
-
+  .product-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   .testimonials-box {
     grid-template-columns: repeat(4, 1fr);

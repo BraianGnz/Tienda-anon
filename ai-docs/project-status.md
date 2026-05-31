@@ -454,22 +454,30 @@ $product_cats = get_terms(array(
 
 ---
 
-# Riesgos técnicos actuales (2026-05-28)
+# Riesgos técnicos actuales (2026-05-31)
 
 ## RESUELTOS
 
 ### Shop page estabilizada (2026-05-26)
 * ✅ Se desactivó CSS nativo de WooCommerce
-* ✅ ul.products usa CSS grid con `auto-fit/minmax` — adaptable sin breakpoints fijos
 * ✅ li.product estilizado como card visualmente consistente
 * ✅ No existe nesting inválido (front-page y shop son contextos separados)
 * ✅ Sin overrides de templates WC — se mantiene compatibilidad máxima
 
 ### Layout estable (2026-05-28)
 * ✅ Container simplificado: `width: 100%; max-width: 1400px; padding: 0 15px`
-* ✅ Sin `min-width: calc()` en layout — grids con `auto-fit/minmax`, flex con `flex: 1`
+* ✅ Sin `min-width: calc()` en layout — grids con `repeat()` explícito, flex con `flex: 1`
 * ✅ Sin `float` para layout — toolbar con flex
 * ✅ `html { overflow-x: hidden }` eliminado
+
+### Product grids unificados (2026-05-31)
+* ✅ **Eliminado**: `auto-fit/minmax(220px, 1fr)` en product grids — causaba cards angostas impredecibles
+* ✅ **Implementado**: breakpoints explícitos mobile-first — mismo sistema para `.product-grid`, `ul.products`, related, upsells
+* ✅ **Unificados gaps**: todos los product grids usan `gap: 20px` (antes: 25px/30px/20px inconsistentes)
+* ✅ **Corregido**: `height: auto` eliminado de imágenes de productos — ya no conflictúa con `aspect-ratio: 4/3`
+* ✅ **Reemplazado**: `left: -9999px` por `transform: translateX(-100%)` en sidebar y mobile-nav — elimina overflow, animación más suave
+* ✅ **Simplificados**: badges sin overrides por breakpoint — un solo estilo base para todos
+* ✅ **Reglas legacy eliminadas**: `--fs-5: 0.941rem` en sidebar, badge micro-ajustes en 480/1024/1200px, grid separado para related/upsells a 1200px
 * ✅ Sin cambios visuales respecto al template Anon original
 
 ---
