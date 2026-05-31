@@ -177,38 +177,80 @@ Sin cambios en la lógica WooCommerce, hooks, add-to-cart, ni templates.
 
 ---
 
-# Layout global estabilizado (2026-05-26)
+# Layout global estabilizado (2026-05-26 → 2026-05-28)
 
-Corregido el ancho del layout responsive:
+## Fase 1 (2026-05-26): Container fluido + overflow fix
 
-## Causa raíz
+### Causa raíz
 
 El `.container` tenía `max-width: 980px` en el breakpoint 1024px.
 En pantallas comunes (1280-1366px) esto dejaba 150-193px de espacio vacío
-a cada lado, comprimiendo el grid de productos (4 columnas en ~950px =
-~222px/card en shop).
+a cada lado, comprimiendo el grid de productos.
 
-## Cambios aplicados
+### Cambios aplicados (fase 1)
 
-| Breakpoint | Antes | Después |
+- Container fluido con `width: calc(100% - 48px/60px)` + `max-width`
+- `position: fixed; left: -100%` en sidebar/mobile-nav → `left: -9999px`
+- `html { overflow-x: hidden }` como safety net
+
+## Fase 2 (2026-05-28): Rebuild completo responsive — sin calc, sin floats, sin columnas fijas
+
+### Objetivo
+
+Eliminar todo uso de `min-width: calc()` y `float` para layout responsivo.
+Reemplazar con CSS Grid `auto-fit/minmax` y Flexbox limpio.
+
+### Cambios aplicados
+
+#### Container simplificado
+Antes: `width: calc(100% - 48px/60px); max-width: 750/1100/1260/1400px` en cada breakpoint
+Después: `width: 100%; max-width: 1400px; padding: 0 15px; margin: 0 auto` — breakpoints solo cambian padding (24px/30px)
+
+#### Product grids
+| Grid | Antes | Después |
 |---|---|---|
-| 768px | `max-width: 750px` | `width: calc(100% - 48px); max-width: 750px` |
-| 1024px | `max-width: 980px` | `width: calc(100% - 60px); max-width: 1100px` |
-| 1200px | `max-width: 1200px` | `width: calc(100% - 60px); max-width: 1260px` |
-| 1400px | `max-width: 1350px` | `width: calc(100% - 60px); max-width: 1400px` |
+| `.product-grid` | 1fr → 2fr(480px) → 3fr(1024px) → 4fr(1200px) | `auto-fit, minmax(220px, 1fr)` — adaptable |
+| `ul.products` | 1fr → 2fr(480px) → 3fr(768px) → 3fr(1024px) → 4fr(1200px) | `auto-fit, minmax(220px, 1fr)` — adaptable |
 
-- `html { overflow-x: hidden; }` — elimina scrollbar horizontal en homepage
+#### Sidebar + product-box (≥1024px)
+Antes: `min-width: calc(25% - 15px)` / `calc(75% - 15px)`
+Después: `width: 260px; flex-shrink: 0` / `flex: 1; min-width: 0`
 
-## Resultado
+#### Toolbar
+Antes: `float: left/right` en result-count y ordering
+Después: Flex scoped a `.woocommerce-shop .woocommerce` con `margin-left: auto` en ordering
 
-- Shop: 3 columnas a ~332px/card en 1024px, 4 columnas a ~305px/card en 1200px
-- Homepage: product-grid 3 columnas a ~240px/card en 1024px (vs ~220px antes)
-- Sin scrollbar horizontal en homepage
-- Sin cambios en márgenes, paddings ni gaps del diseño original
+#### Section grids
+| Sección | Reemplazo |
+|---|---|
+| `category-item-container` | Flex scroll → Grid `auto-fit/minmax(200px)` a ≥570px |
+| `blog-container` | Flex scroll → Grid `auto-fit/minmax(280px)` a ≥570px |
+| `testimonials-box` | Flex wrap con `min-width: calc()` → Grid `1fr 1fr` (1024px) / `repeat(4, 1fr)` (1200px) |
+
+#### Flex items
+| Item | Reemplazo |
+|---|---|
+| `product-minimal .product-showcase` → `flex: 1 1 45%/30%` | Elimina `min-width: calc(50%/33% - gap)` + `width: calc()` |
+| `product-featured .showcase-content` → `flex: 1` | Elimina `min-width: calc(100% - 345px)` |
+| `footer-nav-list` → `flex: 1 1 30%/18%; min-width: 220px/180px` | Elimina `min-width: calc(33%/20% - gap)` + `width: calc()` |
+| `sidebar .showcase-content` → `flex: 1` | Elimina `width: calc(100% - 90px)` |
+| `product-minimal .showcase-content` → `flex: 1` | Elimina `width: calc(100% - 85px)` |
+| `toast-detail` → `flex: 1` | Elimina `width: calc(100% - 85px)` |
+
+#### Overflow safety net removed
+`html { overflow-x: hidden }` eliminado — todos los `position: fixed` usan `left: -9999px`.
+
+### Resultado
+- `min-width: calc()`: 0 reglas en style.css activo
+- `width: calc()`: 0 reglas en style.css activo (solo `translateX(calc())` para animación)
+- `float`: 0 reglas en WooCommerce toolbar
+- CSS Grid `auto-fit/minmax`: grids adaptables sin breakpoints de columnas
+- Flexbox limpio: sin width calc forzado
+- Las animaciones `translateX(calc())` no afectan layout ni overflow
 
 ---
 
-# Layout audit — Estructura real y corrección de overflow (2026-05-26)
+# Layout audit — Estructura real y corrección de overflow (2026-05-26 → 2026-05-28)
 
 ## Problemas estructurales encontrados
 
@@ -223,33 +265,35 @@ generando scrollbar horizontal:
 |---|---|---|
 | `.sidebar` | `left: -100%` → box de 100vw se extiende fuera del viewport | `left: -9999px` |
 | `.mobile-navigation-menu` | mismo caso | `left: -9999px` |
-| `.notification-toast` | `position: fixed` + `left/right: 20px` + `transform: translateX(...)` — el box model permanece en el viewport aunque esté transformado off-screen | se mantiene, el `overflow-x: hidden` de html lo contiene |
+| `.notification-toast` | `position: fixed` + `left/right: 20px` + `transform: translateX(...)` — el box model permanece en el viewport aunque esté transformado off-screen | se mantiene, `overflow-x: hidden` era safety net |
 
-Al mover estos elementos a `-9999px`, se elimina la causa raíz del scrollbar
-horizontal. El `overflow-x: hidden` en `html` se mantiene como safety net.
+**El `overflow-x: hidden` en `html` fue eliminado (2026-05-28)**
+tras verificar que los elementos fixed con `left: -9999px` no generan
+overflow horizontal y el notification-toast (translateX) no contribuye
+al document scroll width por ser `position: fixed`.
 
-### 2. Container fijo en lugar de fluido
+### 2. Container simplificado (2026-05-28)
 
-El `.container` usaba `max-width` fijos (980px, 1200px, 1350px) sin `width`.
-En pantallas intermedias (1024-1200px), el container se quedaba en 980px
-dejando 150-193px de espacio vacío a cada lado.
+El `.container` fue simplificado de `width: calc(100% - Xpx)` con múltiples
+`max-width` por breakpoint a un único sistema:
 
-Fix: usar `width: calc(100% - 60px)` junto con `max-width`. Así el container
-siempre mantiene 30px de margen a cada lado hasta llegar al límite máximo.
+- Base: `width: 100%; max-width: 1400px; padding: 0 15px; margin: 0 auto`
+- 768px: `padding: 0 24px`
+- 1024px+: `padding: 0 30px`
 
-Ejemplo: en 1280px viewport → container = 1220px (30px margin) vs 980px antes.
+Ya no necesita `width: calc()` — el padding interno asegura márgenes consistentes
+y el `max-width: 1400px` limita el ancho máximo.
 
 ### 3. `.product-container .container` sin padding
 
-A 1024px+, `.product-container .container` tiene `display: flex; gap: 30px;`
+A 1024px+, `.product-container .container` tiene `display: flex; gap: 30px; margin-bottom: 30px`
 que sobreescribe el `padding: 0 15px` del `.container` base. Esto hace que
 el contenido de la sección de productos arranque pegado al borde del container,
 mientras que otras secciones (banner, categorías) tienen 15px de padding interno.
 
 Esto es intencional del diseño original — permite que el grid de productos
-aproveche el ancho completo. No se corrige porque rompería los cálculos de
-`.sidebar` y `.product-box` que usan `calc(25% - 15px)` / `calc(75% - 15px)`
-contra el ancho del container sin padding.
+aproveche el ancho completo. A diferencia del diseño anterior, ahora sidebar
+y product-box usan flex puro sin calc (sidebar: 260px fijo, product-box: flex: 1).
 
 ## Wrappers analizados y estado
 
@@ -257,32 +301,34 @@ contra el ancho del container sin padding.
 |---|---|---|
 | `body` | ✅ Ok | Sin width fijo, overflow natural |
 | `main` | ✅ Ok | Sin estilo propio, ok |
-| `.container` | ✅ Corregido | Ahora fluido con calc + max-width |
-| `.banner > .container` | ✅ Ok | Hereda container fluido |
-| `.category > .container` | ✅ Ok | Hereda container fluido |
-| `.product-container > .container` | ⚠️ Sin padding | Intencional, ok |
-| `.product-box` | ✅ Ok | Flex child, min-width 75% |
+| `.container` | ✅ Simplificado | `width: 100%; max-width: 1400px; margin: auto; padding: 0 15px` — breakpoints solo padding |
+| `.banner > .container` | ✅ Ok | Hereda container |
+| `.category > .container` | ✅ Ok | Hereda container |
+| `.product-container > .container` | ⚠️ Sin padding | Intencional — permite flex sidebar+product-box sin calc |
+| `.product-box` | ✅ Ok | `flex: 1; min-width: 0` |
 | `.product-main` | ✅ Ok | margin-bottom solo |
-| `.product-grid` | ✅ Ok | CSS grid interno |
+| `.product-grid` | ✅ Ok | `repeat(auto-fit, minmax(220px, 1fr))` — sin breakpoints de cols |
 | `.product-minimal > .showcase-wrapper` | ✅ Ok | overflow-x: auto controlado |
 | `.product-featured > .showcase-wrapper` | ✅ Ok | overflow-x: auto controlado |
-| `.sidebar (base)` | ✅ Corregido | left: -9999px elimina overflow |
-| `.sidebar (1024px+)` | ✅ Ok | position: sticky normal |
-| `.mobile-navigation-menu` | ✅ Corregido | left: -9999px elimina overflow |
-| `.notification-toast` | ⚠️ Safety net | overflow-x: hidden lo contiene |
-| `.footer-category > .container` | ✅ Ok | Hereda container fluido |
-| `.footer-nav > .container` | ✅ Ok | Hereda container fluido |
-| `.footer-bottom > .container` | ✅ Ok | Hereda container fluido |
-| `.blog > .container` | ✅ Ok | Hereda container fluido |
-| `.testimonials-box` | ✅ Ok | Flex layout dentro de container |
+| `.sidebar (base)` | ✅ Corregido | left: -9999px |
+| `.sidebar (1024px+)` | ✅ Ok | `width: 260px; flex-shrink: 0; position: sticky` |
+| `.mobile-navigation-menu` | ✅ Corregido | left: -9999px |
+| `.notification-toast` | ✅ Ok | `position: fixed` + `translateX` — no afecta document scroll |
+| `.footer-category > .container` | ✅ Ok | Hereda container |
+| `.footer-nav > .container` | ✅ Ok | Hereda container |
+| `.footer-bottom > .container` | ✅ Ok | Hereda container |
+| `.blog > .container` | ✅ Ok | Hereda container |
+| `.testimonials-box` | ✅ Corregido | Grid 1fr 1fr (1024px) / repeat(4,1fr) (1200px) — sin calc
 
 ## Resultado visual
 
-- Shop usa ancho completo disponible con márgenes consistentes de 30px
-- Homepage sin scrollbar horizontal
-- Container fluido se adapta a cualquier resolución
+- Shop usa ancho completo disponible con márgenes consistentes
+- Homepage sin scrollbar horizontal (safety net eliminada)
+- Container se adapta a cualquier resolución
 - Layout consistente entre secciones (misma alineación base)
+- Grids adaptables sin breakpoints de columnas fijas
 - Sin cambios en el diseño visual del template Anon
+- Sin `min-width: calc()`, sin `width: calc()`, sin `float` para layout
 
 ---
 
@@ -408,21 +454,23 @@ $product_cats = get_terms(array(
 
 ---
 
-# Riesgos técnicos actuales
+# Riesgos técnicos actuales (2026-05-28)
 
-## RESUELTO (2026-05-26)
+## RESUELTOS
 
-Conflicto shop page estabilizado:
-
+### Shop page estabilizada (2026-05-26)
 * ✅ Se desactivó CSS nativo de WooCommerce
-* ✅ ul.products usa CSS grid con breakpoints consistentes
+* ✅ ul.products usa CSS grid con `auto-fit/minmax` — adaptable sin breakpoints fijos
 * ✅ li.product estilizado como card visualmente consistente
 * ✅ No existe nesting inválido (front-page y shop son contextos separados)
 * ✅ Sin overrides de templates WC — se mantiene compatibilidad máxima
 
-La decisión arquitectónica es mantener ul.products/li.product default
-y controlar todo via CSS. front-page.php sigue usando .product-grid > .showcase
-como custom query independiente.
+### Layout estable (2026-05-28)
+* ✅ Container simplificado: `width: 100%; max-width: 1400px; padding: 0 15px`
+* ✅ Sin `min-width: calc()` en layout — grids con `auto-fit/minmax`, flex con `flex: 1`
+* ✅ Sin `float` para layout — toolbar con flex
+* ✅ `html { overflow-x: hidden }` eliminado
+* ✅ Sin cambios visuales respecto al template Anon original
 
 ---
 

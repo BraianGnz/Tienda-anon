@@ -219,38 +219,78 @@ Actualmente:
 ## Container
 
 El `.container` usa `padding: 0 15px` en mobile.
-En desktop se centra con `margin: auto` y es fluido con `width: calc(100% - X)`:
+En desktop se centra con `margin: auto` y ancho fluido:
 
-| Breakpoint | width | max-width | Margen c/lado | Grid cols |
-|---|---|---|---|---|---|
-| 768px | `calc(100% - 48px)` | 750px | 24px | 3 |
-| 1024px | `calc(100% - 60px)` | 1100px | 30px hasta 1160px vp | 3 |
-| 1200px | `calc(100% - 60px)` | 1260px | 30px hasta 1320px vp | 4 |
-| 1400px | `calc(100% - 60px)` | 1400px | 30px hasta 1460px vp | 4 |
+| Breakpoint | Padding | max-width |
+|---|---|---|
+| Base | `0 15px` | 1400px |
+| 768px | `0 24px` | 1400px |
+| 1024px | `0 30px` | 1400px |
+| 1200px | `0 30px` | 1400px |
+| 1400px | `0 30px` | 1400px |
 
-Esto asegura que el container siempre use el ancho disponible (con márgenes
-consistentes) hasta alcanzar el límite máximo de diseño.
+Ya no usa `width: calc(100% - 60px)` — se simplificó a `width: 100%` + `padding`.
 
-`html { overflow-x: hidden }` previene scrollbar horizontal (safety net).
-La causa raíz del overflow era `position: fixed; left: -100%` en `.sidebar`
-y `.mobile-navigation-menu`, corregido a `left: -9999px`.
+## Responsive grid system (2026-05-28 rebuild)
+
+Todos los grids responsivos se manejan con **CSS Grid `auto-fit/minmax`** o **Flexbox limpio**:
+
+### Product grids
+
+| Contexto | Grid rule |
+|---|---|
+| `.product-grid` (homepage) | `repeat(auto-fit, minmax(220px, 1fr))` gap 25px (30px ≥480px) |
+| `ul.products` (shop/archive) | `repeat(auto-fit, minmax(220px, 1fr))` gap 20px |
+| `ul.products` ≥1200px | `repeat(auto-fit, minmax(240px, 1fr))` — min slightly wider on large screens |
+
+**Sin breakpoints de columnas fijas** — el `auto-fit` + `minmax` adapta automáticamente el número de columnas al ancho disponible.
+
+### Section grids
+
+| Sección | Breakpoint | Grid rule |
+|---|---|---|
+| `.category-item-container` | ≥570px | `repeat(auto-fit, minmax(200px, 1fr))` gap 30px |
+| `.blog-container` | ≥570px | `repeat(auto-fit, minmax(280px, 1fr))` gap 30px |
+| `.testimonials-box` | ≥1024px | `1fr 1fr` gap 30px (`.service` spans full width) |
+| `.testimonials-box` | ≥1200px | `repeat(4, 1fr)` (`.cta-container` spans 2) |
+
+### Section flex items
+
+| Item | Flex rule |
+|---|---|
+| `.product-minimal .product-showcase` (768px) | `flex: 1 1 45%` |
+| `.product-minimal .product-showcase` (1024px) | `flex: 1 1 30%` |
+| `.product-featured .showcase-content` (768px) | `flex: 1` |
+| `.footer-nav-list` (768px) | `flex: 1 1 30%; min-width: 220px` |
+| `.footer-nav-list` (1024px) | `flex: 1 1 18%; min-width: 180px` |
+
+### Toolbar
+
+WooCommerce toolbar (`.woocommerce-result-count` + `.woocommerce-ordering`) usa flex layout scoped a `.woocommerce-shop .woocommerce`:
+- Ambos con `flex: 0 0 auto`
+- `.woocommerce-ordering` con `margin-left: auto` para alinear a la derecha
+- Sin floats, sin calc
+
+### Sidebar + product-box (≥1024px)
+
+- `.sidebar`: `width: 260px; flex-shrink: 0; position: sticky`
+- `.product-box`: `flex: 1; min-width: 0`
+
+Reemplaza el anterior `min-width: calc(25% - 15px)` / `calc(75% - 15px)`.
+
+### `overflow-x: hidden` eliminado
+
+La safety net `html { overflow-x: hidden }` fue removida (2026-05-28).
+Los elementos `position: fixed` (sidebar, mobile-nav) usan `left: -9999px`
+en lugar de `left: -100%` — no generan overflow horizontal.
+El `.notification-toast` usa `position: fixed` + `translateX` para animación,
+que no contribuye al document scroll width.
 
 ## `.product-container .container`
 
-A 1024px+ tiene `display: flex; gap: 30px;` que sobreescribe el `padding` base.
-Esto es intencional: permite que sidebar + product-box calculados con
-`calc(25% - 15px)` / `calc(75% - 15px)` ocupen el 100% exacto del container.
-Agregar padding rompería estos cálculos.
-
-Objetivo futuro:
-modularizar CSS por:
-
-* components
-* layout
-* pages
-* woocommerce
-
-NO hacer todavía.
+A 1024px+ tiene `display: flex; gap: 30px; margin-bottom: 30px` — sobreescribe el
+`padding` base del `.container`. Esto es intencional: permite que sidebar + product-box
+ocupen el 100% del container con la flex gap en lugar de calc.
 
 ---
 

@@ -143,12 +143,26 @@ Los iconos de categoría se mantienen pendientes para futura iteración.
 
 ---
 
-# Media prioridad
+# ~~Media prioridad~~ (COMPLETADO 2026-05-28)
 
-* mini-cart dinámico
-* add-to-cart AJAX
-* modularizar front-page.php
-* separar template-parts
+### Responsive layout rebuild — calc()/float eliminados
+
+1. ✅ Container simplificado: `width: 100%; max-width: 1400px; padding: 0 15px; margin: 0 auto` — breakpoints solo ajustan padding (24px/30px)
+2. ✅ `.product-grid` convertido a `repeat(auto-fit, minmax(220px, 1fr))` — sin breakpoints de columnas fijas
+3. ✅ `ul.products` convertido a `repeat(auto-fit, minmax(220px, 1fr))` — sin breakpoints de columnas fijas (solo gap 1200px ajusta minmax a 240px)
+4. ✅ `.sidebar` + `.product-box` con clean flex: `width: 260px; flex-shrink: 0` / `flex: 1; min-width: 0` — elimina `min-width: calc(25%/75% - 15px)`
+5. ✅ Toolbar floats reemplazados con flex scoped a `.woocommerce-shop .woocommerce`
+6. ✅ `.category-item-container` convertido a grid `auto-fit/minmax(200px)` a 570px+ — elimina `min-width: calc(50%/33%/25% - gap)`
+7. ✅ `.blog-container` convertido a grid `auto-fit/minmax(280px)` a 570px+ — elimina `min-width: calc(50%/33%/25% - gap)`
+8. ✅ `.testimonials-box` convertido a grid con `1fr 1fr` (1024px) y `repeat(4, 1fr)` (1200px) con `.cta-container: span 2`
+9. ✅ `.product-minimal .product-showcase` y `.showcase-content` usan `flex: 1` — elimina `width: calc(100% - X)`
+10. ✅ `.product-featured .showcase-content` usa `flex: 1` — elimina `min-width: calc(100% - 345px)`
+11. ✅ `.footer-nav-list` usa `flex: 1 1 30%/18%` con `min-width: 220px/180px` — elimina `min-width: calc(33%/20% - gap)`
+12. ✅ `.toast-detail` usa `flex: 1` — elimina `width: calc(100% - 85px)`
+13. ✅ `html { overflow-x: hidden }` eliminado — posiciones fixed con `left: -9999px` ya no generan overflow
+14. ✅ Cero reglas `min-width: calc()` en style.css activo — solo quedan `translateX(calc())` para animaciones
+
+Decisión: Todos los layouts responsivos se manejan con CSS Grid `auto-fit/minmax` o Flexbox limpio. Sin `calc()` con `min-width`, sin floats, sin breakpoints de columnas fijas.
 
 ---
 
