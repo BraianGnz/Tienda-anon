@@ -215,6 +215,7 @@ Ver: project-status.md → "Shop page estabilizada"
 Actualmente:
 
 * CSS monolítico en style.css
+* `img { max-width: 100%; height: auto; }` en reset (2026-05-31) — previene overflow por imágenes sin width explícito
 
 ## Container
 
@@ -241,7 +242,7 @@ Todos los product grids usan **breakpoints explícitos mobile-first** con `repea
 
 ### Sistema actual — breakpoints explícitos
 
-Todos los product grids (`.product-grid`, `ul.products`, related, upsells) comparten **exactamente la misma lógica**:
+Todos los product grids (`.product-grid`, `ul.products`, related, upsells, **`.product-minimal .showcase-wrapper`**) comparten **exactamente la misma lógica**:
 
 | Breakpoint | Columnas | gap | Razón |
 |---|---|---|---|
@@ -250,8 +251,6 @@ Todos los product grids (`.product-grid`, `ul.products`, related, upsells) compa
 | 1024px+ | 2 | 20px | Sidebar visible (~260px), espacio limitado |
 | 1200px+ | 3 | 20px | Desktop amplio |
 | 1400px+ | 4 | 20px | Ultra wide |
-
-### Section grids
 
 ### Section grids
 
@@ -266,11 +265,24 @@ Todos los product grids (`.product-grid`, `ul.products`, related, upsells) compa
 
 | Item | Flex rule |
 |---|---|
-| `.product-minimal .product-showcase` (768px) | `flex: 1 1 45%` |
-| `.product-minimal .product-showcase` (1024px) | `flex: 1 1 30%` |
 | `.product-featured .showcase-content` (768px) | `flex: 1` |
 | `.footer-nav-list` (768px) | `flex: 1 1 30%; min-width: 220px` |
 | `.footer-nav-list` (1024px) | `flex: 1 1 18%; min-width: 180px` |
+
+### Product-minimal (New Arrivals) migration to grid (2026-05-31)
+
+`.product-minimal` — la sección "New Arrivals" de la homepage — fue migrada de carrusel horizontal (`overflow-x: auto`, flex-row) a CSS Grid, unificando el layout con las shop cards.
+
+**Antes:** Carrusel con scroll horizontal, batch containers de 4 productos, min-width: 100%, thumbnail 70px izquierda + contenido derecha.
+**Después:** Grid con columnas responsivas, cards verticales iguales a shop, imagen 4/3 arriba, contenido abajo.
+
+Detalles:
+- `.showcase-wrapper`: `display: grid` (antes `overflow-x: auto`)
+- `.showcase-container`: `display: contents` — wrappers PHP (cada 4 items) invisibles al grid
+- `.showcase`: `flex-direction: column; border; border-radius; overflow: hidden` — igual que shop
+- `.showcase-img-box`: `aspect-ratio: 4/3` (antes thumbnail 70px)
+- `.showcase-title`: wrapping natural (antes `white-space: nowrap`)
+- Responsive columns: hereda del sistema grid compartido con `.product-grid`, `ul.products`, etc.
 
 ### Toolbar
 

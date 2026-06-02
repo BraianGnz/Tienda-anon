@@ -187,6 +187,20 @@ Decisión: Los breakpoints explícitos mobile-first dan comportamiento predecibl
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-05-31 — segunda tanda)
+
+### Post-rebuild fixes — shop page grid bug, product-minimal grid, overflow prevention
+
+1. ✅ **Corregido**: base `ul.products` grid movido ANTES del bloque responsive en style.css — los overrides responsive (misma especificidad) ahora ganan por source order
+2. ✅ **Migrado**: `.product-minimal` de carrusel horizontal a CSS Grid — `.showcase-wrapper` ahora es `display: grid`, `.showcase-container` usa `display: contents`, cards son verticales tipo shop
+3. ✅ **Unificado**: `.product-minimal .showcase-wrapper` agregado al selector combinado de todos los product grids — comparte breakpoints: 1fr (<480px) → 2fr (480px+) → 2fr (1024px+) → 3fr (1200px+) → 4fr (1400px+)
+4. ✅ **Añadido**: `img { max-width: 100%; height: auto; }` en reset CSS — previene overflow por imágenes sin width explícito
+5. ✅ **Actualizados**: architecture.md, project-status.md, opencode-tasks.md
+
+Decisión: La migración de product-minimal a grid elimina la dependencia de `overflow-x: auto` y unifica el layout de cards con el resto del sitio. `img { max-width: 100% }` es una regla de reset estándar que previene overflow sin causar regresiones visuales.
+
+---
+
 # Baja prioridad
 
 * wishlist real

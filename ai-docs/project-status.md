@@ -472,12 +472,15 @@ $product_cats = get_terms(array(
 
 ### Product grids unificados (2026-05-31)
 * ✅ **Eliminado**: `auto-fit/minmax(220px, 1fr)` en product grids — causaba cards angostas impredecibles
-* ✅ **Implementado**: breakpoints explícitos mobile-first — mismo sistema para `.product-grid`, `ul.products`, related, upsells
+* ✅ **Implementado**: breakpoints explícitos mobile-first — mismo sistema para `.product-grid`, `ul.products`, related, upsells, `.product-minimal .showcase-wrapper`
 * ✅ **Unificados gaps**: todos los product grids usan `gap: 20px` (antes: 25px/30px/20px inconsistentes)
 * ✅ **Corregido**: `height: auto` eliminado de imágenes de productos — ya no conflictúa con `aspect-ratio: 4/3`
-* ✅ **Reemplazado**: `left: -9999px` por `transform: translateX(-100%)` en sidebar y mobile-nav — elimina overflow, animación más suave
+* ✅ **Reemplazado**: `left: -9999px` → `transform: translateX(-100%)` en sidebar y mobile-navigation-menu — elimina overflow, animación más suave
 * ✅ **Simplificados**: badges sin overrides por breakpoint — un solo estilo base para todos
 * ✅ **Reglas legacy eliminadas**: `--fs-5: 0.941rem` en sidebar, badge micro-ajustes en 480/1024/1200px, grid separado para related/upsells a 1200px
+* ✅ **Corregido bug**: base `ul.products` grid estaba DESPUÉS de las reglas responsive — movido antes para que overrides ganen por source order
+* ✅ **Migrado product-minimal**: de carrusel horizontal (`overflow-x: auto`) a CSS Grid con `display: contents` en `.showcase-container` y cards verticales tipo shop
+* ✅ **Añadido**: `img { max-width: 100%; height: auto }` en reset CSS — previene overflow de imágenes sin width explícito
 * ✅ Sin cambios visuales respecto al template Anon original
 
 ---
