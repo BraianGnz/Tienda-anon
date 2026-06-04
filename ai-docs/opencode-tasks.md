@@ -201,6 +201,24 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-03)
+
+### Categories destacadas dinámicas WooCommerce
+
+1. ✅ Reemplazadas 8 categorías hardcodeadas (Dress & frock, Winter wear, etc.) con `get_terms('product_cat')`
+2. ✅ Las categorías reales encontradas son: Medias (12), Gorras (6), Perfumes (6), Calcetines (4), Remeras (4) — ordenadas por cantidad de productos descendente
+3. ✅ Eliminados: nombres falsos, contadores falsos, 8 links "#"
+4. ✅ Cada categoría enlaza a su archive page real (`get_term_link()`)
+5. ✅ Contadores muestran cantidad real de productos WooCommerce
+6. ✅ Excluida categoría "Uncategorized" del display
+7. ✅ Mantenidas exactamente las clases CSS y estructura HTML
+8. ✅ SVG icons mapeados por slug (shoes.svg para medias/calcetines, hat.svg para gorras, perfume.svg para perfumes, tee.svg para remeras, bag.svg como fallback)
+9. ✅ Sin cambios en CSS, JS ni functions.php
+
+**Pendiente**: Los SVG icons siguen siendo archivos estáticos (no administrables desde WordPress). Se necesita un campo ACF image en la taxonomy product_cat para resolverlo.
+
+---
+
 # Baja prioridad
 
 * wishlist real

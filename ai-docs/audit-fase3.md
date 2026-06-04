@@ -25,22 +25,24 @@
 
 ---
 
-## 2. CATEGORÍAS DESTACADAS
+## 2. CATEGORÍAS DESTACADAS ✅ RESUELTO (2026-06-03)
 
 **Archivo**: `template-parts/home/categories.php`
-**Estado actual**: 100% ESTÁTICO
-**Fuente de datos**: HTML plano + SVG icons desde `/html-template/assets/images/icons/*.svg`
-**Usa**: `get_template_directory_uri()`, HTML, CSS
-**Nivel integración WP**: **0%**
-**Prioridad**: ALTA
+**Estado actual**: 100% DINÁMICO
+**Fuente de datos**: `get_terms('product_cat')` + SVG icons mapeados por slug
+**Usa**: `get_terms()`, WooCommerce taxonomy, HTML
+**Nivel integración WP**: **75%** (iconos SVG aún son archivos estáticos)
+**Prioridad**: RESUELTA
 
-**Hardcodeado**:
-- 8 categorías con nombres: "Dress & frock", "Winter wear", "Glasses & lens", "Shorts & jeans", "T-shirts", "Jacket", "Watch", "Hat & caps"
-- Cantidades falsas: (53), (58), (68), (84), (35), (16), (27), (39)
-- 8 SVG icons: dress.svg, coat.svg, glasses.svg, shorts.svg, tee.svg, jacket.svg, watch.svg, hat.svg
-- 8 links "#" en "Show all"
+**Cambios aplicados**:
+- ✅ Reemplazadas 8 categorías hardcodeadas por `get_terms('product_cat')`
+- ✅ Nombres reales de WooCommerce, contadores reales, links reales a archive pages
+- ✅ Excluida "Uncategorized" del display
+- ✅ Eliminados todos los `href="#"` — ahora apuntan a `get_term_link()`
+- ✅ SVG icons mapeados por slug: shoes.svg (medias/calcetines), hat.svg (gorras), perfume.svg (perfumes), tee.svg (remeras), bag.svg (fallback)
+- ✅ Sin cambios en CSS, JS, ni functions.php
 
-**Para administrar**: Reemplazar con loop `get_terms('product_cat')` (como ya se hizo en sidebar). Los SVG icons requieren un campo ACF tipo imagen en la taxonomy `product_cat`.
+**Pendiente**: Los SVG icons siguen siendo archivos estáticos. Se necesita campo ACF image en taxonomy product_cat para administrarlos desde WP.
 
 ---
 
@@ -318,7 +320,7 @@
 | `header.php` | newsletter.png | `html-template/assets/images/newsletter.png` |
 | `header.php` | jewellery-1.jpg | `html-template/assets/images/products/jewellery-1.jpg` |
 | `hero.php` | banner-1.jpg, banner-2.jpg, banner-3.jpg | `html-template/assets/images/banner-*.jpg` |
-| `categories.php` | 8 SVG icons | `html-template/assets/images/icons/*.svg` |
+| `categories.php` | SVG icons (mapeados por slug, aún estáticos) | `html-template/assets/images/icons/*.svg` |
 | `sidebar.php` | 1.jpg, 2.jpg, 3.jpg, 4.jpg | `html-template/assets/images/products/*.jpg` |
 | `testimonials.php` | testimonial-1.jpg, quotes.svg | `html-template/assets/images/` |
 | `banners.php` | cta-banner.jpg | `html-template/assets/images/cta-banner.jpg` |
@@ -332,7 +334,7 @@
 | Archivo | Textos |
 |---------|--------|
 | `hero.php` | ~12 textos diferentes (títulos, subtítulos, precios) |
-| `categories.php` | 8 nombres + 8 cantidades falsas |
+| `categories.php` | ~~8 nombres + 8 cantidades falsas~~ ✅ RESUELTO |
 | `sidebar.php` | "best sellers", 4 nombres de producto, precios |
 | `product-minimal.php` | "New Arrivals" |
 | `product-featured.php` | "Deal of the day", "add to cart" |
@@ -370,6 +372,7 @@
 5. **Cart**: count dinámico con `WC()->cart->get_cart_contents_count()`
 6. **Login link**: `wp_login_url()`
 7. **Sidebar categories**: `get_terms('product_cat')` con nombres reales, contadores, links
+8. **Categories destacadas homepage**: `get_terms('product_cat')` con nombres reales, contadores, links, SVG icons mapeados
 8. **New Arrivals**: `WP_Query` con productos reales (título hardcodeado)
 9. **Deal of the Day**: `WP_Query` con productos featured + fallback (título hardcodeado)
 10. **New Products grid**: `WP_Query` con productos reales + badge system (título hardcodeado)
@@ -391,7 +394,7 @@
 ### ALTA PRIORIDAD
 
 1. **Hero slider** (`hero.php`): 3 slides completos (imágenes, textos, precios, links)
-2. **Categories destacadas** (`categories.php`): 8 categorías con nombres, cantidades, SVG icons, links
+2. ~~**Categories destacadas** (`categories.php`)~~ ✅ RESUELTO (2026-06-03)
 3. **Sidebar best sellers** (`sidebar.php`): 4 productos con imágenes, nombres, precios, ratings, links
 4. **Banner CTA** (`banners.php`): imagen, descuento, título, precio, link
 5. **Blog** (`blog.php`): 4 posts completos (imágenes, títulos, categorías, autores, fechas)
@@ -433,7 +436,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 |---|---------|-----------------|---------|-----------|
 | 1 | **Hero slider** | Convertir a WP_Query con CPT "Banner" o ACF Flexible Content. Mantener HTML exacto. | `hero.php` | ALTA |
 | 2 | **Blog section** | Reemplazar HTML estático con `WP_Query('post_type' => 'post', 'posts_per_page' => 4)`. | `blog.php` | ALTA |
-| 3 | **Categories destacadas** | Reemplazar HTML estático con `get_terms('product_cat')`. Agregar campo ACF image SVG a taxonomy. | `categories.php` | ALTA |
+| 3 | **Categories destacadas** | ✅ RESUELTO (2026-06-03). Pendiente: campo ACF image SVG en taxonomy. | `categories.php` | RESUELTA |
 | 4 | **Sidebar best sellers** | Reemplazar HTML estático con `WP_Query` ordenado por `total_sales` meta. | `sidebar.php` | ALTA |
 | 5 | **Banner CTA** | Customizer o ACF para imagen, texto, link. | `banners.php` | ALTA |
 | 6 | **Testimonials** | ACF repeatable group o CPT Testimonial. | `testimonials.php` | MEDIA |

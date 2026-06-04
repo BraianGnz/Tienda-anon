@@ -76,6 +76,7 @@ SÍ priorizar:
 * grids WooCommerce básicos
 * estilos WooCommerce personalizados básicos
 * sidebar categories dinámicas con product_cat real
+* categories destacadas dinámicas con product_cat real (homepage)
 
 ---
 
@@ -88,6 +89,7 @@ SÍ priorizar:
 * rutas hardcodeadas assets
 * conflictos básicos del theme
 * front-page.php monolítico → modularizado en template-parts/home/
+* categories destacadas dinámicas con get_terms('product_cat')
 
 ---
 
