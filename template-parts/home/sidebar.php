@@ -1,4 +1,3 @@
-<?php $img = get_template_directory_uri() . '/html-template/assets/images'; ?>
 <div class="sidebar has-scrollbar" data-mobile-menu>
 
   <div class="sidebar-category">
@@ -46,122 +45,97 @@
 
       <div class="showcase-container">
 
+        <?php
+        $best_sellers = new WP_Query(array(
+          'post_type'      => 'product',
+          'posts_per_page' => 4,
+          'meta_key'       => 'total_sales',
+          'orderby'        => 'meta_value_num',
+          'order'          => 'DESC',
+          'post_status'    => 'publish',
+          'no_found_rows'  => true,
+        ));
+
+        if ($best_sellers->have_posts()) :
+          while ($best_sellers->have_posts()) : $best_sellers->the_post();
+            global $product;
+        ?>
         <div class="showcase">
 
-          <a href="#" class="showcase-img-box">
-            <img src="<?php echo $img; ?>/products/1.jpg" alt="baby fabric shoes" width="75" height="75"
-              class="showcase-img">
+          <a href="<?php the_permalink(); ?>" class="showcase-img-box">
+            <?php echo woocommerce_get_product_thumbnail('thumbnail', array('class' => 'showcase-img', 'width' => 75, 'height' => 75)); ?>
           </a>
 
           <div class="showcase-content">
 
-            <a href="#">
-              <h4 class="showcase-title">baby fabric shoes</h4>
+            <a href="<?php the_permalink(); ?>">
+              <h4 class="showcase-title"><?php the_title(); ?></h4>
             </a>
 
             <div class="showcase-rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
+              <?php echo wc_get_rating_html($product->get_average_rating()); ?>
             </div>
 
             <div class="price-box">
-              <del>$5.00</del>
-              <p class="price">$4.00</p>
+              <?php echo $product->get_price_html(); ?>
             </div>
 
           </div>
 
         </div>
+        <?php
+          endwhile;
+        endif;
 
+        $shown = $best_sellers->post_count;
+        $remaining = 4 - $shown;
+
+        if ($remaining > 0) {
+          $exclude = $shown > 0 ? wp_list_pluck($best_sellers->posts, 'ID') : array();
+          $fallback = new WP_Query(array(
+            'post_type'      => 'product',
+            'posts_per_page' => $remaining,
+            'post_status'    => 'publish',
+            'post__not_in'   => $exclude,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'no_found_rows'  => true,
+          ));
+          if ($fallback->have_posts()) :
+            while ($fallback->have_posts()) : $fallback->the_post();
+              global $product;
+        ?>
         <div class="showcase">
 
-          <a href="#" class="showcase-img-box">
-            <img src="<?php echo $img; ?>/products/2.jpg" alt="men's hoodies t-shirt" class="showcase-img"
-              width="75" height="75">
+          <a href="<?php the_permalink(); ?>" class="showcase-img-box">
+            <?php echo woocommerce_get_product_thumbnail('thumbnail', array('class' => 'showcase-img', 'width' => 75, 'height' => 75)); ?>
           </a>
 
           <div class="showcase-content">
 
-            <a href="#">
-              <h4 class="showcase-title">men's hoodies t-shirt</h4>
+            <a href="<?php the_permalink(); ?>">
+              <h4 class="showcase-title"><?php the_title(); ?></h4>
             </a>
+
             <div class="showcase-rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star-half-outline"></ion-icon>
+              <?php echo wc_get_rating_html($product->get_average_rating()); ?>
             </div>
 
             <div class="price-box">
-              <del>$17.00</del>
-              <p class="price">$7.00</p>
+              <?php echo $product->get_price_html(); ?>
             </div>
 
           </div>
 
         </div>
+        <?php
+            endwhile;
+          endif;
+          wp_reset_postdata();
+        }
 
-        <div class="showcase">
-
-          <a href="#" class="showcase-img-box">
-            <img src="<?php echo $img; ?>/products/3.jpg" alt="girls t-shirt" class="showcase-img" width="75"
-              height="75">
-          </a>
-
-          <div class="showcase-content">
-
-            <a href="#">
-              <h4 class="showcase-title">girls t-shirt</h4>
-            </a>
-            <div class="showcase-rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star-half-outline"></ion-icon>
-            </div>
-
-            <div class="price-box">
-              <del>$5.00</del>
-              <p class="price">$3.00</p>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="showcase">
-
-          <a href="#" class="showcase-img-box">
-            <img src="<?php echo $img; ?>/products/4.jpg" alt="woolen hat for men" class="showcase-img" width="75"
-              height="75">
-          </a>
-
-          <div class="showcase-content">
-
-            <a href="#">
-              <h4 class="showcase-title">woolen hat for men</h4>
-            </a>
-            <div class="showcase-rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-            </div>
-
-            <div class="price-box">
-              <del>$15.00</del>
-              <p class="price">$12.00</p>
-            </div>
-
-          </div>
-
-        </div>
+        wp_reset_postdata();
+        ?>
 
       </div>
 

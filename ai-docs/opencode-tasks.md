@@ -219,6 +219,32 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-03)
+
+### Sidebar best sellers dinámicos WooCommerce
+
+1. ✅ Reemplazados 4 productos hardcodeados (baby fabric shoes, men's hoodies, girls t-shirt, woolen hat) con `WP_Query` real
+2. ✅ Query principal: `meta_key => total_sales, orderby => meta_value_num, order => DESC, posts_per_page => 4`
+3. ✅ Fallback: si hay menos de 4 productos con ventas, se complementa con productos recientes (`orderby => date, post__not_in => IDs mostrados`)
+4. ✅ Eliminados: imágenes hardcodeadas (1.jpg-4.jpg), nombres falsos, precios falsos, ratings falsos, todos los `href="#"`
+5. ✅ Cada producto muestra: imagen destacada real, nombre real, precio real (get_price_html), rating real (wc_get_rating_html), enlace real al producto
+6. ✅ Mantenidas exactamente las clases CSS y estructura HTML (`.showcase`, `.showcase-img-box`, `.showcase-content`, `.showcase-title`, `.showcase-rating`, `.price-box`)
+7. ✅ Excluidos productos no publicados (post_status => publish)
+8. ✅ Sin cambios en CSS, JS ni functions.php
+
+**Queries utilizadas**:
+- Principal: `WP_Query(post_type => product, posts_per_page => 4, meta_key => total_sales, orderby => meta_value_num, order => DESC, post_status => publish, no_found_rows => true)`
+- Fallback: `WP_Query(post_type => product, posts_per_page => N, post_status => publish, post__not_in => [IDs ya mostrados], orderby => date, order => DESC, no_found_rows => true)`
+
+**Fallback**: Se activa cuando `post_count < 4` después de la query principal. Complementa con productos recientes hasta llegar a 4.
+
+**Limitaciones**:
+- HTML de producto duplicado entre query principal y fallback (misma estructura en 2 bloques). Refactor pendiente.
+- Si ningún producto tiene ventas, se muestran los 4 más recientes (comportamiento correcto).
+- Los ratings usan `wc_get_rating_html()` (distinto de los Ionicon stars originales, pero semánticamente correcto).
+
+---
+
 # Baja prioridad
 
 * wishlist real

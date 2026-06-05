@@ -77,6 +77,7 @@ SÍ priorizar:
 * estilos WooCommerce personalizados básicos
 * sidebar categories dinámicas con product_cat real
 * categories destacadas dinámicas con product_cat real (homepage)
+* sidebar best sellers dinámicos con WP_Query + total_sales
 
 ---
 
@@ -90,6 +91,7 @@ SÍ priorizar:
 * conflictos básicos del theme
 * front-page.php monolítico → modularizado en template-parts/home/
 * categories destacadas dinámicas con get_terms('product_cat')
+* sidebar best sellers dinámicos con WP_Query + total_sales + fallback recent products
 
 ---
 

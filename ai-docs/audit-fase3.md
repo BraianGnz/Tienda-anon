@@ -46,24 +46,28 @@
 
 ---
 
-## 3. SIDEBAR
+## 3. SIDEBAR ✅ RESUELTO (2026-06-03)
 
 **Archivo**: `template-parts/home/sidebar.php`
-**Estado actual**: 25% DINÁMICO / 75% ESTÁTICO
-**Fuente de datos**: `get_terms('product_cat')` (categorías dinámicas) + HTML plano (best sellers)
-**Usa**: `get_terms()`, WooCommerce taxonomy, HTML
-**Nivel integración WP**: **25%**
-**Prioridad**: ALTA
+**Estado actual**: 100% DINÁMICO
+**Fuente de datos**: `get_terms('product_cat')` (categorías) + `WP_Query` (best sellers)
+**Usa**: `get_terms()`, `WP_Query`, WooCommerce functions
+**Nivel integración WP**: **90%** (título "best sellers" y "Category" aún hardcodeados)
+**Prioridad**: RESUELTA
 
 **Ya es dinámico**:
 - Lista de categorías con `get_terms('product_cat')` — nombres reales, contadores reales, links reales ✅
+- Best sellers con `WP_Query` ordenado por `total_sales` + fallback recent products ✅
 
-**Hardcodeado**:
-- Título "best sellers"
-- 4 productos con imágenes (1.jpg, 2.jpg, 3.jpg, 4.jpg), nombres, precios, ratings
-- Todos los links "#"
+**Hardcodeado (residual)**:
+- Títulos "best sellers" y "Category" — texto plano sin administrar desde WP
 
-**Para administrar**: Reemplazar best sellers con `WP_Query` ordenado por ventas (WooCommerce).
+**Cambios aplicados**:
+- ✅ Reemplazados 4 productos demo por WP_Query dinámico
+- ✅ Query principal: total_sales DESC, 4 productos
+- ✅ Fallback: productos recientes si hay menos de 4 con ventas
+- ✅ Eliminados: imágenes 1.jpg-4.jpg, nombres falsos, precios falsos, ratings falsos, todos href="#"
+- ✅ Sin cambios en CSS, JS ni functions.php
 
 ---
 
@@ -373,6 +377,7 @@
 6. **Login link**: `wp_login_url()`
 7. **Sidebar categories**: `get_terms('product_cat')` con nombres reales, contadores, links
 8. **Categories destacadas homepage**: `get_terms('product_cat')` con nombres reales, contadores, links, SVG icons mapeados
+9. **Sidebar best sellers**: `WP_Query` con `total_sales` + fallback recent products, imágenes reales, precios reales, ratings reales
 8. **New Arrivals**: `WP_Query` con productos reales (título hardcodeado)
 9. **Deal of the Day**: `WP_Query` con productos featured + fallback (título hardcodeado)
 10. **New Products grid**: `WP_Query` con productos reales + badge system (título hardcodeado)
@@ -395,7 +400,7 @@
 
 1. **Hero slider** (`hero.php`): 3 slides completos (imágenes, textos, precios, links)
 2. ~~**Categories destacadas** (`categories.php`)~~ ✅ RESUELTO (2026-06-03)
-3. **Sidebar best sellers** (`sidebar.php`): 4 productos con imágenes, nombres, precios, ratings, links
+3. ~~**Sidebar best sellers** (`sidebar.php`)~~ ✅ RESUELTO (2026-06-03)
 4. **Banner CTA** (`banners.php`): imagen, descuento, título, precio, link
 5. **Blog** (`blog.php`): 4 posts completos (imágenes, títulos, categorías, autores, fechas)
 6. **Testimonials** (`testimonials.php`): 1 testimonial completo
@@ -437,7 +442,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 | 1 | **Hero slider** | Convertir a WP_Query con CPT "Banner" o ACF Flexible Content. Mantener HTML exacto. | `hero.php` | ALTA |
 | 2 | **Blog section** | Reemplazar HTML estático con `WP_Query('post_type' => 'post', 'posts_per_page' => 4)`. | `blog.php` | ALTA |
 | 3 | **Categories destacadas** | ✅ RESUELTO (2026-06-03). Pendiente: campo ACF image SVG en taxonomy. | `categories.php` | RESUELTA |
-| 4 | **Sidebar best sellers** | Reemplazar HTML estático con `WP_Query` ordenado por `total_sales` meta. | `sidebar.php` | ALTA |
+| 4 | **Sidebar best sellers** | ✅ RESUELTO (2026-06-03). Pendiente: extraer HTML de producto a template-part reutilizable. | `sidebar.php` | RESUELTA |
 | 5 | **Banner CTA** | Customizer o ACF para imagen, texto, link. | `banners.php` | ALTA |
 | 6 | **Testimonials** | ACF repeatable group o CPT Testimonial. | `testimonials.php` | MEDIA |
 | 7 | **Services** | ACF repeatable group o Widget area. | `testimonials.php` | BAJA |
