@@ -33,6 +33,7 @@ anon-theme/
 │
 ├── inc/
 │   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
+│   ├── cta-banner.php      # CTA Banner ACF fields + seeder (front page meta)
 │   └── blog-seeder.php     # Default blog posts + categories on theme activation
 │
 ├── ai-docs/
@@ -213,6 +214,47 @@ No hay conflicto con ul.products/li.product porque no hay overrides.
 El shop usa templates default WC + CSS del theme.
 
 Ver: project-status.md → "Shop page estabilizada"
+
+---
+
+# CTA Banner ACF (2026-06-07 — Fase 3F)
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/cta-banner.php` | **Nuevo**: ACF field group (6 fields) registrado via `acf_add_local_field_group()` + seeder de defaults |
+| `template-parts/home/banners.php` | **Reescrito**: lee ACF fields desde front page ID via `get_field()`, con fallback a valores originales hardcodeados |
+| `functions.php` | `require_once` para `inc/cta-banner.php` |
+
+## Seeder (`inc/cta-banner.php`)
+
+- 6 campos ACF: imagen de fondo (image), badge/descuento (text), título principal (text), texto secundario (text), texto botón (text), URL botón (url)
+- Location: `post_type=page` (front page) — no usa options page (no disponible en ACF Free)
+- `cta_banner_get_front_page_id()` helper: lee `page_on_front` de `wp_options`
+- `cta_banner_seed_defaults()`: seedea valores iniciales en `after_switch_theme` + `admin_init` + `acf/init` (priority 20)
+- Defaults: imagen cta-banner.jpg, badge "20% OFF", título "Medias Personalizadas Premium", texto "Diseños exclusivos para empresas, eventos y marcas", botón "Ver Colección", URL home_url('/shop/')
+- Flag `cta_banner_defaults_created` en `wp_options` para ejecución única
+- Guardado con `update_field()` sobre el front page ID — no requiere ACF PRO
+
+## Template part (`template-parts/home/banners.php`)
+
+- Primero intenta `get_field()` desde front page ID via `cta_banner_get_front_page_id()`
+- Si ACF no está activo o campos vacíos, fallback completo a valores originales:
+  - Imagen: cta-banner.jpg
+  - Badge: "25% Discount"
+  - Título: "Summer collection"
+  - Texto: "Starting @ $10"
+  - Botón: "Shop now"
+  - URL: "#"
+- Usa `esc_url()` y `esc_html()` para output seguro
+
+## Decisión técnica
+
+- Usar meta de front page (`page_on_front`) en lugar de options page (ACF Free no soporta options pages)
+- Campos editables en admin: Pages > Home > CTA Banner meta box
+- `update_field()` con front page ID para seeding de defaults
+- Fallback completo a HTML original si ACF no está disponible
 
 ---
 

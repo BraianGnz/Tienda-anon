@@ -333,6 +333,30 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-07)
+
+### Phase 3F: CTA Banner ACF Conversion
+
+1. ✅ Creado `inc/cta-banner.php`:
+   - ACF field group con 6 campos registrado via `acf_add_local_field_group()`: imagen de fondo (image), badge/descuento (text), título principal (text), texto secundario (text), texto botón (text), URL botón (url)
+   - Location: `post_type=page` (front page) — evita dependencia de ACF PRO (options page)
+   - Helper `cta_banner_get_front_page_id()` centraliza lectura de `page_on_front`
+   - Seeder `cta_banner_seed_defaults()` con flag `cta_banner_defaults_created` en `wp_options`
+   - Hooks: `after_switch_theme`, `admin_init`, `acf/init` (priority 20)
+   - Defaults: cta-banner.jpg, "20% OFF", "Medias Personalizadas Premium", "Diseños exclusivos para empresas, eventos y marcas", "Ver Colección", home_url('/shop/')
+2. ✅ Actualizado `template-parts/home/banners.php`:
+   - Prioriza `get_field()` desde front page ID via `cta_banner_get_front_page_id()`
+   - Fallback completo a valores originales si ACF inactivo o campos vacíos: cta-banner.jpg, "25% Discount", "Summer collection", "Starting @ $10", "Shop now", "#"
+3. ✅ `require_once` en `functions.php` para `inc/cta-banner.php`
+
+**Decisión**: Front page meta en lugar de options page (no disponible en ACF Free). El admin edita desde Pages > Home > CTA Banner meta box. `update_field()` con front page ID para seeding.
+
+**Riesgos**:
+- La imagen por defecto (cta-banner.jpg) no se importa a media library — sigue siendo URL del theme. Si el theme se renombra, el seed falla.
+- Si se cambia la front page (Settings > Reading), los fields dejan de mostrarse hasta que se actualicen.
+
+---
+
 # Baja prioridad
 
 * wishlist real

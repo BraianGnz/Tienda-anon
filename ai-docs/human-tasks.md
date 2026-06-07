@@ -8,6 +8,8 @@ Revisar manualmente después de cada cambio:
 * blog section (verificar 4 posts, categorías reales, autores, fechas, imágenes)
 * blog fallback (desactivar los posts seed y confirmar que se ven placeholders)
 * blog seeder (reactivar theme y verificar que se crean 4 posts + 4 categorías)
+* CTA banner (verificar imagen, badge, título, texto, botón, URL desde admin)
+* CTA banner fallback (desactivar ACF y confirmar que se ven valores originales)
 * shop page
 * categorías
 * mobile

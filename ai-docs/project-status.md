@@ -81,6 +81,7 @@ SÍ priorizar:
 * hero slider dinámico con CPT hero_slide + ACF + fallback hardcodeado + Swiper.js 11 (CDN)
 * blog homepage dinámico con WP_Query + fallback placeholders
 * blog seeder automático en activación de theme (inc/blog-seeder.php)
+* CTA banner dinámico con ACF fields desde front page meta + fallback hardcodeado
 
 ---
 
@@ -97,6 +98,7 @@ SÍ priorizar:
 * sidebar best sellers dinámicos con WP_Query + total_sales + fallback recent products
 * hero slider: CSS scroll-snap → Swiper.js 11 con loop, autoplay, pagination, navigation
 * blog: HTML estático con datos fake → WP_Query dinámico + seeder automático con featured images reales
+* cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
 
 ---
 
@@ -133,6 +135,76 @@ Swiper 11 desde CDN sigue la filosofía "no build step" del proyecto. Es
 la librería de sliders más popular y madura para JS vanilla. Los selectores
 scoped con `-hero` permiten agregar otros sliders Swiper en el futuro sin
 conflictos.
+
+---
+
+# CTA Banner ACF Conversion — Phase 3F (2026-06-07)
+
+## Cambio aplicado
+
+El CTA banner de la homepage fue migrado de HTML estático con datos
+hardcodeados (imagen cta-banner.jpg, "25% Discount", "Summer collection",
+"Starting @ $10", "Shop now", `href="#"`) a campos ACF administrables desde
+el admin de WordPress, con fallback completo al contenido original.
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/cta-banner.php` | **Nuevo**: ACF field group + helper + seeder |
+| `template-parts/home/banners.php` | **Reescrito**: get_field() con fallback |
+| `functions.php` | `require_once` para `inc/cta-banner.php` |
+
+## Seeder (`inc/cta-banner.php`)
+
+- **ACF field group**: 6 campos registrados via `acf_add_local_field_group()`:
+  - `cta_image` (image, return_format=url, required) — imagen de fondo
+  - `cta_badge` (text, default "20% OFF") — badge/descuento
+  - `cta_title` (text, default "Medias Personalizadas Premium", required) — título
+  - `cta_text` (text, default "Diseños exclusivos para empresas, eventos y marcas") — texto
+  - `cta_button_text` (text, default "Ver Colección") — texto botón
+  - `cta_button_url` (url, default home_url('/shop/')) — URL botón
+- **Location**: `post_type=page` (front page) — se muestra solo en la página de inicio
+- **Position**: `normal` — meta box en el editor de página
+- **Helper**: `cta_banner_get_front_page_id()` — lee `page_on_front` de `wp_options`
+- **Seeding**: `cta_banner_seed_defaults()` se ejecuta en `after_switch_theme`, `admin_init`,
+  y `acf/init` (priority 20). Verifica flag `cta_banner_defaults_created` en `wp_options`
+  para ejecución única. Guarda defaults con `update_field()` sobre el front page ID.
+
+## Template part (`template-parts/home/banners.php`)
+
+- Llama a `cta_banner_get_front_page_id()` para obtener el front page ID
+- Si ACF está activo y hay front page ID, lee los 6 campos con `get_field()`
+- Si ACF no está activo o los campos están vacíos, usa fallback exacto:
+  - Imagen: `cta-banner.jpg`
+  - Badge: `"25% Discount"`
+  - Título: `"Summer collection"`
+  - Texto: `"Starting @ $10"`
+  - Botón: `"Shop now"`
+  - URL: `"#"`
+- Output sanitizado con `esc_url()` y `esc_html()`
+- Sin cambios en estructura HTML, clases CSS ni diseño visual
+
+## Decisión técnica
+
+- **Front page meta vs Options page**: ACF Free no soporta options pages.
+  Se usa `get_option('page_on_front')` + `update_field()` con el post ID de la front page.
+- **Admin UX**: Los campos se editan desde Pages > Home (editar página) > CTA Banner meta box.
+- **Seeding**: No se importa la imagen a media library — se usa URL directa del theme.
+  Esto es más simple pero crea dependencia de la ruta del theme.
+- **Fallback**: Preserva exactamente el HTML y valores originales del template Anon,
+  asegurando que desactivar ACF no rompe la homepage.
+
+## Riesgos
+
+- Si la front page cambia (Settings > Reading > Homepage), los fields seedeados
+  quedan en la página anterior. El seeder solo se ejecuta si no hay datos en la
+  nueva front page.
+- La imagen default (cta-banner.jpg) no está en la media library — si el theme
+  se renombra o reubica, la URL se rompe. El admin debe re-uploadear la imagen
+  desde el meta box de ACF.
+- `acf_add_local_field_group()` requiere ACF activo. Si ACF se desactiva,
+  el field group no aparece y se usa el fallback (comportamiento seguro).
 
 ---
 

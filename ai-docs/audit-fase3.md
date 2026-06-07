@@ -196,21 +196,29 @@
 
 ---
 
-## 9. BANNERS (CTA)
+## 9. BANNERS (CTA) ✅ RESUELTO (2026-06-07) — Phase 3F
 
-**Archivo**: `template-parts/home/banners.php`
-**Estado actual**: 100% ESTÁTICO
-**Fuente de datos**: HTML plano
-**Usa**: `get_template_directory_uri()`, HTML, CSS
-**Nivel integración WP**: **0%**
-**Prioridad**: ALTA
+**Archivo**: `template-parts/home/banners.php` + `inc/cta-banner.php`
+**Estado actual**: 100% DINÁMICO
+**Fuente de datos**: ACF fields desde front page meta (page_on_front)
+**Usa**: `acf_add_local_field_group()`, `get_field()`, `update_field()`, `get_option('page_on_front')`
+**Nivel integración WP**: **85%**
+**Prioridad**: RESUELTA
 
-**Hardcodeado**:
-- Imagen: cta-banner.jpg
-- Texto: "25% Discount", "Summer collection", "Starting @ $10"
-- Botón "Shop now" con `href="#"`
+**Cambios aplicados**:
+- ✅ Creado `inc/cta-banner.php`: ACF field group con 6 campos (imagen, badge, título, texto, botón texto, botón URL) registrado via `acf_add_local_field_group()`
+- ✅ Location: `post_type=page` (front page) — evita dependencia de ACF PRO (options page)
+- ✅ Helper `cta_banner_get_front_page_id()` centraliza la lectura del front page ID
+- ✅ Seeder `cta_banner_seed_defaults()` seedea valores iniciales: "20% OFF", "Medias Personalizadas Premium", etc.
+- ✅ `banners.php` reescrito: prioriza ACF fields desde front page ID, con fallback exacto a valores originales
+- ✅ Fallback preserva: cta-banner.jpg, "25% Discount", "Summer collection", "Starting @ $10", "Shop now", "#"
+- ✅ Hooks: `after_switch_theme`, `admin_init`, `acf/init` (priority 20)
+- ✅ Flag `cta_banner_defaults_created` en `wp_options` para ejecución única
+- ✅ `require_once` en `functions.php`
 
-**Para administrar**: Customizer con imagen, texto, descuento, link, o ACF Flexible Content.
+**Decisión técnica**: Front page meta en lugar de options page (ACF Free). El admin edita desde Pages > Home > CTA Banner meta box. `update_field()` con front page ID para seeding.
+
+**Pendiente**: La imagen por defecto (cta-banner.jpg) no se importa a media library — sigue siendo URL del theme. Si el theme se renombra, el seed falla.
 
 ---
 
@@ -407,6 +415,7 @@
 20. **HTML5 support**: search-form, comment-form, etc.
 21. **Blog homepage**: WP_Query dinámico con 4 posts reales, categorías reales, autores, fechas, thumbnails con fallback
 22. **Blog seeder**: `inc/blog-seeder.php` crea posts + categorías + featured images automáticamente al activar el theme
+23. **CTA Banner**: ACF fields desde front page meta con 6 campos administrables + fallback a valores originales
 
 ---
 
@@ -417,7 +426,7 @@
 1. ~~**Hero slider** (`hero.php`)~~ ✅ RESUELTO (2026-06-07)
 2. ~~**Categories destacadas** (`categories.php`)~~ ✅ RESUELTO (2026-06-03)
 3. ~~**Sidebar best sellers** (`sidebar.php`)~~ ✅ RESUELTO (2026-06-03)
-4. **Banner CTA** (`banners.php`): imagen, descuento, título, precio, link
+4. ~~**Banner CTA** (`banners.php`)~~ ✅ RESUELTO (2026-06-07)
 5. ~~**Blog** (`blog.php`)~~ ✅ RESUELTO (2026-06-07)
 6. **Testimonials** (`testimonials.php`): 1 testimonial completo
 7. **All `href="#"` links** (~100+ en todo el theme)
@@ -459,7 +468,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 | 2 | **Blog section** | ✅ RESUELTO (2026-06-07). Creado `inc/blog-seeder.php` + WP_Query dinámico. | `blog.php` + `inc/blog-seeder.php` | RESUELTA |
 | 3 | **Categories destacadas** | ✅ RESUELTO (2026-06-03). Pendiente: campo ACF image SVG en taxonomy. | `categories.php` | RESUELTA |
 | 4 | **Sidebar best sellers** | ✅ RESUELTO (2026-06-03). Pendiente: extraer HTML de producto a template-part reutilizable. | `sidebar.php` | RESUELTA |
-| 5 | **Banner CTA** | Customizer o ACF para imagen, texto, link. | `banners.php` | ALTA |
+| 5 | ~~**Banner CTA**~~ | ✅ RESUELTO (2026-06-07). ACF field group con 6 campos + seeder vía front page meta. Fallback preservado. | `banners.php` + `inc/cta-banner.php` | RESUELTA |
 | 6 | **Testimonials** | ACF repeatable group o CPT Testimonial. | `testimonials.php` | MEDIA |
 | 7 | **Services** | ACF repeatable group o Widget area. | `testimonials.php` | BAJA |
 | 8 | **Deal of the Day** | Crear meta box en producto para marcar "Deal of the Day". Query single product. Eliminar fallback duplicado. | `product-featured.php` | ALTA |
