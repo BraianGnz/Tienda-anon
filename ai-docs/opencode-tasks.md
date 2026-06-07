@@ -260,8 +260,12 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 **Decisión**: CPT + ACF fields evita depender del Repeater field (PRO). El orden de slides se maneja con `menu_order` (drag & drop nativo de WordPress). La imagen usa `return_format => 'url'` para compatibilidad con URLs del theme en los slides por defecto.
 
+**Fix post-implementación (2026-06-07)**:
+- Problema: `after_switch_theme` no se ejecutó porque el theme ya estaba activo cuando se agregó el código
+- Solución: Se agregó `admin_init` como segundo hook + flag `hero_slider_defaults_created` en `wp_options`. Esto asegura que los slides se creen la primera vez que alguien entre al admin, sin importar cuándo se agregó el código
+- El flag previene ejecución duplicada incluso si se desactiva/reactiva el theme
+
 **Riesgos**:
-- `after_switch_theme` solo se ejecuta al activar el theme — si se desactiva/reactiva, no duplica slides (checked: `get_posts` existentes)
 - Las imágenes por defecto apuntan a archivos del theme (banner-1.jpg etc.) — si se renombra el theme, se rompen; el admin debe re-uploadear desde ACF
 - `acf_add_local_field_group()` en `acf/init` requiere ACF activo — si ACF se desactiva, los field groups no se registran (fallback funciona)
 

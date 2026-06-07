@@ -98,6 +98,10 @@ function hero_slider_create_default_slides() {
         return;
     }
 
+    if (get_option('hero_slider_defaults_created')) {
+        return;
+    }
+
     $existing = get_posts(array(
         'post_type'      => 'hero_slide',
         'posts_per_page' => 1,
@@ -105,6 +109,7 @@ function hero_slider_create_default_slides() {
     ));
 
     if (!empty($existing)) {
+        update_option('hero_slider_defaults_created', true);
         return;
     }
 
@@ -154,5 +159,8 @@ function hero_slider_create_default_slides() {
             update_field('slide_button_url', $slide['button_url'], $post_id);
         }
     }
+
+    update_option('hero_slider_defaults_created', true);
 }
 add_action('after_switch_theme', 'hero_slider_create_default_slides');
+add_action('admin_init', 'hero_slider_create_default_slides');
