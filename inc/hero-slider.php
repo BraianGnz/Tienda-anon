@@ -93,6 +93,30 @@ function hero_slider_acf_fields() {
 add_action('acf/init', 'hero_slider_acf_fields');
 
 
+function hero_slider_import_image($url, $post_id) {
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+
+    $tmp = download_url($url);
+    if (is_wp_error($tmp)) {
+        return false;
+    }
+
+    $file_array = array(
+        'name'     => basename($url),
+        'tmp_name' => $tmp,
+    );
+
+    $attachment_id = media_handle_sideload($file_array, $post_id);
+    if (is_wp_error($attachment_id)) {
+        @unlink($tmp);
+        return false;
+    }
+
+    return $attachment_id;
+}
+
 function hero_slider_create_default_slides() {
     if (!function_exists('get_field')) {
         return;
@@ -151,9 +175,12 @@ function hero_slider_create_default_slides() {
         ));
 
         if ($post_id && !is_wp_error($post_id)) {
+            $attachment_id = hero_slider_import_image($slide['image'], $post_id);
+            if ($attachment_id) {
+                update_field('slide_image', $attachment_id, $post_id);
+            }
             update_field('slide_subtitle', $slide['subtitle'], $post_id);
             update_field('slide_title', $slide['title'], $post_id);
-            update_field('slide_image', $slide['image'], $post_id);
             update_field('slide_price', $slide['price'], $post_id);
             update_field('slide_button_text', $slide['button_text'], $post_id);
             update_field('slide_button_url', $slide['button_url'], $post_id);
