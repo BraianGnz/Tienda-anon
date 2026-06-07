@@ -28,6 +28,7 @@ anon-theme/
 ├── assets/
 │   ├── css/
 │   ├── js/
+│   │   └── hero-slider.js     # Swiper.js hero slider init (enqueued from CDN)
 │   ├── images/
 │
 ├── inc/
@@ -329,6 +330,16 @@ ocupen el 100% del container con la flex gap en lugar de calc.
 
 Mantener JS separado.
 NO usar inline JS en templates PHP.
+
+## Swiper.js hero slider (2026-06-07)
+
+El hero slider de la homepage (`hero.php`) usa Swiper.js 11 cargado desde CDN
+(`functions.php` enqueue). El init vive en `assets/js/hero-slider.js`:
+loop, autoplay 6000ms, pausa en hover, grabCursor, pagination bullets
+clickables, navigation arrows, y handler de visibilitychange para pausar/reresumir.
+
+Los estilos de Swiper override están en `style.css` dentro del bloque
+`#SWIPER HERO OVERRIDES`.
 
 ---
 

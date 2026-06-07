@@ -5,14 +5,16 @@
 
 ---
 
-## 1. HERO (Banner principal) ✅ RESUELTO (2026-06-07)
+## 1. HERO (Banner principal) ✅ RESUELTO (2026-06-07) — Phase 3D (Swiper) ✅ COMPLETADO (2026-06-07)
 
-**Archivo**: `template-parts/home/hero.php` + `inc/hero-slider.php`
-**Estado actual**: 100% DINÁMICO (con fallback hardcodeado)
-**Fuente de datos**: `WP_Query('post_type' => 'hero_slide')` + ACF fields
-**Usa**: CPT hero_slide, ACF, `get_field()`, `update_field()`
-**Nivel integración WP**: **90%** (imágenes por defecto apuntan a archivos del theme)
+**Archivo**: `template-parts/home/hero.php` + `inc/hero-slider.php` + `assets/js/hero-slider.js`
+**Estado actual**: 100% DINÁMICO + Swiper.js 11 (con fallback hardcodeado)
+**Fuente de datos**: `WP_Query('post_type' => 'hero_slide')` + ACF fields + Swiper.js CDN
+**Usa**: CPT hero_slide, ACF, `get_field()`, `update_field()`, Swiper 11 CDN, `assets/js/hero-slider.js`
+**Nivel integración WP**: **95%** (imágenes por defecto apuntan a archivos del theme, Swiper via CDN)
 **Prioridad**: RESUELTA
+
+### Fase 3A: CPT + ACF (original, 2026-06-07)
 
 **Cambios aplicados**:
 - ✅ Creado Custom Post Type `hero_slide` con soporte `page-attributes` (menu_order)
@@ -25,6 +27,16 @@
 **Decisión técnica**: CPT + ACF fields evita depender del Repeater field (PRO). Orden por `menu_order` (drag & drop nativo). `return_format => 'url'` para compatibilidad con imágenes del theme en defaults.
 
 **Riesgo**: Imágenes por defecto usan URLs del theme (banner-*.jpg). Si el theme se renombra, se rompen. El admin debe re-uploadear desde ACF.
+
+### Fase 3D: Swiper.js (2026-06-07)
+
+**Cambios aplicados**:
+- ✅ Enqueued Swiper 11 CSS + JS desde CDN en `functions.php`
+- ✅ Creado `assets/js/hero-slider.js` con init Swiper: loop, autoplay 6000ms, pauseOnMouseEnter, grabCursor, pagination clickable, navigation arrows, visibilitychange handler
+- ✅ Actualizado `template-parts/home/hero.php`: atributo `data-hero-slider`, clases `swiper-wrapper`, `swiper-slide`, elementos pagination (`.swiper-pagination-hero`) y navigation (`.swiper-button-prev-hero`, `.swiper-button-next-hero`)
+- ✅ Agregados estilos Swiper override en `style.css` (#SWIPER HERO OVERRIDES): container overrides (display:block, overflow:hidden), hide nav/dots cuando Swiper no está inicializado (fallback), styled pagination bullets (ocean-green, tamaño, transición), styled nav arrows (íconos Ionicons, tamaño, hover), hide arrows below 480px
+
+**Decisión técnica**: Swiper 11 desde CDN evita build step. Selectores scoped con sufijo `-hero` para no colisionar con otros Swipers futuros. Las flechas se ocultan en <480px porque no hay espacio horizontal suficiente. El fallback hardcodeado funciona sin Swiper (se ocultan los elementos Swiper via CSS).
 
 ---
 

@@ -273,6 +273,39 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-07)
+
+### Phase 3D: Hero Slider — Swiper.js
+
+1. ✅ Enqueued Swiper 11 CSS + JS desde CDN en `functions.php` (https://cdn.jsdelivr.net/npm/swiper@11)
+2. ✅ Creado `assets/js/hero-slider.js` con Swiper init:
+   - `loop: true`, `autoplay: { delay: 6000 }`, `pauseOnMouseEnter: true`, `grabCursor: true`
+   - `pagination: { el: '.swiper-pagination-hero', clickable: true }`
+   - `navigation: { nextEl: '.swiper-button-next-hero', prevEl: '.swiper-button-prev-hero' }`
+   - Handler `visibilitychange` que pausa/reresume autoplay cuando la pestaña se oculta/muestra
+3. ✅ Actualizado `template-parts/home/hero.php`:
+   - Atributo `data-hero-slider` en el contenedor del slider
+   - Clases `swiper-wrapper` en el wrapper interno, `swiper-slide` en cada slide
+   - Elementos `.swiper-pagination-hero`, `.swiper-button-prev-hero`, `.swiper-button-next-hero` dentro del contenedor
+   - Fallback: si no hay Swiper (sin slides), los elementos Swiper no se renderizan
+4. ✅ Agregados estilos override en `style.css` (#SWIPER HERO OVERRIDES):
+   - Container overrides: `display: block; overflow: hidden` para el contenedor del banner
+   - Fallback CSS: `.swiper-pagination-hero, .swiper-button-prev-hero, .swiper-button-next-hero` se ocultan (`display: none`) cuando Swiper no está presente (no tienen clase `.swiper-pagination-clickable` ni `.swiper-button-lock`)
+   - Pagination bullets: color ocean-green, tamaño 10px, opacidad 0.5 → 1 en active, transición suave
+   - Navigation arrows: iconos Ionicons (chevron-back/chevron-forward), color blanco, bg semitransparente, hover bg más oscuro, border-radius circular
+   - Arrows ocultas en <480px (`display: none`)
+5. ✅ Sin cambios en la lógica WooCommerce, ACF, CPT, ni estructura del fallback
+6. ✅ Swiper 11 via CDN — sin build step, sin npm, sin package.json
+
+**Decisión**: Swiper 11 desde CDN mantiene la filosofía "no build step" del proyecto. Los selectores con sufijo `-hero` previenen colisiones con potenciales futuros usos de Swiper. Las flechas se ocultan en mobile angosto por falta de espacio. El fallback CSS asegura que los elementos Swiper no se vean si el slider no está inicializado.
+
+**Riesgos**:
+- Dependencia de CDN externo (jsdelivr). Si el CDN cae, el slider no tendrá interactividad (fallback visual sigue funcionando)
+- `pauseOnMouseEnter` requiere Swiper 11 — confirmar que la versión del CDN es 11+
+- Las imágenes del banner son slides dinámicos (CPT) — al cambiar de slide, el usuario ve una transición suave en lugar del salto instantáneo del CSS scroll-snap anterior
+
+---
+
 # Baja prioridad
 
 * wishlist real

@@ -78,7 +78,7 @@ SÍ priorizar:
 * sidebar categories dinámicas con product_cat real
 * categories destacadas dinámicas con product_cat real (homepage)
 * sidebar best sellers dinámicos con WP_Query + total_sales
-* hero slider dinámico con CPT hero_slide + ACF + fallback hardcodeado
+* hero slider dinámico con CPT hero_slide + ACF + fallback hardcodeado + Swiper.js 11 (CDN)
 
 ---
 
@@ -93,6 +93,43 @@ SÍ priorizar:
 * front-page.php monolítico → modularizado en template-parts/home/
 * categories destacadas dinámicas con get_terms('product_cat')
 * sidebar best sellers dinámicos con WP_Query + total_sales + fallback recent products
+* hero slider: CSS scroll-snap → Swiper.js 11 con loop, autoplay, pagination, navigation
+
+---
+
+# Hero Slider — Swiper.js conversion (2026-06-07)
+
+## Cambio aplicado
+
+El hero slider de la homepage fue migrado de CSS scroll-snap nativo a
+Swiper.js 11. El slider ya era dinámico (CPT hero_slide + ACF), ahora
+también tiene transiciones suaves, autoplay configurable, navegación
+por flechas y pagination bullets clickables.
+
+## Archivos modificados/creados
+
+| Archivo | Cambio |
+|---------|--------|
+| `functions.php` | Enqueue de Swiper 11 CSS + JS desde CDN (jsdelivr) |
+| `assets/js/hero-slider.js` | **Nuevo**: init Swiper con loop, autoplay 6000ms, pauseOnMouseEnter, grabCursor, pagination clickable, navigation arrows, visibilitychange handler |
+| `template-parts/home/hero.php` | Atributo `data-hero-slider`, clases `swiper-wrapper`/`swiper-slide`, elementos pagination + navigation |
+| `style.css` | Bloque `#SWIPER HERO OVERRIDES`: container overrides, fallback hidden, bullets, arrows, hide arrows <480px |
+
+## Detalles técnicos
+
+- **CDN**: `https://cdn.jsdelivr.net/npm/swiper@11` — sin build step
+- **Selectores scoped**: sufijo `-hero` en clases Swiper para evitar colisiones
+- **Fallback**: Si no hay slides (sin Swiper), elementos de navegación no se renderizan en PHP; CSS los oculta si Swiper no está inicializado
+- **Autoplay**: 6000ms, pausa en hover, pausa al cambiar de pestaña (visibilitychange)
+- **Responsive**: Flechas ocultas en <480px (pantallas angostas no tienen espacio)
+- **Sin cambios**: WooCommerce, ACF, CPT hero_slide, estructura del fallback, queries
+
+## Decisión
+
+Swiper 11 desde CDN sigue la filosofía "no build step" del proyecto. Es
+la librería de sliders más popular y madura para JS vanilla. Los selectores
+scoped con `-hero` permiten agregar otros sliders Swiper en el futuro sin
+conflictos.
 
 ---
 
