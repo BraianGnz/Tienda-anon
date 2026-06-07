@@ -679,6 +679,69 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
 .banner-btn:hover { background: var(--eerie-black); }
 
 /*-----------------------------------*\
+  #SWIPER HERO OVERRIDES
+\*-----------------------------------*/
+
+.slider-container.swiper {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  overscroll-behavior: none;
+  scroll-snap-type: none;
+}
+
+.slider-container:not(.swiper-initialized) .swiper-pagination,
+.slider-container:not(.swiper-initialized) .swiper-button-prev,
+.slider-container:not(.swiper-initialized) .swiper-button-next {
+  display: none;
+}
+
+.slider-container .swiper-pagination {
+  bottom: 12px;
+}
+
+.slider-container .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: var(--white);
+  opacity: 0.6;
+}
+
+.slider-container .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: var(--salmon-pink);
+  width: 12px;
+  height: 12px;
+}
+
+.slider-container .swiper-button-prev,
+.slider-container .swiper-button-next {
+  color: var(--white);
+  background: hsla(0, 0%, 0%, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: var(--transition-timing);
+}
+
+.slider-container .swiper-button-prev::after,
+.slider-container .swiper-button-next::after {
+  font-size: 18px;
+}
+
+.slider-container .swiper-button-prev:hover,
+.slider-container .swiper-button-next:hover {
+  background: hsla(0, 0%, 0%, 0.6);
+}
+
+@media (max-width: 479px) {
+  .slider-container .swiper-button-prev,
+  .slider-container .swiper-button-next {
+    display: none;
+  }
+}
+
+/*-----------------------------------*\
   #CATEGORY
 \*-----------------------------------*/
 

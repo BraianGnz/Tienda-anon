@@ -64,11 +64,13 @@ if (empty($slides)) {
 
   <div class="container">
 
-    <div class="slider-container has-scrollbar">
+    <div class="slider-container has-scrollbar" data-hero-slider>
+
+      <div class="swiper-wrapper">
 
       <?php foreach ($slides as $slide): ?>
 
-      <div class="slider-item">
+      <div class="slider-item swiper-slide">
 
         <img src="<?php echo esc_url($slide['image']); ?>" alt="<?php echo esc_attr($slide['title']); ?>" class="banner-img">
 
@@ -89,6 +91,13 @@ if (empty($slides)) {
       </div>
 
       <?php endforeach; ?>
+
+      </div>
+
+      <div class="swiper-pagination"></div>
+
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
 
     </div>
 
