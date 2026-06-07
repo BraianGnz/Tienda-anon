@@ -127,3 +127,4 @@ function anon_theme_wc_disable_styles($enqueue_styles) {
 add_filter('woocommerce_enqueue_styles', 'anon_theme_wc_disable_styles');
 
 require_once get_template_directory() . '/inc/hero-slider.php';
+require_once get_template_directory() . '/inc/blog-seeder.php';

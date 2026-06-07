@@ -32,7 +32,8 @@ anon-theme/
 │   ├── images/
 │
 ├── inc/
-│   └── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
+│   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
+│   └── blog-seeder.php     # Default blog posts + categories on theme activation
 │
 ├── ai-docs/
 │
@@ -73,6 +74,7 @@ anon-theme/
 │   ├── images/
 │
 ├── inc/
+│   ├── seeder/             # Hero slides + blog posts seeders
 │   ├── setup/
 │   ├── enqueue/
 │   ├── woocommerce/
@@ -211,6 +213,36 @@ No hay conflicto con ul.products/li.product porque no hay overrides.
 El shop usa templates default WC + CSS del theme.
 
 Ver: project-status.md → "Shop page estabilizada"
+
+---
+
+# Blog Dinámico (2026-06-07 — Fase 3E)
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/blog-seeder.php` | **Nuevo**: auto-crea 4 posts + 4 categorías en after_switch_theme + admin_init |
+| `template-parts/home/blog.php` | **Reescrito**: WP_Query dinámico con has_post_thumbnail + fallback a placeholder |
+| `functions.php` | `require_once` para `inc/blog-seeder.php` |
+
+## Seeder (`inc/blog-seeder.php`)
+
+- Crea categorías: Diseño, Corporativo, Parches, Merchandising
+- Crea 4 posts con slugs, excerpt, contenido, featured image importada desde assets del theme
+- Importa imágenes via `download_url()` + `media_handle_sideload()` — almacena en media library
+- Limpia posts previos (v1 seed + placeholders) antes de crear defaults
+- Usa flag `anon_blog_articles_created` en `wp_options` para ejecución única
+- Hooks: `after_switch_theme` + `admin_init` (no `init`, para evitar issues de disponibilidad de funciones admin en frontend)
+- NO establece `post_date` custom — usa defaults de `wp_insert_post` para evitar silent failures
+
+## Template part (`template-parts/home/blog.php`)
+
+- Query: `WP_Query(post_type=post, posts_per_page=4, orderby=date, order=DESC, no_found_rows=true)`
+- Categorías dinámicas con `get_the_category()`, link a `get_category_link()`
+- `has_post_thumbnail()` con fallback a placeholder images (blog-1.jpg a blog-4.jpg)
+- Author dinámico, fecha real con `get_the_date()`, permalink con `the_permalink()`
+- Sin inline seed logic
 
 ---
 

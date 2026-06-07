@@ -79,6 +79,8 @@ SÍ priorizar:
 * categories destacadas dinámicas con product_cat real (homepage)
 * sidebar best sellers dinámicos con WP_Query + total_sales
 * hero slider dinámico con CPT hero_slide + ACF + fallback hardcodeado + Swiper.js 11 (CDN)
+* blog homepage dinámico con WP_Query + fallback placeholders
+* blog seeder automático en activación de theme (inc/blog-seeder.php)
 
 ---
 
@@ -94,6 +96,7 @@ SÍ priorizar:
 * categories destacadas dinámicas con get_terms('product_cat')
 * sidebar best sellers dinámicos con WP_Query + total_sales + fallback recent products
 * hero slider: CSS scroll-snap → Swiper.js 11 con loop, autoplay, pagination, navigation
+* blog: HTML estático con datos fake → WP_Query dinámico + seeder automático con featured images reales
 
 ---
 
@@ -431,7 +434,7 @@ template-parts/home/
 ├── product-grid.php        # New Products grid (12 productos con badge logic)
 ├── banners.php             # CTA banner (25% Discount Summer Collection)
 ├── testimonials.php        # Testimonial + Service sections
-└── blog.php                # Blog cards (4 hardcoded)
+└── blog.php                # Blog cards (WP_Query dinámico + fallback placeholders)
 ```
 
 ### Reglas aplicadas
@@ -524,6 +527,59 @@ $product_cats = get_terms(array(
 * ✅ **Migrado product-minimal**: de carrusel horizontal (`overflow-x: auto`) a CSS Grid con `display: contents` en `.showcase-container` y cards verticales tipo shop
 * ✅ **Añadido**: `img { max-width: 100%; height: auto }` en reset CSS — previene overflow de imágenes sin width explícito
 * ✅ Sin cambios visuales respecto al template Anon original
+
+---
+
+# Blog Dynamic Posts — Phase 3E (2026-06-07)
+
+## Cambio aplicado
+
+La sección de blog en la homepage fue migrada de HTML estático (4 cards
+hardcodeadas con datos fake) a datos dinámicos con `WP_Query`. Además se
+creó un sistema de seeding automático que provee contenido inicial relevante
+al activar el theme.
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/blog-seeder.php` | **Nuevo**: seeder que crea 4 categorías + 4 posts con featured images |
+| `template-parts/home/blog.php` | **Reescrito**: WP_Query dinámico con fallback de placeholder images |
+| `functions.php` | `require_once` para `inc/blog-seeder.php` |
+
+## Seeder (`inc/blog-seeder.php`)
+
+- **Categorías creadas**: Diseño (diseno), Corporativo (corporativo), Parches (parches), Merchandising (merchandising)
+- **Posts creados**:
+  1. "Cómo diseñar medias personalizadas para empresas" — categoría Diseño, image blog-1.jpg
+  2. "Ventajas de los calcetines corporativos personalizados" — categoría Corporativo, image blog-2.jpg
+  3. "Guía de parches termoadhesivos para ropa" — categoría Parches, image blog-3.jpg
+  4. "Ideas de merchandising premium para marcas" — categoría Merchandising, image blog-4.jpg
+- **Importación de imágenes**: `download_url()` + `media_handle_sideload()` almacena las imágenes del theme en la media library de WordPress
+- **Limpieza**: Borra todos los posts existentes (v1 seed data, placeholders) antes de crear defaults
+- **Flag único**: `update_option('anon_blog_articles_created', true)` previene ejecución duplicada
+- **Hooks**: `after_switch_theme` + `admin_init` — asegura creación tanto al activar el theme como en el primer acceso al admin
+
+## Template part (`template-parts/home/blog.php`)
+
+- **Query**: `WP_Query(post_type => post, posts_per_page => 4, orderby => date, order => DESC, no_found_rows => true)`
+- **Categorías**: `get_the_category()` → `$categories[0]->name` + `get_category_link()`
+- **Thumbnails**: `has_post_thumbnail()` → `the_post_thumbnail('medium')` con fallback a placeholder (blog-1.jpg a blog-4.jpg)
+- **Metadatos**: author con `the_author()`, fecha con `get_the_date()` + `<time datetime>`, permalink con `the_permalink()`
+- **Sin inline seed**: no hay lógica de creación de posts en el template
+
+## Decisión técnica
+
+- `post_date` no se establece manualmente — se usa el default de `wp_insert_post` para evitar silent failures
+- Las imágenes de los posts se importan a la media library, rompiendo la dependencia de URLs del theme
+- El flag en `wp_options` previene recreación incluso si el theme se desactiva y reactiva
+- `admin_init` en lugar de `init` asegura que las funciones de admin (`media_handle_sideload`, `wp_insert_post`) estén disponibles
+
+## Riesgos
+
+- `media_handle_sideload()` puede fallar por firewall, permisos de escritura en uploads, o `download_url()` timeouts
+- Si se borran manualmente los posts seed, el flag persistente impide la recreación automática (hay que eliminar manualmente `anon_blog_articles_created` de `wp_options`)
+- Los placeholders (blog-1.jpg a blog-4.jpg) siguen siendo archivos del theme — si el theme se renombra, el fallback de imágenes se rompe
 
 ---
 

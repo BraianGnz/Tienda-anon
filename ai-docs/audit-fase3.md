@@ -214,24 +214,22 @@
 
 ---
 
-## 10. BLOG
+## 10. BLOG ✅ RESUELTO (2026-06-07) — Phase 3E
 
-**Archivo**: `template-parts/home/blog.php`
-**Estado actual**: 100% ESTÁTICO
-**Fuente de datos**: HTML plano
-**Usa**: `get_template_directory_uri()`, HTML, CSS
-**Nivel integración WP**: **0%**
-**Prioridad**: ALTA
+**Archivo**: `template-parts/home/blog.php` + `inc/blog-seeder.php`
+**Estado actual**: 100% DINÁMICO
+**Fuente de datos**: `WP_Query(post_type => 'post', posts_per_page => 4)`
+**Usa**: `WP_Query`, `get_the_category()`, `has_post_thumbnail()`, `get_the_author()`, `get_the_date()`
+**Nivel integración WP**: **95%**
+**Prioridad**: RESUELTA
 
-**Hardcodeado**:
-- 4 blog cards: blog-1.jpg a blog-4.jpg
-- Categorías: "Fashion", "Clothes", "Shoes", "Electronics"
-- Títulos hardcodeados (2 repetidos: "Curbside fashion Trends...")
-- Autores: "Mr Admin", "Mr Robin", "Mr Selsa", "Mr Pawar"
-- Fechas: Apr 06, 2022 / Jan 18, 2022 / Feb 10, 2022 / Mar 15, 2022
-- Todos los links "#"
+**Cambios aplicados**:
+- ✅ Creado `inc/blog-seeder.php`: auto-crea 4 posts reales con contenido sobre medias personalizadas, calcetines corporativos, parches termoadhesivos y merchandising premium. Crea categorías (Diseño, Corporativo, Parches, Merchandising). Importa featured images desde assets del theme via `download_url()` + `media_handle_sideload()`. Limpia posts previos. Flag único en `wp_options`.
+- ✅ `blog.php` reescrito con `WP_Query` dinámico: 4 posts más recientes, categorías reales, author real, fecha real, permalink real, thumbnail dinámico con fallback a placeholder images
+- ✅ Hook: `after_switch_theme` + `admin_init` (no `init` para evitar disponibilidad de funciones admin en frontend)
+- ✅ `require_once` agregado en `functions.php`
 
-**Para administrar**: Reemplazar con `WP_Query('post_type' => 'post', 'posts_per_page' => 4)`.
+**Decisión técnica**: No se establece `post_date` custom para evitar `wp_insert_post` silent failures. Las imágenes se importan a la media library para independencia del theme. El flag previene ejecución duplicada.
 
 ---
 
@@ -343,7 +341,7 @@
 | `sidebar.php` | 1.jpg, 2.jpg, 3.jpg, 4.jpg | `html-template/assets/images/products/*.jpg` |
 | `testimonials.php` | testimonial-1.jpg, quotes.svg | `html-template/assets/images/` |
 | `banners.php` | cta-banner.jpg | `html-template/assets/images/cta-banner.jpg` |
-| `blog.php` | blog-1.jpg, blog-2.jpg, blog-3.jpg, blog-4.jpg | `html-template/assets/images/blog-*.jpg` |
+| `blog.php` | blog-1.jpg a blog-4.jpg (fallback placeholders, ya no son datos principales) | `html-template/assets/images/blog-*.jpg` |
 | `footer.php` | payment.png | `html-template/assets/images/payment.png` |
 
 ---
@@ -407,6 +405,8 @@
 18. **Ionicons**: CDN enqueue correcto
 19. **Script.js**: Enqueue correcto
 20. **HTML5 support**: search-form, comment-form, etc.
+21. **Blog homepage**: WP_Query dinámico con 4 posts reales, categorías reales, autores, fechas, thumbnails con fallback
+22. **Blog seeder**: `inc/blog-seeder.php` crea posts + categorías + featured images automáticamente al activar el theme
 
 ---
 
@@ -418,7 +418,7 @@
 2. ~~**Categories destacadas** (`categories.php`)~~ ✅ RESUELTO (2026-06-03)
 3. ~~**Sidebar best sellers** (`sidebar.php`)~~ ✅ RESUELTO (2026-06-03)
 4. **Banner CTA** (`banners.php`): imagen, descuento, título, precio, link
-5. **Blog** (`blog.php`): 4 posts completos (imágenes, títulos, categorías, autores, fechas)
+5. ~~**Blog** (`blog.php`)~~ ✅ RESUELTO (2026-06-07)
 6. **Testimonials** (`testimonials.php`): 1 testimonial completo
 7. **All `href="#"` links** (~100+ en todo el theme)
 
@@ -456,7 +456,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 | # | Sección | Cambio necesario | Archivo | Prioridad |
 |---|---------|-----------------|---------|-----------|
 | 1 | ~~**Hero slider**~~ | ✅ Convertido a CPT hero_slide + ACF + WP_Query. Fallback hardcodeado preservado. | `hero.php` + `inc/hero-slider.php` | RESUELTA |
-| 2 | **Blog section** | Reemplazar HTML estático con `WP_Query('post_type' => 'post', 'posts_per_page' => 4)`. | `blog.php` | ALTA |
+| 2 | **Blog section** | ✅ RESUELTO (2026-06-07). Creado `inc/blog-seeder.php` + WP_Query dinámico. | `blog.php` + `inc/blog-seeder.php` | RESUELTA |
 | 3 | **Categories destacadas** | ✅ RESUELTO (2026-06-03). Pendiente: campo ACF image SVG en taxonomy. | `categories.php` | RESUELTA |
 | 4 | **Sidebar best sellers** | ✅ RESUELTO (2026-06-03). Pendiente: extraer HTML de producto a template-part reutilizable. | `sidebar.php` | RESUELTA |
 | 5 | **Banner CTA** | Customizer o ACF para imagen, texto, link. | `banners.php` | ALTA |

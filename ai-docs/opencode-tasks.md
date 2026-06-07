@@ -306,6 +306,33 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-07)
+
+### Phase 3E: Blog Dynamic Posts
+
+1. ✅ Creado `inc/blog-seeder.php`:
+   - 4 categorías auto-creadas: Diseño, Corporativo, Parches, Merchandising
+   - 4 posts con contenido relevante al negocio (medias, calcetines, parches, merchandising)
+   - Featured images importadas a media library via `download_url()` + `media_handle_sideload()`
+   - Limpieza de posts previos (v1 seed + placeholders) antes de crear defaults
+   - Flag `anon_blog_articles_created` en `wp_options` para ejecución única
+   - Hook: `after_switch_theme` + `admin_init` (no `init`)
+2. ✅ Reescrito `template-parts/home/blog.php`:
+   - `WP_Query(post_type => post, posts_per_page => 4, orderby => date, order => DESC, no_found_rows => true)`
+   - Categorías dinámicas con `get_the_category()` + `get_category_link()`
+   - `has_post_thumbnail()` con fallback a placeholder images (blog-1.jpg a blog-4.jpg)
+   - Author dinámico con `the_author()`, fecha real con `get_the_date()`, permalink con `the_permalink()`
+   - Sin inline seed logic, sin HTML hardcodeado
+3. ✅ `require_once` en `functions.php` para `inc/blog-seeder.php`
+
+**Decisión**: No se establece `post_date` custom para evitar `wp_insert_post` silent failures. Las imágenes se importan a la media library para independencia del theme. El flag previene ejecución duplicada incluso si se desactiva/reactiva el theme. `admin_init` asegura disponibilidad de funciones admin en el momento de creación de los posts.
+
+**Riesgos**:
+- `media_handle_sideload()` puede fallar si el servidor no puede descargar la URL del theme (firewall, permisos de escritura en uploads)
+- Si se borran manualmente los posts seed, se recrearán si el flag persiste — es necesario eliminar el flag de `wp_options` para reseeding
+
+---
+
 # Baja prioridad
 
 * wishlist real

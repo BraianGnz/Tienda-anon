@@ -5,6 +5,9 @@
 Revisar manualmente después de cada cambio:
 
 * homepage
+* blog section (verificar 4 posts, categorías reales, autores, fechas, imágenes)
+* blog fallback (desactivar los posts seed y confirmar que se ven placeholders)
+* blog seeder (reactivar theme y verificar que se crean 4 posts + 4 categorías)
 * shop page
 * categorías
 * mobile
