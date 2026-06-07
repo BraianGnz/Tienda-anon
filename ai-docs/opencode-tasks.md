@@ -245,6 +245,28 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-07)
+
+### Hero Slider dinámico con ACF
+
+1. ✅ Creado Custom Post Type `hero_slide` con soporte `page-attributes` (menu_order para orden manual)
+2. ✅ Registrados campos ACF vía `acf_add_local_field_group()`: imagen desktop, título pequeño, título principal, texto precio/oferta, texto botón, URL botón
+3. ✅ `inc/hero-slider.php` agrupa toda la lógica: CPT registration, ACF fields, creación de slides por defecto
+4. ✅ 3 slides iniciales creados automáticamente via `after_switch_theme` con contenido adaptado al negocio (medias, calcetines, parches)
+5. ✅ `hero.php` reescrito: primero intenta query dinámica con WP_Query → hero_slide; si no hay slides con imagen o ACF no está activo, muestra fallback hardcodeado original
+6. ✅ Fallback preserva exactamente el HTML, clases y contenido original del template Anon
+7. ✅ Sin cambios en CSS, JS ni estructura del frontend
+8. ✅ Sin funciones de WooCommerce modificadas
+
+**Decisión**: CPT + ACF fields evita depender del Repeater field (PRO). El orden de slides se maneja con `menu_order` (drag & drop nativo de WordPress). La imagen usa `return_format => 'url'` para compatibilidad con URLs del theme en los slides por defecto.
+
+**Riesgos**:
+- `after_switch_theme` solo se ejecuta al activar el theme — si se desactiva/reactiva, no duplica slides (checked: `get_posts` existentes)
+- Las imágenes por defecto apuntan a archivos del theme (banner-1.jpg etc.) — si se renombra el theme, se rompen; el admin debe re-uploadear desde ACF
+- `acf_add_local_field_group()` en `acf/init` requiere ACF activo — si ACF se desactiva, los field groups no se registran (fallback funciona)
+
+---
+
 # Baja prioridad
 
 * wishlist real

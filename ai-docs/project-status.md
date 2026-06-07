@@ -78,6 +78,7 @@ SÍ priorizar:
 * sidebar categories dinámicas con product_cat real
 * categories destacadas dinámicas con product_cat real (homepage)
 * sidebar best sellers dinámicos con WP_Query + total_sales
+* hero slider dinámico con CPT hero_slide + ACF + fallback hardcodeado
 
 ---
 

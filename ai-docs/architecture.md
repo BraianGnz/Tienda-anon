@@ -30,6 +30,9 @@ anon-theme/
 │   ├── js/
 │   ├── images/
 │
+├── inc/
+│   └── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
+│
 ├── ai-docs/
 │
 ├── template-parts/

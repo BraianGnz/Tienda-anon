@@ -5,23 +5,26 @@
 
 ---
 
-## 1. HERO (Banner principal)
+## 1. HERO (Banner principal) ✅ RESUELTO (2026-06-07)
 
-**Archivo**: `template-parts/home/hero.php`
-**Estado actual**: 100% ESTÁTICO
-**Fuente de datos**: HTML plano + imágenes desde `/html-template/assets/images/banner-*.jpg`
-**Usa**: `get_template_directory_uri()`, HTML, CSS
-**Nivel integración WP**: **0%**
-**Prioridad**: ALTA
+**Archivo**: `template-parts/home/hero.php` + `inc/hero-slider.php`
+**Estado actual**: 100% DINÁMICO (con fallback hardcodeado)
+**Fuente de datos**: `WP_Query('post_type' => 'hero_slide')` + ACF fields
+**Usa**: CPT hero_slide, ACF, `get_field()`, `update_field()`
+**Nivel integración WP**: **90%** (imágenes por defecto apuntan a archivos del theme)
+**Prioridad**: RESUELTA
 
-**Hardcodeado**:
-- 3 slides completos: imágenes (banner-1.jpg, banner-2.jpg, banner-3.jpg)
-- Textos: "Trending item", "Women's latest fashion sale", "starting at $20.00"
-- "Trending accessories", "Modern sunglasses", "starting at $15.00"
-- "Sale Offer", "New fashion summer sale", "starting at $29.99"
-- 3 botones "Shop now" con `href="#"`
+**Cambios aplicados**:
+- ✅ Creado Custom Post Type `hero_slide` con soporte `page-attributes` (menu_order)
+- ✅ Registrados 6 campos ACF vía `acf_add_local_field_group()`: imagen desktop, subtítulo, título, precio/oferta, texto botón, URL botón
+- ✅ `inc/hero-slider.php` agrupa toda la lógica: CPT + ACF + default slides
+- ✅ 3 slides iniciales auto-creados via `after_switch_theme`: "Medias Personalizadas Premium", "Calcetines Corporativos", "Parches Planchados"
+- ✅ `hero.php` reescrito con query dinámica + fallback exacto al HTML original
+- ✅ Fallback preserva imágenes banner-1.jpg, banner-2.jpg, banner-3.jpg y textos originales
 
-**Para administrar**: Usar Customizer con repeatable banner sections, o ACF Flexible Content, o WP Query con un CPT "Banners".
+**Decisión técnica**: CPT + ACF fields evita depender del Repeater field (PRO). Orden por `menu_order` (drag & drop nativo). `return_format => 'url'` para compatibilidad con imágenes del theme en defaults.
+
+**Riesgo**: Imágenes por defecto usan URLs del theme (banner-*.jpg). Si el theme se renombra, se rompen. El admin debe re-uploadear desde ACF.
 
 ---
 
@@ -381,7 +384,8 @@
 8. **New Arrivals**: `WP_Query` con productos reales (título hardcodeado)
 9. **Deal of the Day**: `WP_Query` con productos featured + fallback (título hardcodeado)
 10. **New Products grid**: `WP_Query` con productos reales + badge system (título hardcodeado)
-11. **Shop page**: `woocommerce_content()` con templates default WC
+11. **Hero slider**: CPT hero_slide + ACF fields + WP_Query con fallback hardcodeado
+12. **Shop page**: `woocommerce_content()` con templates default WC
 12. **Single product**: Templates default WC
 13. **WooCommerce**: Soporte completo (zoom, lightbox, gallery, slider)
 14. **CSS**: WooCommerce styles desactivados, todo via style.css
@@ -398,7 +402,7 @@
 
 ### ALTA PRIORIDAD
 
-1. **Hero slider** (`hero.php`): 3 slides completos (imágenes, textos, precios, links)
+1. ~~**Hero slider** (`hero.php`)~~ ✅ RESUELTO (2026-06-07)
 2. ~~**Categories destacadas** (`categories.php`)~~ ✅ RESUELTO (2026-06-03)
 3. ~~**Sidebar best sellers** (`sidebar.php`)~~ ✅ RESUELTO (2026-06-03)
 4. **Banner CTA** (`banners.php`): imagen, descuento, título, precio, link
@@ -439,7 +443,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 
 | # | Sección | Cambio necesario | Archivo | Prioridad |
 |---|---------|-----------------|---------|-----------|
-| 1 | **Hero slider** | Convertir a WP_Query con CPT "Banner" o ACF Flexible Content. Mantener HTML exacto. | `hero.php` | ALTA |
+| 1 | ~~**Hero slider**~~ | ✅ Convertido a CPT hero_slide + ACF + WP_Query. Fallback hardcodeado preservado. | `hero.php` + `inc/hero-slider.php` | RESUELTA |
 | 2 | **Blog section** | Reemplazar HTML estático con `WP_Query('post_type' => 'post', 'posts_per_page' => 4)`. | `blog.php` | ALTA |
 | 3 | **Categories destacadas** | ✅ RESUELTO (2026-06-03). Pendiente: campo ACF image SVG en taxonomy. | `categories.php` | RESUELTA |
 | 4 | **Sidebar best sellers** | ✅ RESUELTO (2026-06-03). Pendiente: extraer HTML de producto a template-part reutilizable. | `sidebar.php` | RESUELTA |
