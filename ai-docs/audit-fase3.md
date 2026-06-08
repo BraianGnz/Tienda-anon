@@ -109,31 +109,27 @@
 
 ---
 
-## 5. DEAL OF THE DAY
+## 5. DEAL OF THE DAY ✅ RESUELTO (2026-06-08) — Phase 3G
 
-**Archivo**: `template-parts/home/product-featured.php`
-**Estado actual**: 70% DINÁMICO
-**Fuente de datos**: `WP_Query(post_type => 'product', meta_query => _featured => yes)`
-**Usa**: `WP_Query`, WooCommerce functions
-**Nivel integración WP**: **70%**
-**Prioridad**: ALTA
+**Archivo**: `template-parts/home/product-featured.php` + `inc/product-deal.php` + `template-parts/woocommerce/deal-product-card.php`
+**Estado actual**: 100% DINÁMICO (con fallback a último producto)
+**Fuente de datos**: `WP_Query` con `meta_key=deal_of_the_day` (ACF true/field) + fallback latest product
+**Usa**: ACF true/false, `WP_Query`, `get_template_part()`, WooCommerce functions
+**Nivel integración WP**: **90%** (título "Deal of the day" hardcodeado)
+**Prioridad**: RESUELTA
 
-**Ya es dinámico**:
-- Query de productos destacados (WooCommerce _featured) ✅
-- Precios, thumbnails, ratings, descripciones reales ✅
-- Add-to-cart form funcional ✅
-- Fallback query (random si no hay destacados)
+**Cambios aplicados**:
+- ✅ Creado `inc/product-deal.php`: ACF true/false field `deal_of_the_day` en post_type=product (position: side, switch UI) + función `get_deal_of_the_day_query()`
+- ✅ Query: primero busca producto con `deal_of_the_day=true`, fallback al último producto publicado si no hay ninguno marcado
+- ✅ Creado `template-parts/woocommerce/deal-product-card.php`: HTML de producto extraído a template-part reutilizable (acepta global $product)
+- ✅ `product-featured.php` reescrito: usa `get_deal_of_the_day_query()`, loop de 1 post, llama `get_template_part('template-parts/woocommerce/deal-product-card')`
+- ✅ Eliminado: old _featured meta_query, fallback duplicado con ~30 líneas de HTML, límite de 4 productos
+- ✅ `require_once` en `functions.php`
 
-**Hardcodeado**:
-- Título "Deal of the day"
-- Usa _featured como proxy (no es un "deal" real)
-- Límite fijo: 4 productos
+**Hardcodeado (residual)**:
+- Título "Deal of the day" — texto plano sin administrar desde WP
 
-**Problemas**:
-- Fallback query duplica ~30 líneas de HTML del loop principal
-- El concepto "Deal of the Day" debería ser 1 producto seleccionable, no 4 featured
-
-**Para administrar**: Crear meta box para marcar un producto como "Deal of the Day", o usar un ACF para seleccionar producto específico.
+**Decisión técnica**: ACF true/false con switch UI permite marcar/desmarcar en 1 click desde el sidebar del producto editado. Single product cumple "solamente 1 producto marcado". Fallback a latest (no random) es predecible.
 
 ---
 
@@ -323,7 +319,7 @@
 
 1. **`product-minimal.php`** y **`product-grid.php`**: Ambas usan `WP_Query(post_type => 'product', orderby => 'date', order => 'DESC')` con solo diferencia en `posts_per_page` (8 vs 12). Son consultas casi idénticas.
 
-2. **`product-featured.php`**: El main query (featured) y el fallback (random) duplican ~30 líneas de HTML de loop cada uno.
+2. **`product-featured.php`**: ✅ RESUELTO (2026-06-08) — El main query y fallback duplicaban ~30 líneas de HTML de loop cada uno. Ahora `product-featured.php` usa `get_deal_of_the_day_query()` + `get_template_part('template-parts/woocommerce/deal-product-card')`, eliminando toda duplicación.
 
 ---
 
@@ -335,6 +331,7 @@
 | Social icons (repetido en header + footer) | `template-parts/global/social-icons.php` |
 | Category grid item (repetido en categories.php) | `template-parts/woocommerce/category-item.php` |
 | Blog card (repetido 4 veces en blog.php) | `template-parts/home/blog-card.php` |
+| Deal product card (extraído de product-featured.php) | ✅ `template-parts/woocommerce/deal-product-card.php` (2026-06-08) |
 
 ---
 
@@ -416,6 +413,7 @@
 21. **Blog homepage**: WP_Query dinámico con 4 posts reales, categorías reales, autores, fechas, thumbnails con fallback
 22. **Blog seeder**: `inc/blog-seeder.php` crea posts + categorías + featured images automáticamente al activar el theme
 23. **CTA Banner**: ACF fields desde front page meta con 6 campos administrables + fallback a valores originales
+24. **Deal of the Day**: ACF true/field `deal_of_the_day` en producto (sidebar, switch UI) + query con fallback al último producto + template-part reutilizable `deal-product-card.php`
 
 ---
 
@@ -443,8 +441,6 @@
 15. **Header notification toast** (`header.php`): imagen, producto, mensaje
 16. **Header currency/language selectors** (`header.php`): HTML estático
 17. **Títulos de sección**: "New Arrivals", "Deal of the day", "New Products", "best sellers", "testimonial", "Our Services"
-18. **Deal of the Day limit**: 4 productos fijo (debería ser 1 seleccionable)
-19. **Fallback query duplicada** en `product-featured.php`
 
 ### BAJA PRIORIDAD
 
@@ -471,7 +467,7 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 | 5 | ~~**Banner CTA**~~ | ✅ RESUELTO (2026-06-07). ACF field group con 6 campos + seeder vía front page meta. Fallback preservado. | `banners.php` + `inc/cta-banner.php` | RESUELTA |
 | 6 | **Testimonials** | ACF repeatable group o CPT Testimonial. | `testimonials.php` | MEDIA |
 | 7 | **Services** | ACF repeatable group o Widget area. | `testimonials.php` | BAJA |
-| 8 | **Deal of the Day** | Crear meta box en producto para marcar "Deal of the Day". Query single product. Eliminar fallback duplicado. | `product-featured.php` | ALTA |
+| 8 | **Deal of the Day** | ✅ RESUELTO (2026-06-08). Creado `inc/product-deal.php` con ACF true/field + `get_deal_of_the_day_query()`. Creado `template-parts/woocommerce/deal-product-card.php`. `product-featured.php` reescrito sin fallback duplicado. | `product-featured.php` | RESUELTA |
 | 9 | **Títulos de sección** | Customizer settings para títulos: "New Arrivals", "Deal of the day", "New Products", etc. | Varios | MEDIA |
 | 10 | **Footer brand directory** | Reemplazar con menú WordPress o taxonomy links. | `footer.php` | MEDIA |
 | 11 | **Footer contacto** | Customizer para dirección, teléfono, email. | `footer.php` | MEDIA |

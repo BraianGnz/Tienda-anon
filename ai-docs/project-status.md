@@ -82,6 +82,7 @@ SÍ priorizar:
 * blog homepage dinámico con WP_Query + fallback placeholders
 * blog seeder automático en activación de theme (inc/blog-seeder.php)
 * CTA banner dinámico con ACF fields desde front page meta + fallback hardcodeado
+* Deal of the Day dinámico con ACF true/field en producto + fallback al último producto
 
 ---
 
@@ -99,6 +100,7 @@ SÍ priorizar:
 * hero slider: CSS scroll-snap → Swiper.js 11 con loop, autoplay, pagination, navigation
 * blog: HTML estático con datos fake → WP_Query dinámico + seeder automático con featured images reales
 * cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
+* deal of the day: WP_Query _featured + random fallback duplicado → ACF true/field seleccionable + single product + template-part reutilizable
 
 ---
 
@@ -205,6 +207,75 @@ el admin de WordPress, con fallback completo al contenido original.
   desde el meta box de ACF.
 - `acf_add_local_field_group()` requiere ACF activo. Si ACF se desactiva,
   el field group no aparece y se usa el fallback (comportamiento seguro).
+
+---
+
+---
+
+# Deal of the Day ACF Conversion — Phase 3G (2026-06-08)
+
+## Cambio aplicado
+
+La sección "Deal of the Day" de la homepage fue migrada de un query con
+`meta_key=_featured` (productos destacados de WooCommerce, que no representa
+un "deal" real) y un fallback random con HTML duplicado, a un sistema basado en
+ACF true/field donde el admin puede marcar exactamente 1 producto desde el
+sidebar del editor de producto.
+
+El HTML del producto fue extraído a un template-part reutilizable, eliminando
+la duplicación de ~30 líneas entre el main query y el fallback.
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/product-deal.php` | **Nuevo**: ACF field group + query function |
+| `template-parts/woocommerce/deal-product-card.php` | **Nuevo**: single product card reusable |
+| `template-parts/home/product-featured.php` | **Reescrito**: usa `get_deal_of_the_day_query()` + template-part |
+| `functions.php` | `require_once` para `inc/product-deal.php` |
+
+## ACF field (`inc/product-deal.php`)
+
+- **Field**: `deal_of_the_day` (true/false) con switch UI activado
+- **Location**: `post_type=product`, position `side` — aparece como toggle en el sidebar del editor de producto
+- **Label**: "Producto Destacado — Deal of the Day"
+- **Instructions**: "Marcar este producto como el Deal of the Day (solamente 1 producto)"
+
+## Query function
+
+`get_deal_of_the_day_query()` (en `inc/product-deal.php`):
+
+1. Query principal: `meta_key=deal_of_the_day`, `meta_value=1`, `posts_per_page=1`, `orderby=date`, `order=DESC`
+2. Fallback: si no hay productos marcados, último producto publicado (`posts_per_page=1`, `orderby=date`, `order=DESC`)
+3. Retorna siempre `WP_Query` con 1 post (o 0 si no hay productos en la tienda)
+
+## Template part (`template-parts/woocommerce/deal-product-card.php`)
+
+- HTML extraído exactamente del loop original de `product-featured.php`
+- Misma estructura visual: `.showcase-container` > `.showcase` > `.showcase-banner` (imagen + badge descuento) + `.showcase-content` (rating, título, descripción corta, precio, add-to-cart form)
+- Acepta `global $product` — no ejecuta query propia
+- Reutilizable desde cualquier template part
+
+## Template part (`template-parts/home/product-featured.php`)
+
+- **Antes**: `WP_Query` con `meta_query(_featured => yes)`, 4 productos, fallback random que duplicaba ~30 líneas de HTML
+- **Después**: llama `get_deal_of_the_day_query()`, loop single post, llama `get_template_part('template-parts/woocommerce/deal-product-card')`
+- Título "Deal of the day" se mantiene hardcodeado
+
+## Decisión técnica
+
+- **ACF true/false con switch UI**: más simple que un meta box custom — el admin solo activa/desactiva en 1 click
+- **Sidebar position**: el toggle está en el sidebar del editor de producto, siempre visible sin scroll
+- **Single product**: cumple el requerimiento "solamente 1 producto marcado"
+- **Fallback a latest product**: predecible, no random — siempre muestra el producto más reciente
+- **Template-part reutilizable**: elimina la duplicación de HTML entre main query y fallback
+- **Sin cambios en CSS, JS ni WooCommerce hooks**
+
+## Riesgos
+
+- `acf_add_local_field_group()` requiere ACF activo. Si ACF se desactiva, el field group desaparece y `get_field('deal_of_the_day')` retorna false/null, activando el fallback (comportamiento seguro)
+- Si no hay productos en la tienda, `get_deal_of_the_day_query()` retorna 0 posts y la sección no se renderiza (edge case aceptable para un sitio vacío)
+- El título "Deal of the day" sigue hardcodeado — pendiente de dinamizar via Customizer o ACF
 
 ---
 

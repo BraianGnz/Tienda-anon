@@ -22,6 +22,9 @@ Revisar manualmente después de cada cambio:
 * badges
 * spacing
 * botones
+* **Deal of the Day**: marcar un producto como "Deal of the Day" en el editor de producto (sidebar, switch) y verificar que aparece en homepage
+* **Deal of the Day fallback**: desmarcar todos los productos y verificar que se muestra el último producto publicado
+* **Deal of the Day sin ACF**: desactivar ACF y verificar que el fallback (último producto) funciona
 
 ---
 

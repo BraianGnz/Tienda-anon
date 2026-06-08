@@ -34,11 +34,14 @@ anon-theme/
 ├── inc/
 │   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
 │   ├── cta-banner.php      # CTA Banner ACF fields + seeder (front page meta)
-│   └── blog-seeder.php     # Default blog posts + categories on theme activation
+│   ├── blog-seeder.php     # Default blog posts + categories on theme activation
+│   └── product-deal.php    # Deal of the Day ACF true/false field + query function
 │
 ├── ai-docs/
 │
 ├── template-parts/
+│   ├── woocommerce/
+│   │   └── deal-product-card.php  # Single product card HTML (reusable, accepts global $product)
 │   └── home/
 │       ├── hero.php
 │       ├── categories.php
@@ -255,6 +258,59 @@ Ver: project-status.md → "Shop page estabilizada"
 - Campos editables en admin: Pages > Home > CTA Banner meta box
 - `update_field()` con front page ID para seeding de defaults
 - Fallback completo a HTML original si ACF no está disponible
+
+---
+
+# Deal of the Day ACF (2026-06-08 — Fase 3G)
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/product-deal.php` | **Nuevo**: ACF true/false field `deal_of_the_day` on product post type (position: side, switch UI) + `get_deal_of_the_day_query()` function |
+| `template-parts/woocommerce/deal-product-card.php` | **Nuevo**: extracted single product card HTML (showcase-container > showcase > showcase-banner + showcase-content with rating, title, description, price, add-to-cart form). Accepts global $product. |
+| `template-parts/home/product-featured.php` | **Reescrito**: removed old _featured meta_query + random fallback. Uses `get_deal_of_the_day_query()`, loops once, calls `get_template_part('template-parts/woocommerce/deal-product-card')`. |
+| `functions.php` | `require_once` para `inc/product-deal.php` |
+
+## ACF field (`inc/product-deal.php`)
+
+- **Field name**: `deal_of_the_day` (true/false)
+- **Field type**: true/false con UI toggle (switch UI)
+- **Location**: `post_type=product` — aparece en el sidebar de cada producto WooCommerce
+- **Position**: `side` — meta box en el sidebar del editor de producto
+- **Label**: "Producto Destacado — Deal of the Day"
+- **Instructions**: "Marcar este producto como el Deal of the Day (solamente 1 producto)"
+
+## Query function (`inc/product-deal.php`)
+
+- `get_deal_of_the_day_query()`: WP_Query que:
+  1. Primero busca productos con `meta_key=deal_of_the_day` y `meta_value=1`, `posts_per_page=1`, `orderby=date`, `order=DESC`
+  2. Si no encuentra ningún producto marcado, **fallback** al último producto publicado (`posts_per_page=1`, `orderby=date`, `order=DESC`)
+- Retorna `WP_Query` object — siempre tiene 1 post (o 0 si no hay productos en la tienda)
+
+## Template part (`template-parts/woocommerce/deal-product-card.php`)
+
+- HTML extraído exactamente del loop original de `product-featured.php`
+- Misma estructura: `.showcase-container` > `.showcase` > `.showcase-banner` (imagen + badge descuento) + `.showcase-content` (rating, título, descripción corta, precio, add-to-cart form)
+- No tiene query propia — espera `global $product` ya seteado
+- Reutilizable desde cualquier template part que tenga `global $product` disponible
+
+## Template part (`template-parts/home/product-featured.php`)
+
+- Ya no usa `meta_query(_featured => yes)` — el old "featured" logic fue removida
+- Ya no tiene fallback query duplicado con ~30 líneas de HTML repetido
+- Ahora: llama `get_deal_of_the_day_query()`, entra al loop con `while(have_posts())`, y llama `get_template_part('template-parts/woocommerce/deal-product-card')`
+- Título "Deal of the day" se mantiene hardcodeado (pendiente de dinamizar)
+- Sin cambios en CSS, sin cambios visuales
+
+## Decisión técnica
+
+- ACF true/false con switch UI es más simple que un meta box custom — el admin solo activa/desactiva
+- Ubicación en sidebar del producto: rápida de encontrar sin scroll
+- Single product (no 4): cumple el requerimiento "solamente 1 producto marcado"
+- Fallback a latest product (no random): predecible, siempre muestra el producto más reciente si no hay ninguno marcado
+- Card HTML extraído a template-part reutilizable: elimina la duplicación de ~30 líneas que existía entre el main query y el fallback antiguo
+- Sin cambios en CSS, JS ni WooCommerce hooks
 
 ---
 

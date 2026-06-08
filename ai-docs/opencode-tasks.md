@@ -357,6 +357,36 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+---
+
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-08)
+
+### Phase 3G: Deal of the Day ACF Conversion
+
+1. ✅ Creado `inc/product-deal.php`:
+   - ACF true/false field `deal_of_the_day` registrado via `acf_add_local_field_group()`
+   - Location: `post_type=product`, position: `side` (sidebar del editor de producto)
+   - UI: switch toggle (true/false)
+   - Función `get_deal_of_the_day_query()`: primero busca producto con `deal_of_the_day=1` (posts_per_page=1, orderby=date DESC), fallback al último producto publicado
+   - Retorna `WP_Query` object con 1 post
+2. ✅ Creado `template-parts/woocommerce/deal-product-card.php`:
+   - HTML extraído exactamente del loop original de `product-featured.php`
+   - Acepta `global $product` — no tiene query propia
+   - Misma estructura: showcase-container > showcase > showcase-banner (imagen + badge) + showcase-content (rating, título, descripción, precio, add-to-cart form)
+3. ✅ Reescrito `template-parts/home/product-featured.php`:
+   - Eliminado: old `meta_query(_featured => yes)` y random fallback
+   - Ahora: llama `get_deal_of_the_day_query()`, loop single post, `get_template_part('template-parts/woocommerce/deal-product-card')`
+   - Título "Deal of the day" se mantiene hardcodeado
+4. ✅ Agregado `require_once get_template_directory() . '/inc/product-deal.php'` en `functions.php`
+
+**Decisión**: ACF true/false con switch UI es más simple que un meta box custom. Single product cumple "solamente 1 producto marcado". Fallback a latest product (no random) es predecible. Card HTML extraído a template-part reutilizable elimina la duplicación de ~30 líneas.
+
+**Riesgos**:
+- `acf_add_local_field_group()` requiere ACF activo — si ACF se desactiva, el field group desaparece y `get_field('deal_of_the_day')` retorna false/null, activando el fallback (comportamiento seguro)
+- Si no hay productos en la tienda, `get_deal_of_the_day_query()` retorna 0 posts → la sección Deal of the Day no se renderiza
+
+---
+
 # Baja prioridad
 
 * wishlist real
