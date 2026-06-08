@@ -1,26 +1,58 @@
-<?php $img = get_template_directory_uri() . '/html-template/assets/images'; ?>
+<?php
+$img = get_template_directory_uri() . '/html-template/assets/images';
+
+$testimonials_query = new WP_Query(array(
+    'post_type'      => 'testimonial',
+    'posts_per_page' => 4,
+    'post_status'    => 'publish',
+    'orderby'        => 'menu_order',
+    'order'          => 'ASC',
+    'meta_query'     => array(
+        array(
+            'key'   => 'show_on_home',
+            'value' => '1',
+        ),
+    ),
+));
+
+if ($testimonials_query->have_posts()) :
+?>
 <div class="testimonial">
 
   <h2 class="title">testimonial</h2>
 
+  <?php while ($testimonials_query->have_posts()) : $testimonials_query->the_post(); ?>
+
   <div class="testimonial-card">
 
-    <img src="<?php echo $img; ?>/testimonial-1.jpg" alt="alan doe" class="testimonial-banner" width="80" height="80">
+    <?php if (has_post_thumbnail()) : ?>
+      <?php the_post_thumbnail('thumbnail', array('class' => 'testimonial-banner', 'width' => 80, 'height' => 80)); ?>
+    <?php else : ?>
+      <img src="<?php echo $img; ?>/testimonial-1.jpg" alt="<?php the_title_attribute(); ?>" class="testimonial-banner" width="80" height="80">
+    <?php endif; ?>
 
-    <p class="testimonial-name">Alan Doe</p>
+    <p class="testimonial-name"><?php the_title(); ?></p>
 
-    <p class="testimonial-title">CEO & Founder Invision</p>
+    <p class="testimonial-title">
+      <?php
+      $city    = get_field('client_city');
+      $product = get_field('product_name');
+      $parts   = array_filter(array($city, $product));
+      echo esc_html(!empty($parts) ? implode(' — ', $parts) : '&nbsp;');
+      ?>
+    </p>
 
     <img src="<?php echo $img; ?>/icons/quotes.svg" alt="quotation" class="quotation-img" width="26">
 
-    <p class="testimonial-desc">
-      Lorem ipsum dolor sit amet consectetur Lorem ipsum
-      dolor dolor sit amet.
-    </p>
+    <p class="testimonial-desc"><?php echo esc_html(get_the_content()); ?></p>
 
   </div>
 
+  <?php endwhile; ?>
+  <?php wp_reset_postdata(); ?>
+
 </div>
+<?php endif; ?>
 
 <div class="service">
 
