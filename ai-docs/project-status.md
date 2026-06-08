@@ -83,6 +83,7 @@ SÍ priorizar:
 * blog seeder automático en activación de theme (inc/blog-seeder.php)
 * CTA banner dinámico con ACF fields desde front page meta + fallback hardcodeado
 * Deal of the Day dinámico con ACF true/field en producto + fallback al último producto
+* Testimonials homepage dinámico con CPT testimonial + ACF (city, product, show_on_home)
 
 ---
 
@@ -101,6 +102,7 @@ SÍ priorizar:
 * blog: HTML estático con datos fake → WP_Query dinámico + seeder automático con featured images reales
 * cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
 * deal of the day: WP_Query _featured + random fallback duplicado → ACF true/field seleccionable + single product + template-part reutilizable
+* testimonials: HTML estático con datos ficticios + servicios estáticos → CPT testimonial + ACF fields + WP_Query dinámico con fallback image; servicios intactos
 
 ---
 
@@ -726,7 +728,78 @@ al activar el theme.
 
 ---
 
-# NO hacer todavía
+# Testimonial CPT + ACF — Phase 3H (2026-06-08)
+
+## Cambio aplicado
+
+La sección de testimonios en la homepage fue migrada de HTML estático con datos
+ficticios a un sistema dinámico basado en CPT + ACF. La sección de servicios
+(Our Services) se mantiene intacta como HTML estático.
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/testimonials.php` | **Nuevo**: CPT testimonial + ACF fields + seeder |
+| `template-parts/home/testimonials.php` | **Reescrito**: WP_Query dinámico con ACF + fallback image |
+| `functions.php` | `require_once` para `inc/testimonials.php` |
+
+## CPT `testimonial`
+
+- `show_ui=true`, `show_in_menu=true`, `menu_position=21`
+- `menu_icon=dashicons-format-quote`
+- `public=false`, `show_in_rest=false`
+- `supports: title, editor, thumbnail, page-attributes`
+
+## ACF fields
+
+Registrados via `acf_add_local_field_group()` con location `post_type=testimonial`:
+
+| Field | Type | Notes |
+|---|---|---|
+| `client_city` | text (label: Ciudad) | Se muestra en `.testimonial-title` |
+| `product_name` | text (label: Producto comprado) | Se muestra junto a la ciudad |
+| `show_on_home` | true_false (label: Mostrar en Home) | UI switch, default false |
+
+## Template part (`template-parts/home/testimonials.php`)
+
+- Query: `WP_Query(post_type=testimonial, posts_per_page=4, orderby=menu_order, meta_query=show_on_home=1)`
+- Section completamente oculta si no hay testimonios visibles (`if ($testimonials_query->have_posts())`)
+- Fallback image: `testimonial-1.jpg` del theme si no hay post thumbnail
+- Ciudad + producto concatenados con " — " en `.testimonial-title`
+- Servicios (`.service` con 5 items) siempre se renderizan, intactos
+
+## Seeder (`inc/testimonials.php`)
+
+- Crea 3 testimonios demo (María García, Carlos Mendoza, Lucía Fernández) con
+  `show_on_home=false` — nunca aparecen en frontend
+- `update_field()` para ACF fields
+- **Guardias de ejecución única**:
+  1. `get_option('testimonials_seeded')` — flag en wp_options
+  2. `get_posts()` check — si ya existen testimonios, setea flag y retorna
+- **Hooks**: `after_switch_theme` + `admin_init` — sin `init` para evitar
+  ejecución en frontend y consultas innecesarias en cada request
+
+## Decisión técnica
+
+- `show_on_home=false` para demo testimonials asegura que el contenido de relleno
+  nunca aparezca en la homepage
+- El hook `init` fue eliminado después de la auditoría (2026-06-08) porque
+  `after_switch_theme` + `admin_init` cubren todos los escenarios de activación
+  sin overhead en cada request del frontend
+- Sin importación de imágenes (`download_url`) — los testimonios sin thumbnail
+  usan la imagen fallback del theme
+- Sin cambios en CSS, JS ni estructura visual
+
+## Riesgos
+
+- `update_field()` requiere ACF activo. Si ACF se desactiva, los ACF fields de
+  testimonios existentes retornan null y `.testimonial-title` queda vacío
+- Si `show_on_home` se corrompe o falta, el meta_query no lo encuentra y el
+  testimonio no se renderiza (comportamiento seguro — no se muestran testimonios
+  con datos incompletos)
+
+---
 
 * AJAX add-to-cart complejo
 * fragments avanzados

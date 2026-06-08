@@ -131,4 +131,3 @@ function testimonials_seed_demo() {
 }
 add_action('after_switch_theme', 'testimonials_seed_demo');
 add_action('admin_init', 'testimonials_seed_demo');
-add_action('init', 'testimonials_seed_demo');
