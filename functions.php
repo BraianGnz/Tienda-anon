@@ -131,3 +131,4 @@ require_once get_template_directory() . '/inc/cta-banner.php';
 require_once get_template_directory() . '/inc/blog-seeder.php';
 require_once get_template_directory() . '/inc/product-deal.php';
 require_once get_template_directory() . '/inc/testimonials.php';
+require_once get_template_directory() . '/inc/footer-contact.php';

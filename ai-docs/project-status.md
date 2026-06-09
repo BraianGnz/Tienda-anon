@@ -84,6 +84,7 @@ SÍ priorizar:
 * CTA banner dinámico con ACF fields desde front page meta + fallback hardcodeado
 * Deal of the Day dinámico con ACF true/field en producto + fallback al último producto
 * Testimonials homepage dinámico con CPT testimonial + ACF (city, product, show_on_home)
+* Footer contacto y redes sociales dinámicos con ACF fields desde front page meta + fallback
 
 ---
 
@@ -103,6 +104,7 @@ SÍ priorizar:
 * cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
 * deal of the day: WP_Query _featured + random fallback duplicado → ACF true/field seleccionable + single product + template-part reutilizable
 * testimonials: HTML estático con datos ficticios + servicios estáticos → CPT testimonial + ACF fields + WP_Query dinámico con fallback image; servicios intactos
+* footer contacto y redes sociales: HTML estático con datos ficticios y href="#" → ACF fields desde front page meta con 6 campos de contacto + 5 URLs de redes sociales + fallback preservado
 
 ---
 
@@ -800,6 +802,81 @@ Registrados via `acf_add_local_field_group()` con location `post_type=testimonia
   con datos incompletos)
 
 ---
+
+# Footer Contact + Social Links — Phase 3I (2026-06-09)
+
+## Cambio aplicado
+
+La sección de contacto y redes sociales del footer fue migrada de HTML
+estático con datos ficticios a campos ACF administrables desde la front page.
+
+## Archivos creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/footer-contact.php` | **Nuevo**: 2 ACF field groups + helpers + seeder |
+| `footer.php` | Modificado: contacto y redes sociales dinámicos |
+| `functions.php` | `require_once` para `inc/footer-contact.php` |
+
+## ACF fields — Contacto
+
+Registrados via `acf_add_local_field_group()` con location `post_type=page`:
+
+| Field | Type | Default seed |
+|---|---|---|
+| `contact_address` | text | "Av. Corrientes 1234" |
+| `contact_city` | text | "CABA" |
+| `contact_region` | text | "Buenos Aires" |
+| `contact_country` | text | "Argentina" |
+| `contact_phone` | text | "+54 11 5678-9012" |
+| `contact_email` | text | "info@mediaspersonalizadas.com.ar" |
+
+## ACF fields — Redes Sociales
+
+| Field | Type | Default seed |
+|---|---|---|
+| `social_facebook` | url | `https://facebook.com/mediaspersonalizadas` |
+| `social_instagram` | url | `https://instagram.com/mediaspersonalizadas` |
+| `social_linkedin` | url | `https://linkedin.com/company/mediaspersonalizadas` |
+| `social_tiktok` | url | `https://tiktok.com/@mediaspersonalizadas` |
+| `social_youtube` | url | `https://youtube.com/@mediaspersonalizadas` |
+
+## Comportamiento
+
+- **Dirección**: Siempre se renderiza (usa concatenación de address + city + region + country con `<br>`). Si ACF inactivo, fallback a valores originales.
+- **Teléfono**: Solo se renderiza si el campo tiene valor. Fallback a "(607) 936-8058".
+- **Email**: Solo se renderiza si el campo tiene valor. Fallback a "example@gmail.com".
+- **Redes sociales**: Si al menos un campo tiene URL, renderiza solo los que tienen datos. Si todos vacíos o ACF inactivo, renderiza las 4 originales (Facebook, Twitter, LinkedIn, Instagram) con `href="#"`.
+- **tel: format**: El teléfono se sanitiza automáticamente (solo dígitos y `+`).
+- **Social links**: Incluyen `target="_blank"` y `rel="noopener noreferrer"`.
+
+## Helpers (`inc/footer-contact.php`)
+
+- `footer_contact_get_front_page_id()` — lee `page_on_front` de `wp_options`
+- `footer_contact_get($field, $fallback)` — safe getter con fallback. Retorna fallback si ACF inactivo, front page no configurada, o campo vacío.
+
+## Seeder
+
+- Crea valores iniciales adaptados al negocio (medias personalizadas premium, CABA, Argentina)
+- Flag `footer_contact_defaults_created` en `wp_options` para ejecución única
+- Hooks: `after_switch_theme` + `admin_init`
+
+## Decisión técnica
+
+- Dos field groups separados (Contacto + Redes Sociales) para mejor organización en el admin
+- Front page meta en lugar de options page (ACF Free)
+- tel: link formado automáticamente desde el mismo campo de display
+- Sin cambios en CSS, JS ni estructura visual del footer
+
+## Riesgos
+
+- Si la front page se cambia (Settings > Reading), los fields seedeados quedan en la página anterior
+- Los 5 ion-icons nuevos (logo-tiktok, logo-youtube) deben existir en la versión de Ionicons cargada (5.5.2). Verificar compatibilidad.
+- Los 4 iconos originales de fallback (Facebook, Twitter, LinkedIn, Instagram) se preservan intactos con `href="#"`
+
+---
+
+# NO hacer todavía
 
 * AJAX add-to-cart complejo
 * fragments avanzados

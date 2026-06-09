@@ -151,32 +151,46 @@
             <h2 class="nav-title">Contact</h2>
           </li>
 
+          <?php
+          $contact_address = footer_contact_get('contact_address', '419 State 414 Rte');
+          $contact_city    = footer_contact_get('contact_city', 'Beaver Dams');
+          $contact_region  = footer_contact_get('contact_region', 'New York(NY), 14812');
+          $contact_country = footer_contact_get('contact_country', 'USA');
+          $contact_phone   = footer_contact_get('contact_phone', '(607) 936-8058');
+          $contact_email   = footer_contact_get('contact_email', 'example@gmail.com');
+          $locality = implode(', ', array_filter(array($contact_city, $contact_region, $contact_country)));
+          ?>
+
           <li class="footer-nav-item flex">
             <div class="icon-box">
               <ion-icon name="location-outline"></ion-icon>
             </div>
 
             <address class="content">
-              419 State 414 Rte
-              Beaver Dams, New York(NY), 14812, USA
+              <?php echo esc_html($contact_address); ?>
+              <?php if ($locality) : ?><br><?php echo esc_html($locality); ?><?php endif; ?>
             </address>
           </li>
 
+          <?php if ($contact_phone) : ?>
           <li class="footer-nav-item flex">
             <div class="icon-box">
               <ion-icon name="call-outline"></ion-icon>
             </div>
 
-            <a href="tel:+607936-8058" class="footer-nav-link">(607) 936-8058</a>
+            <a href="tel:<?php echo esc_attr(preg_replace('/[^\d+]/', '', $contact_phone)); ?>" class="footer-nav-link"><?php echo esc_html($contact_phone); ?></a>
           </li>
+          <?php endif; ?>
 
+          <?php if ($contact_email) : ?>
           <li class="footer-nav-item flex">
             <div class="icon-box">
               <ion-icon name="mail-outline"></ion-icon>
             </div>
 
-            <a href="mailto:example@gmail.com" class="footer-nav-link">example@gmail.com</a>
+            <a href="mailto:<?php echo esc_attr($contact_email); ?>" class="footer-nav-link"><?php echo esc_html($contact_email); ?></a>
           </li>
+          <?php endif; ?>
 
         </ul>
 
@@ -185,6 +199,38 @@
           <li class="footer-nav-item">
             <h2 class="nav-title">Follow Us</h2>
           </li>
+
+          <?php
+          $social_items = array(
+              'logo-facebook'  => 'social_facebook',
+              'logo-instagram' => 'social_instagram',
+              'logo-linkedin'  => 'social_linkedin',
+              'logo-tiktok'    => 'social_tiktok',
+              'logo-youtube'   => 'social_youtube',
+          );
+
+          $rendered = array();
+          foreach ($social_items as $icon => $field) {
+              $url = footer_contact_get($field);
+              if ($url) {
+                  $rendered[] = compact('icon', 'url');
+              }
+          }
+          ?>
+
+          <?php if (!empty($rendered)) : ?>
+          <li>
+            <ul class="social-link">
+              <?php foreach ($rendered as $item) : ?>
+              <li class="footer-nav-item">
+                <a href="<?php echo esc_url($item['url']); ?>" class="footer-nav-link" target="_blank" rel="noopener noreferrer">
+                  <ion-icon name="<?php echo $item['icon']; ?>"></ion-icon>
+                </a>
+              </li>
+              <?php endforeach; ?>
+            </ul>
+          </li>
+          <?php else : ?>
 
           <li>
             <ul class="social-link">
@@ -215,6 +261,8 @@
 
             </ul>
           </li>
+
+          <?php endif; ?>
 
         </ul>
 

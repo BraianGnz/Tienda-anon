@@ -387,6 +387,28 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-09)
+
+### Phase 3I: Footer Contact + Social Links
+
+1. ✅ Creado `inc/footer-contact.php`:
+   - 2 ACF field groups (Contacto: 6 campos, Redes Sociales: 5 campos) registrados via `acf_add_local_field_group()`
+   - Location: `post_type=page` (front page)
+   - Helper `footer_contact_get_front_page_id()` centraliza lectura de `page_on_front`
+   - Getter `footer_contact_get($field, $fallback)` con fallback seguro
+   - Seeder `footer_contact_seed_defaults()` con flag `footer_contact_defaults_created`
+   - Hooks: `after_switch_theme` + `admin_init`
+   - Defaults adaptados al negocio
+2. ✅ Modificado `footer.php`:
+   - Contact address: 4 campos concatenados, siempre visible
+   - Phone: condicional con tel: link sanitizado
+   - Email: condicional con mailto: link
+   - Social: 5 plataformas dinámicas o fallback a 4 originales
+3. ✅ `require_once` en `functions.php`
+4. ✅ Verificado: sin errores PHP, todos los datos visibles
+
+---
+
 # Baja prioridad
 
 * wishlist real

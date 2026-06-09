@@ -344,6 +344,50 @@ Ver: project-status.md → "Shop page estabilizada"
 
 ---
 
+# Footer Contact + Social Links — Phase 3I
+
+## Archivos
+
+| Archivo | Rol |
+|---------|-----|
+| `inc/footer-contact.php` | **Nuevo**: 2 ACF field groups + helpers + seeder |
+| `footer.php` | Contacto y redes sociales dinámicos |
+| `functions.php` | `require_once` para `inc/footer-contact.php` |
+
+## ACF fields — Contacto
+
+6 campos registrados via `acf_add_local_field_group()` → `group_footer_contact`:
+- `contact_address` (text), `contact_city` (text), `contact_region` (text), `contact_country` (text)
+- `contact_phone` (text), `contact_email` (text)
+- Location: `post_type=page` (front page)
+
+## ACF fields — Redes Sociales
+
+5 campos registrados via `acf_add_local_field_group()` → `group_footer_social`:
+- `social_facebook` (url), `social_instagram` (url), `social_linkedin` (url)
+- `social_tiktok` (url), `social_youtube` (url)
+- Location: `post_type=page` (front page)
+
+## Helpers (`inc/footer-contact.php`)
+
+- `footer_contact_get_front_page_id()` — lee `page_on_front` de `wp_options`
+- `footer_contact_get($field, $fallback)` — safe getter. Retorna fallback si ACF inactivo, front page no configurada, o campo vacío.
+
+## Comportamiento
+
+- **Dirección**: Siempre visible. Concatena address + city + region + country con `<br>`.
+- **Teléfono**: Renderizado condicional. Enlace `tel:` sanitizado (solo dígitos y `+`).
+- **Email**: Renderizado condicional. Enlace `mailto:` directo.
+- **Redes sociales**: Si hay al menos una URL, renderiza solo las que tienen datos. Si todas vacías o ACF inactivo, fallback a 4 iconos originales (Facebook, Twitter, LinkedIn, Instagram) con `href="#"`.
+
+## Seeder
+
+- Hooks: `after_switch_theme` + `admin_init`
+- Flag: `footer_contact_defaults_created` en `wp_options`
+- Defaults adaptados al negocio (Av. Corrientes 1234, CABA, Argentina, +54 11 5678-9012, 5 redes sociales)
+
+---
+
 # CSS
 
 Actualmente:

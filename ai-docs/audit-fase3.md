@@ -264,11 +264,11 @@
 
 ---
 
-## 12. FOOTER
+## 12. FOOTER ✅ PARCIALMENTE RESUELTO (2026-06-09) — Phase 3I
 
-**Archivo**: `footer.php`
-**Estado actual**: 30% DINÁMICO / 70% ESTÁTICO
-**Nivel integración WP**: **30%**
+**Archivo**: `footer.php` + `inc/footer-contact.php`
+**Estado actual**: Contacto + Redes Sociales 100% DINÁMICOS. Brand directory y Popular Categories aún estáticos.
+**Nivel integración WP**: **60%** (antes 30%)
 **Prioridad**: MEDIA
 
 **Ya es dinámico**:
@@ -414,6 +414,8 @@
 22. **Blog seeder**: `inc/blog-seeder.php` crea posts + categorías + featured images automáticamente al activar el theme
 23. **CTA Banner**: ACF fields desde front page meta con 6 campos administrables + fallback a valores originales
 24. **Deal of the Day**: ACF true/field `deal_of_the_day` en producto (sidebar, switch UI) + query con fallback al último producto + template-part reutilizable `deal-product-card.php`
+25. **Footer contacto**: ACF fields desde front page meta (dirección, teléfono, email) con fallback a valores originales
+26. **Footer redes sociales**: ACF fields desde front page meta (Facebook, Instagram, LinkedIn, TikTok, YouTube) con fallback a 4 iconos originales con `href="#"`
 
 ---
 
@@ -426,16 +428,17 @@
 3. ~~**Sidebar best sellers** (`sidebar.php`)~~ ✅ RESUELTO (2026-06-03)
 4. ~~**Banner CTA** (`banners.php`)~~ ✅ RESUELTO (2026-06-07)
 5. ~~**Blog** (`blog.php`)~~ ✅ RESUELTO (2026-06-07)
-6. **Testimonials** (`testimonials.php`): 1 testimonial completo
+6. **Testimonials** (`testimonials.php`): ✅ RESUELTO (2026-06-08) — CPT + ACF + WP_Query
 7. **All `href="#"` links** (~100+ en todo el theme)
 
 ### MEDIA PRIORIDAD
 
 8. **Services** (`testimonials.php`): 5 servicios con iconos, títulos, descripciones
-9. **Social icons** (`header.php` + `footer.php`): Facebook, Twitter, Instagram, LinkedIn con `href="#"` — repetido 3 veces
-10. **Footer brand directory** (`footer.php`): 40+ links de categorías hardcodeados
-11. **Footer Popular Categories** (`footer.php`): 5 links hardcodeados
-12. **Footer contacto** (`footer.php`): dirección, teléfono, email hardcodeados
+9. **Social icons footer** (`footer.php`): ✅ RESUELTO (2026-06-09) — 5 plataformas dinámicas con ACF, fallback a 4 originales con `href="#"`
+10. **Social icons header** (`header.php`): Facebook, Twitter, Instagram, LinkedIn con `href="#"` — repetido 2 veces (desktop + mobile)
+11. ~~**Footer brand directory** (`footer.php`): 40+ links de categorías hardcodeados~~ — Pendiente
+12. ~~**Footer Popular Categories** (`footer.php`): 5 links hardcodeados~~ — Pendiente
+13. **Footer contacto** (`footer.php`): ✅ RESUELTO (2026-06-09) — dirección, teléfono, email administrables desde ACF
 13. **Header promo text** (`header.php`): "Free Shipping This Week Order Over - $55"
 14. **Header newsletter modal** (`header.php`): imagen, título, descripción, form
 15. **Header notification toast** (`header.php`): imagen, producto, mensaje
@@ -470,11 +473,11 @@ El orden recomendado abajo corresponde a la secuencia de implementación propues
 | 8 | **Deal of the Day** | ✅ RESUELTO (2026-06-08). Creado `inc/product-deal.php` con ACF true/field + `get_deal_of_the_day_query()`. Creado `template-parts/woocommerce/deal-product-card.php`. `product-featured.php` reescrito sin fallback duplicado. | `product-featured.php` | RESUELTA |
 | 9 | **Títulos de sección** | Customizer settings para títulos: "New Arrivals", "Deal of the day", "New Products", etc. | Varios | MEDIA |
 | 10 | **Footer brand directory** | Reemplazar con menú WordPress o taxonomy links. | `footer.php` | MEDIA |
-| 11 | **Footer contacto** | Customizer para dirección, teléfono, email. | `footer.php` | MEDIA |
+| 11 | **Footer contacto** | ACF fields desde front page. | `footer.php` + `inc/footer-contact.php` | ✅ RESUELTO (2026-06-09) |
 | 12 | **Header social links** | Menú social o Customizer. Template-part reutilizable. | `header.php` | BAJA |
 | 13 | **Header promo text** | Customizer text field. | `header.php` | BAJA |
 | 14 | **Header newsletter** | Integrar con plugin newsletter real o desactivar. | `header.php` | BAJA |
-| 15 | **Social icons footer** | Mismo template-part que header. | `footer.php` | BAJA |
+| 15 | **Social icons footer** | ACF fields desde front page. | `footer.php` + `inc/footer-contact.php` | ✅ RESUELTO (2026-06-09) |
 | 16 | **Footer payment image** | Customizer media field. | `footer.php` | BAJA |
 | 17 | **Refactor fallback duplicado** | Extraer loop HTML a template-part reutilizable. | `product-featured.php` | BAJA |
 | 18 | **Refactor product card** | Template-part unificado para `.showcase` card. | Varios | BAJA |
