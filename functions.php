@@ -27,8 +27,11 @@ function anon_theme_setup() {
     add_theme_support('wc-product-gallery-slider');
 
     register_nav_menus(array(
-        'primary' => __('Primary Menu', 'anon-theme'),
-        'footer'  => __('Footer Menu', 'anon-theme'),
+        'primary'              => __('Primary Menu', 'anon-theme'),
+        'footer'               => __('Footer Menu', 'anon-theme'),
+        'footer_brand'         => __('Footer Brand Directory', 'anon-theme'),
+        'footer_categories'    => __('Footer Popular Categories', 'anon-theme'),
+        'footer_company'       => __('Footer Our Company', 'anon-theme'),
     ));
 
     add_theme_support('align-wide');
@@ -132,3 +135,4 @@ require_once get_template_directory() . '/inc/blog-seeder.php';
 require_once get_template_directory() . '/inc/product-deal.php';
 require_once get_template_directory() . '/inc/testimonials.php';
 require_once get_template_directory() . '/inc/footer-contact.php';
+require_once get_template_directory() . '/inc/footer-menus.php';

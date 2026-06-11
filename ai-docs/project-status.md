@@ -85,6 +85,7 @@ SÍ priorizar:
 * Deal of the Day dinámico con ACF true/field en producto + fallback al último producto
 * Testimonials homepage dinámico con CPT testimonial + ACF (city, product, show_on_home)
 * Footer contacto y redes sociales dinámicos con ACF fields desde front page meta + fallback
+* Footer menus (Brand Directory, Popular Categories, Our Company) dinámicos con wp_nav_menu + seeders automáticos + walkers custom
 
 ---
 
@@ -102,6 +103,9 @@ SÍ priorizar:
 * hero slider: CSS scroll-snap → Swiper.js 11 con loop, autoplay, pagination, navigation
 * blog: HTML estático con datos fake → WP_Query dinámico + seeder automático con featured images reales
 * cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
+* footer brand directory: 57 enlaces `href="#"` con categorías fake → wp_nav_menu con 4 boxes (Medias, Calcetines, Parches, Accesorios)
+* footer popular categories: 5 enlaces `href="#"` → wp_nav_menu (Tienda, Blog, Contacto)
+* footer our company: 5 enlaces a páginas que no existen → wp_nav_menu (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
 * deal of the day: WP_Query _featured + random fallback duplicado → ACF true/field seleccionable + single product + template-part reutilizable
 * testimonials: HTML estático con datos ficticios + servicios estáticos → CPT testimonial + ACF fields + WP_Query dinámico con fallback image; servicios intactos
 * footer contacto y redes sociales: HTML estático con datos ficticios y href="#" → ACF fields desde front page meta con 6 campos de contacto + 5 URLs de redes sociales + fallback preservado
@@ -846,7 +850,8 @@ Registrados via `acf_add_local_field_group()` con location `post_type=page`:
 - **Dirección**: Siempre se renderiza (usa concatenación de address + city + region + country con `<br>`). Si ACF inactivo, fallback a valores originales.
 - **Teléfono**: Solo se renderiza si el campo tiene valor. Fallback a "(607) 936-8058".
 - **Email**: Solo se renderiza si el campo tiene valor. Fallback a "example@gmail.com".
-- **Redes sociales**: Si al menos un campo tiene URL, renderiza solo los que tienen datos. Si todos vacíos o ACF inactivo, renderiza las 4 originales (Facebook, Twitter, LinkedIn, Instagram) con `href="#"`.
+- **Redes sociales**: Si ACF activo, renderiza solo las plataformas que tienen URL configurada. Si ningún campo tiene URL, no se renderiza nada (sin `href="#"`). Si ACF inactivo, renderiza las 4 originales (Facebook, Twitter, LinkedIn, Instagram) con `href="#"` como fallback.
+- **Footer menus**: 3 menús administrables (Brand Directory con walker parent-child para 4 boxes, Popular Categories, Our Company). Seeders crean items iniciales adaptados al negocio con enlaces reales a categorías WooCommerce y páginas.
 - **tel: format**: El teléfono se sanitiza automáticamente (solo dígitos y `+`).
 - **Social links**: Incluyen `target="_blank"` y `rel="noopener noreferrer"`.
 
@@ -876,7 +881,59 @@ Registrados via `acf_add_local_field_group()` con location `post_type=page`:
 
 ---
 
-# NO hacer todavía
+# Fase 4 — Footer Menus Dinámicos (2026-06-11)
+
+## Objetivo
+
+Reemplazar 3 secciones hardcodeadas del footer con menús WordPress administrables vía `wp_nav_menu()`.
+
+## Secciones convertidas
+
+1. **Brand Directory** (`footer.php:3-22` → `inc/footer-menus.php:Footer_Brand_Walker`):
+   - 4 boxes con parent-child: Medias (3 sub), Calcetines (3 sub), Parches (3 sub), Accesorios (3 sub)
+   - Walkers custom: `Footer_Brand_Walker` (para estructura de boxes con h3 + enlaces)
+   - Seed: 4 parents + 12 children con enlaces a categorías WooCommerce reales
+
+2. **Popular Categories** (`footer.php:37-53` → `inc/footer-menus.php:Footer_Column_Walker`):
+   - Walker custom: `Footer_Column_Walker` (para estructura li.footer-nav-item > a.footer-nav-link)
+   - Seed: Tienda (/shop/), Blog (/blog/), Contacto (/contacto/)
+
+3. **Our Company** (`footer.php:55-71` → `inc/footer-menus.php:Footer_Column_Walker`):
+   - Seed: Sobre Nosotros, Términos y Condiciones, Delivery, Pago Seguro, Aviso Legal
+
+## Archivos modificados
+
+| Archivo | Cambio |
+|---|---|
+| `functions.php` | Registrados 3 nuevos theme locations: `footer_brand`, `footer_categories`, `footer_company`. Agregado `require_once inc/footer-menus.php`. |
+| `footer.php` | 3 bloques hardcodeados reemplazados por `wp_nav_menu()` con walkers custom |
+| `inc/footer-menus.php` | **NUEVO**: 2 walkers (`Footer_Brand_Walker`, `Footer_Column_Walker`), helper `footer_menus_get_cat_url()`, seeder `footer_menus_seed_defaults()` |
+
+## Detalles técnicos
+
+- `Footer_Brand_Walker`: depth=0 abre `div.footer-category-box > h3.category-box-title`, depth=1 enlace `a.footer-category-link`. Sin `<ul>/<li>` wrappers. `end_el` cierra el div solo en depth=0.
+- `Footer_Column_Walker`: cada item es `li.footer-nav-item > a.footer-nav-link`. Sin `<ul>` wrapper (se usa `items_wrap => '%3$s'` dentro del ul del template).
+- `footer_menus_get_cat_url()`: intenta `get_term_by('slug')` primero, fallback a `home_url('/product-category/{slug}/')`.
+- Hooks seeder: `after_switch_theme` + `admin_init` (patrón estándar del proyecto).
+- Flag: `footer_menus_defaults_created` en `wp_options`.
+
+## QA
+
+- ✅ Brand Directory: 4 boxes con títulos y enlaces a categorías reales
+- ✅ Popular Categories: 3 enlaces (Tienda, Blog, Contacto)
+- ✅ Our Company: 5 enlaces (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
+- ✅ Cero `href="#"` en footer navigation
+- ✅ Mismas clases CSS (`footer-category-box`, `category-box-title`, `footer-category-link`, `footer-nav-item`, `footer-nav-link`)
+- ✅ Misma estructura HTML (divs, h3, ul, li preservados exactamente)
+- ✅ Sin cambios en style.css
+- ✅ Menús editables desde Apariencia > Menús
+
+## Riesgos
+
+- Si el usuario borra los menús seedeados, las secciones quedan vacías hasta que asigne/ cree nuevos menús (fallback_cb=false)
+- `after_switch_theme` no se ejecuta si el theme ya está activo — `admin_init` cubre ese caso
+
+---
 
 * AJAX add-to-cart complejo
 * fragments avanzados

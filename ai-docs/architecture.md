@@ -35,7 +35,10 @@ anon-theme/
 │   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
 │   ├── cta-banner.php      # CTA Banner ACF fields + seeder (front page meta)
 │   ├── blog-seeder.php     # Default blog posts + categories on theme activation
-│   └── product-deal.php    # Deal of the Day ACF true/false field + query function
+│   ├── product-deal.php    # Deal of the Day ACF true/false field + query function
+│   ├── testimonials.php    # Testimonial CPT + ACF fields + demo seeder
+│   ├── footer-contact.php  # Footer Contact + Social ACF fields + seeder
+│   └── footer-menus.php    # Footer menus walkers (Footer_Brand_Walker, Footer_Column_Walker) + seeder
 │
 ├── ai-docs/
 │
