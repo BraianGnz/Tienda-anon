@@ -30,7 +30,7 @@ y datos no administrables desde WordPress.
 |---|---|---|---|---|---|
 | B1 | 3-77 | ~~Footer Category "Brand directory": 4 categorías (Fashion, Footwear, Jewellery, Cosmetics) con ~57 subcategorías hardcodeadas, TODOS los enlaces `href="#"`~~ | ~~Alto~~ | ~~Alta~~ | ✅ RESUELTO — wp_nav_menu con Footer_Brand_Walker (4-box layout, enlaces a categorías reales) |
 | B2 | 92-118 | ~~"Popular Categories": Fashion, Electronic, Cosmetic, Health, Watches — 5 enlaces `href="#"`~~ | ~~Alto~~ | ~~Alta~~ | ✅ RESUELTO — wp_nav_menu con Footer_Column_Walker (Tienda, Blog, Contacto) |
-| B3 | 120-146 | ~~"Our Company": 5 enlaces a páginas que probablemente no existen~~ | ~~Medio~~ | ~~Alta~~ | ✅ RESUELTO — wp_nav_menu con Footer_Column_Walker (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal) |
+| B3 | 120-146 | ~~"Our Company": 5 enlaces a páginas que probablemente no existen~~ | ~~Medio~~ | ~~Alta~~ | ✅ RESUELTO v2 — 5 páginas reales creadas (Sobre Nosotros, Términos y Condiciones, Política de Privacidad, Aviso Legal, Envíos y Devoluciones) y vinculadas como Page Links |
 | B4 | 279 | Imagen `payment.png` hardcodeada (métodos de pago ficticios) | Bajo | Media |
 
 ### C. SERVICIOS — `template-parts/home/testimonials.php`
@@ -91,7 +91,8 @@ y datos no administrables desde WordPress.
 - **Total enlaces `href="#"`**: ~~71~~ → **~56** (se eliminaron ~15 del footer)
 - **Secciones 100% hardcodeadas**: Services, Newsletter modal, Notification toast
 - **Secciones parcialmente hardcodeadas (fallbacks)**: Hero slides, CTA banner, categorías icons
-- **Secciones dinámicas agregadas**: Footer Brand Directory, Popular Categories, Our Company (wp_nav_menu)
+- **Secciones dinámicas agregadas**: Footer Brand Directory, Popular Categories, Our Company (wp_nav_menu con páginas reales)
+- **Páginas creadas automáticamente**: about-us, terms-and-conditions, privacy-policy, legal-notice, shipping-returns (5 páginas con placeholder content)
 - **Templates faltantes**: single.php, page.php, archive.php, search.php, 404.php
 - **Archivos legacy**: html-template/, website-demo-image/
 
@@ -103,7 +104,7 @@ y datos no administrables desde WordPress.
 
 1. ✅ ~~Footer "Brand directory" (~57 links `#`)~~ → Convertido a menú con 4 boxes (Medias, Calcetines, Parches, Accesorios)
 2. ✅ ~~Footer "Popular Categories" (5 links `#`)~~ → Convertido a menú (Tienda, Blog, Contacto)
-3. ✅ ~~Footer "Our Company" (5 links a páginas que no existen)~~ → Convertido a menú (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
+3. ✅ ~~Footer "Our Company" (5 links a páginas que no existen)~~ → Convertido a menú (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal) → v2: Ahora 5 páginas reales creadas: Sobre Nosotros, Términos y Condiciones, Política de Privacidad, Aviso Legal, Envíos y Devoluciones
 4. Header top social icons (4 links `#`) → conectar con ACF footer social o menú
 5. Header top "Free Shipping" banner → ACF field o widget administrable
 6. Services section (5 items hardcodeados) → convertir a CPT o ACF repeater-free workaround
@@ -135,7 +136,7 @@ y datos no administrables desde WordPress.
 ### Fase 4: Contenido del Footer ✅ COMPLETADO (2026-06-11)
 - ✅ "Brand directory" convertido a menú con 4 boxes (parent-child) y enlaces a categorías WooCommerce
 - ✅ "Popular Categories" convertido a menú (Tienda, Blog, Contacto)
-- ✅ "Our Company" convertido a menú (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
+- ✅ "Our Company" convertido a menú (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal) → v2: 5 páginas reales (Sobre Nosotros, Términos y Condiciones, Política de Privacidad, Aviso Legal, Envíos y Devoluciones)
 - Pendiente: Hacer editable la imagen de métodos de pago
 
 ### Fase 5: Servicios

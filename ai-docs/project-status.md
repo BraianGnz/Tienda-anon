@@ -105,7 +105,7 @@ SÍ priorizar:
 * cta banner: HTML estático con valores hardcodeados → ACF fields desde front page meta + fallback preservado
 * footer brand directory: 57 enlaces `href="#"` con categorías fake → wp_nav_menu con 4 boxes (Medias, Calcetines, Parches, Accesorios)
 * footer popular categories: 5 enlaces `href="#"` → wp_nav_menu (Tienda, Blog, Contacto)
-* footer our company: 5 enlaces a páginas que no existen → wp_nav_menu (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
+* footer our company: 5 enlaces a páginas que no existen → wp_nav_menu con 5 páginas reales creadas automáticamente (Sobre Nosotros, Términos y Condiciones, Política de Privacidad, Aviso Legal, Envíos y Devoluciones)
 * deal of the day: WP_Query _featured + random fallback duplicado → ACF true/field seleccionable + single product + template-part reutilizable
 * testimonials: HTML estático con datos ficticios + servicios estáticos → CPT testimonial + ACF fields + WP_Query dinámico con fallback image; servicios intactos
 * footer contacto y redes sociales: HTML estático con datos ficticios y href="#" → ACF fields desde front page meta con 6 campos de contacto + 5 URLs de redes sociales + fallback preservado
@@ -921,7 +921,7 @@ Reemplazar 3 secciones hardcodeadas del footer con menús WordPress administrabl
 
 - ✅ Brand Directory: 4 boxes con títulos y enlaces a categorías reales
 - ✅ Popular Categories: 3 enlaces (Tienda, Blog, Contacto)
-- ✅ Our Company: 5 enlaces (Sobre Nosotros, Términos, Delivery, Pago Seguro, Aviso Legal)
+- ✅ Our Company: 5 páginas reales creadas (Sobre Nosotros, Términos y Condiciones, Política de Privacidad, Aviso Legal, Envíos y Devoluciones) — Page Links en lugar de Custom Links
 - ✅ Cero `href="#"` en footer navigation
 - ✅ Mismas clases CSS (`footer-category-box`, `category-box-title`, `footer-category-link`, `footer-nav-item`, `footer-nav-link`)
 - ✅ Misma estructura HTML (divs, h3, ul, li preservados exactamente)

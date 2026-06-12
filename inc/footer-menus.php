@@ -47,10 +47,46 @@ function footer_menus_get_cat_url($slug) {
 }
 
 
-function footer_menus_seed_defaults() {
-    if (get_option('footer_menus_defaults_created')) {
-        return;
+function footer_menus_create_page($title, $slug, $content) {
+    $existing = get_posts(array(
+        'post_type'      => 'page',
+        'name'           => $slug,
+        'posts_per_page' => 1,
+        'post_status'    => 'any',
+    ));
+    if (!empty($existing)) {
+        return $existing[0]->ID;
     }
+    return wp_insert_post(array(
+        'post_title'   => $title,
+        'post_name'    => $slug,
+        'post_content' => $content,
+        'post_status'  => 'publish',
+        'post_type'    => 'page',
+    ));
+}
+
+
+function footer_menus_clear_menu_items($menu_id) {
+    $items = wp_get_nav_menu_items($menu_id);
+    if (!empty($items)) {
+        foreach ($items as $item) {
+            wp_delete_post($item->ID, true);
+        }
+    }
+}
+
+
+function footer_menus_seed_defaults() {
+    if (!get_option('footer_menus_defaults_created')) {
+        footer_menus_seed_brand_categories();
+    }
+    if (!get_option('footer_menus_company_upgraded')) {
+        footer_menus_upgrade_company_menu();
+    }
+}
+
+function footer_menus_seed_brand_categories() {
 
     $brand_menu_id = wp_create_nav_menu('Footer Brand Directory');
     if (!is_wp_error($brand_menu_id)) {
@@ -178,35 +214,6 @@ function footer_menus_seed_defaults() {
         ));
     }
 
-    $company_menu_id = wp_create_nav_menu('Footer Our Company');
-    if (!is_wp_error($company_menu_id)) {
-        wp_update_nav_menu_item($company_menu_id, 0, array(
-            'menu-item-title' => 'Sobre Nosotros',
-            'menu-item-url' => home_url('/about-us/'),
-            'menu-item-status' => 'publish',
-        ));
-        wp_update_nav_menu_item($company_menu_id, 0, array(
-            'menu-item-title' => 'Términos y Condiciones',
-            'menu-item-url' => home_url('/terms-and-conditions/'),
-            'menu-item-status' => 'publish',
-        ));
-        wp_update_nav_menu_item($company_menu_id, 0, array(
-            'menu-item-title' => 'Delivery',
-            'menu-item-url' => home_url('/delivery/'),
-            'menu-item-status' => 'publish',
-        ));
-        wp_update_nav_menu_item($company_menu_id, 0, array(
-            'menu-item-title' => 'Pago Seguro',
-            'menu-item-url' => home_url('/secure-payment/'),
-            'menu-item-status' => 'publish',
-        ));
-        wp_update_nav_menu_item($company_menu_id, 0, array(
-            'menu-item-title' => 'Aviso Legal',
-            'menu-item-url' => home_url('/legal-notice/'),
-            'menu-item-status' => 'publish',
-        ));
-    }
-
     $locations = get_theme_mod('nav_menu_locations', array());
     if (!is_wp_error($brand_menu_id)) {
         $locations['footer_brand'] = $brand_menu_id;
@@ -214,12 +221,53 @@ function footer_menus_seed_defaults() {
     if (!is_wp_error($cats_menu_id)) {
         $locations['footer_categories'] = $cats_menu_id;
     }
-    if (!is_wp_error($company_menu_id)) {
+    set_theme_mod('nav_menu_locations', $locations);
+
+    update_option('footer_menus_defaults_created', true);
+}
+
+
+function footer_menus_upgrade_company_menu() {
+    $company_menu_id = wp_create_nav_menu('Footer Our Company');
+    if (is_wp_error($company_menu_id)) {
+        $company_menu = wp_get_nav_menu_object('Footer Our Company');
+        $company_menu_id = $company_menu ? $company_menu->term_id : 0;
+        if ($company_menu_id) {
+            footer_menus_clear_menu_items($company_menu_id);
+        }
+    }
+
+    if ($company_menu_id) {
+        $company_pages = array(
+            array('title' => 'Sobre Nosotros',       'slug' => 'about-us',              'content' => '<p>Somos una empresa especializada en la personalización de medias, calcetines, parches y accesorios corporativos. Nuestra misión es ofrecer productos de alta calidad que reflejen la identidad de cada marca.</p>'),
+            array('title' => 'Términos y Condiciones', 'slug' => 'terms-and-conditions', 'content' => '<p>Al utilizar este sitio web, aceptas los siguientes términos y condiciones. Todos los productos están sujetos a disponibilidad. Nos reservamos el derecho de modificar estos términos en cualquier momento.</p>'),
+            array('title' => 'Política de Privacidad', 'slug' => 'privacy-policy',       'content' => '<p>Tu privacidad es importante para nosotros. Esta política describe cómo recopilamos, utilizamos y protegemos tu información personal cuando navegas en nuestro sitio.</p>'),
+            array('title' => 'Aviso Legal',            'slug' => 'legal-notice',          'content' => '<p>Este aviso legal regula el uso del sitio web. Los contenidos son propiedad de la empresa. Queda prohibida la reproducción total o parcial sin autorización expresa.</p>'),
+            array('title' => 'Envíos y Devoluciones',  'slug' => 'shipping-returns',      'content' => '<p>Realizamos envíos a todo el país. Los plazos de entrega varían según la ubicación. Aceptamos devoluciones dentro de los 30 días posteriores a la recepción del pedido.</p>'),
+        );
+
+        foreach ($company_pages as $page_data) {
+            $page_id = footer_menus_create_page($page_data['title'], $page_data['slug'], $page_data['content']);
+            if ($page_id && !is_wp_error($page_id)) {
+                wp_update_nav_menu_item($company_menu_id, 0, array(
+                    'menu-item-title'     => $page_data['title'],
+                    'menu-item-url'       => get_permalink($page_id),
+                    'menu-item-status'    => 'publish',
+                    'menu-item-object-id' => $page_id,
+                    'menu-item-object'    => 'page',
+                    'menu-item-type'      => 'post_type',
+                ));
+            }
+        }
+    }
+
+    $locations = get_theme_mod('nav_menu_locations', array());
+    if ($company_menu_id) {
         $locations['footer_company'] = $company_menu_id;
     }
     set_theme_mod('nav_menu_locations', $locations);
 
-    update_option('footer_menus_defaults_created', true);
+    update_option('footer_menus_company_upgraded', true);
 }
 add_action('after_switch_theme', 'footer_menus_seed_defaults');
 add_action('admin_init', 'footer_menus_seed_defaults');
