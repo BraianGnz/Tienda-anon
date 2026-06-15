@@ -125,20 +125,20 @@
             <h2 class="nav-title">Follow Us</h2>
           </li>
 
-          <?php if (footer_contact_acf_active()) : ?>
-
           <?php
           $rendered = array();
-          foreach (array(
-              'logo-facebook'  => 'social_facebook',
-              'logo-instagram' => 'social_instagram',
-              'logo-linkedin'  => 'social_linkedin',
-              'logo-tiktok'    => 'social_tiktok',
-              'logo-youtube'   => 'social_youtube',
-          ) as $icon => $field) {
-              $url = footer_contact_get($field);
-              if ($url) {
-                  $rendered[] = compact('icon', 'url');
+          if (footer_contact_acf_active()) {
+              foreach (array(
+                  'logo-facebook'  => 'social_facebook',
+                  'logo-instagram' => 'social_instagram',
+                  'logo-linkedin'  => 'social_linkedin',
+                  'logo-tiktok'    => 'social_tiktok',
+                  'logo-youtube'   => 'social_youtube',
+              ) as $icon => $field) {
+                  $url = footer_contact_get($field);
+                  if ($url) {
+                      $rendered[] = compact('icon', 'url');
+                  }
               }
           }
           ?>
@@ -155,40 +155,6 @@
               <?php endforeach; ?>
             </ul>
           </li>
-          <?php endif; ?>
-
-          <?php else : ?>
-
-          <li>
-            <ul class="social-link">
-
-              <li class="footer-nav-item">
-                <a href="#" class="footer-nav-link">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                </a>
-              </li>
-
-              <li class="footer-nav-item">
-                <a href="#" class="footer-nav-link">
-                  <ion-icon name="logo-twitter"></ion-icon>
-                </a>
-              </li>
-
-              <li class="footer-nav-item">
-                <a href="#" class="footer-nav-link">
-                  <ion-icon name="logo-linkedin"></ion-icon>
-                </a>
-              </li>
-
-              <li class="footer-nav-item">
-                <a href="#" class="footer-nav-link">
-                  <ion-icon name="logo-instagram"></ion-icon>
-                </a>
-              </li>
-
-            </ul>
-          </li>
-
           <?php endif; ?>
 
         </ul>

@@ -13,132 +13,54 @@
 
   <div class="overlay" data-overlay></div>
 
-  <div class="modal" data-modal>
-
-    <div class="modal-close-overlay" data-modal-overlay></div>
-
-    <div class="modal-content">
-
-      <button class="modal-close-btn" data-modal-close>
-        <ion-icon name="close-outline"></ion-icon>
-      </button>
-
-      <div class="newsletter-img">
-        <img src="<?php echo esc_url(get_template_directory_uri() . '/html-template/assets/images/newsletter.png'); ?>" alt="subscribe newsletter" width="400" height="400">
-      </div>
-
-      <div class="newsletter">
-
-        <form action="#">
-
-          <div class="newsletter-header">
-
-            <h3 class="newsletter-title">Subscribe Newsletter.</h3>
-
-            <p class="newsletter-desc">
-              Subscribe the <b>Anon</b> to get latest products and discount update.
-            </p>
-
-          </div>
-
-          <input type="email" name="email" class="email-field" placeholder="Email Address" required>
-
-          <button type="submit" class="btn-newsletter">Subscribe</button>
-
-        </form>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="notification-toast" data-toast>
-
-    <button class="toast-close-btn" data-toast-close>
-      <ion-icon name="close-outline"></ion-icon>
-    </button>
-
-    <div class="toast-banner">
-      <img src="<?php echo esc_url(get_template_directory_uri() . '/html-template/assets/images/products/jewellery-1.jpg'); ?>" alt="Rose Gold Earrings" width="80" height="70">
-    </div>
-
-    <div class="toast-detail">
-
-      <p class="toast-message">
-        Someone in new just bought
-      </p>
-
-      <p class="toast-title">
-        Rose Gold Earrings
-      </p>
-
-      <p class="toast-meta">
-        <time datetime="PT2M">2 Minutes</time> ago
-      </p>
-
-    </div>
-
-  </div>
-
   <header>
 
     <div class="header-top">
 
       <div class="container">
 
+        <?php
+        $header_social_rendered = array();
+        if (footer_contact_acf_active()) {
+            foreach (array(
+                'logo-facebook'  => 'social_facebook',
+                'logo-instagram' => 'social_instagram',
+                'logo-linkedin'  => 'social_linkedin',
+                'logo-tiktok'    => 'social_tiktok',
+                'logo-youtube'   => 'social_youtube',
+            ) as $icon => $field) {
+                $url = footer_contact_get($field);
+                if ($url) {
+                    $header_social_rendered[] = compact('icon', 'url');
+                }
+            }
+        }
+        ?>
+
+        <?php if (!empty($header_social_rendered)) : ?>
         <ul class="header-social-container">
-
+          <?php foreach ($header_social_rendered as $item) : ?>
           <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
+            <a href="<?php echo esc_url($item['url']); ?>" class="social-link" target="_blank" rel="noopener noreferrer">
+              <ion-icon name="<?php echo $item['icon']; ?>"></ion-icon>
             </a>
           </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-
+          <?php endforeach; ?>
         </ul>
+        <?php endif; ?>
 
         <div class="header-alert-news">
           <p>
-            <b>Free Shipping</b>
-            This Week Order Over - $55
+            <?php
+            $header_promo_text = footer_contact_get('header_promo_text');
+            if ($header_promo_text) {
+                echo esc_html($header_promo_text);
+            } else {
+                ?><b>Free Shipping</b>
+            This Week Order Over - $55<?php
+            }
+            ?>
           </p>
-        </div>
-
-        <div class="header-top-actions">
-
-          <select name="currency">
-
-            <option value="usd">USD &dollar;</option>
-            <option value="eur">EUR &euro;</option>
-
-          </select>
-
-          <select name="language">
-
-            <option value="en-US">English</option>
-            <option value="es-ES">Espa&ntilde;ol</option>
-            <option value="fr">Fran&ccedil;ais</option>
-
-          </select>
-
         </div>
 
       </div>
@@ -174,14 +96,15 @@
 
         <div class="header-user-actions">
 
-          <a href="<?php echo esc_url(wp_login_url()); ?>" class="action-btn">
-            <ion-icon name="person-outline"></ion-icon>
-          </a>
-
-          <button class="action-btn">
-            <ion-icon name="heart-outline"></ion-icon>
-            <span class="count">0</span>
-          </button>
+          <?php if (is_user_logged_in()) : ?>
+            <a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="action-btn">
+              <ion-icon name="person-outline"></ion-icon>
+            </a>
+          <?php else : ?>
+            <a href="<?php echo esc_url(wp_login_url()); ?>" class="action-btn">
+              <ion-icon name="person-outline"></ion-icon>
+            </a>
+          <?php endif; ?>
 
           <?php if (class_exists('WooCommerce')) : ?>
             <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="action-btn">
@@ -194,13 +117,11 @@
               <span class="count">0</span>
             </button>
           <?php endif; ?>
+        </div>
 
         </div>
 
       </div>
-
-    </div>
-
     <?php
     $primary_menu_args = array(
       'theme_location' => 'primary',
@@ -235,11 +156,6 @@
         <ion-icon name="home-outline"></ion-icon>
       </a>
 
-      <button class="action-btn">
-        <ion-icon name="heart-outline"></ion-icon>
-        <span class="count">0</span>
-      </button>
-
       <button class="action-btn" data-mobile-menu-open-btn>
         <ion-icon name="grid-outline"></ion-icon>
       </button>
@@ -268,80 +184,35 @@
 
       <div class="menu-bottom">
 
-        <ul class="menu-category-list">
+        <?php
+        $mobile_social_rendered = array();
+        if (footer_contact_acf_active()) {
+            foreach (array(
+                'logo-facebook'  => 'social_facebook',
+                'logo-instagram' => 'social_instagram',
+                'logo-linkedin'  => 'social_linkedin',
+                'logo-tiktok'    => 'social_tiktok',
+                'logo-youtube'   => 'social_youtube',
+            ) as $icon => $field) {
+                $url = footer_contact_get($field);
+                if ($url) {
+                    $mobile_social_rendered[] = compact('icon', 'url');
+                }
+            }
+        }
+        ?>
 
-          <li class="menu-category">
-
-            <button class="accordion-menu" data-accordion-btn>
-              <p class="menu-title">Language</p>
-
-              <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
-            </button>
-
-            <ul class="submenu-category-list" data-accordion>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">English</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">Espa&ntilde;ol</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">Fren&ccedil;h</a>
-              </li>
-
-            </ul>
-
-          </li>
-
-          <li class="menu-category">
-            <button class="accordion-menu" data-accordion-btn>
-              <p class="menu-title">Currency</p>
-              <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
-            </button>
-
-            <ul class="submenu-category-list" data-accordion>
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">USD &dollar;</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">EUR &euro;</a>
-              </li>
-            </ul>
-          </li>
-
-        </ul>
-
+        <?php if (!empty($mobile_social_rendered)) : ?>
         <ul class="menu-social-container">
-
+          <?php foreach ($mobile_social_rendered as $item) : ?>
           <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
+            <a href="<?php echo esc_url($item['url']); ?>" class="social-link" target="_blank" rel="noopener noreferrer">
+              <ion-icon name="<?php echo $item['icon']; ?>"></ion-icon>
             </a>
           </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-
+          <?php endforeach; ?>
         </ul>
+        <?php endif; ?>
 
       </div>
 
