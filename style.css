@@ -3099,6 +3099,53 @@ footer {
   line-height: 1.6;
 }
 
+/*-----------------------------------*\
+  #TEMPLATE UTILITIES
+\*-----------------------------------*/
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.blog-meta {
+  font-size: var(--fs-7);
+  color: var(--sonic-silver);
+  margin-bottom: 20px;
+}
+
+.post-navigation {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cultured);
+}
+
+.post-navigation .nav-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.post-navigation .nav-previous a,
+.post-navigation .nav-next a {
+  color: var(--salmon-pink);
+  font-size: var(--fs-7);
+  font-weight: var(--weight-600);
+  transition: var(--transition-timing);
+}
+
+.post-navigation .nav-previous a:hover,
+.post-navigation .nav-next a:hover {
+  color: var(--eerie-black);
+}
+
 @media (min-width: 1200px) {
 
 

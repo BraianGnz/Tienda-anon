@@ -2,6 +2,8 @@
 
   <main>
 
+    <h1 class="sr-only"><?php bloginfo('name'); ?></h1>
+
     <?php get_template_part('template-parts/home/hero'); ?>
 
     <?php get_template_part('template-parts/home/categories'); ?>
