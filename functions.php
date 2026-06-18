@@ -129,6 +129,16 @@ function anon_theme_wc_disable_styles($enqueue_styles) {
 }
 add_filter('woocommerce_enqueue_styles', 'anon_theme_wc_disable_styles');
 
+function anon_theme_excerpt_length($length) {
+    return 30;
+}
+add_filter('excerpt_length', 'anon_theme_excerpt_length');
+
+function anon_theme_excerpt_more($more) {
+    return '...';
+}
+add_filter('excerpt_more', 'anon_theme_excerpt_more');
+
 require_once get_template_directory() . '/inc/hero-slider.php';
 require_once get_template_directory() . '/inc/cta-banner.php';
 require_once get_template_directory() . '/inc/blog-seeder.php';

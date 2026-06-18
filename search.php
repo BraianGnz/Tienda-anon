@@ -14,8 +14,9 @@
         <?php the_excerpt(); ?>
       </article>
       <?php endwhile; ?>
-      <?php the_posts_pagination(); ?>
     </div>
+
+    <?php the_posts_pagination(); ?>
 
     <?php else : ?>
 
