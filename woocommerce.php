@@ -1,18 +1,6 @@
 <?php
 if ( is_singular( 'product' ) ) {
-    get_header();
-    ?>
-
-    <main>
-
-      <div class="container">
-        <?php woocommerce_content(); ?>
-      </div>
-
-    </main>
-
-    <?php
-    get_footer();
+    wc_get_template( 'single-product.php' );
 } else {
     wc_get_template( 'archive-product.php' );
 }
