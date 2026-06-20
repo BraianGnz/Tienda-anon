@@ -131,6 +131,28 @@ Revisar manualmente:
 
 ---
 
+# QA para FASE 6C.2/B — Single Product Template con breadcrumbs
+
+Revisar manualmente:
+
+* single product page (`/?product=medias-argentina-campeon`) — breadcrumbs "Inicio / Medias / Medias Argentina Campeón del Mundo"
+* otro single product de categoría diferente (`/?product=perfume-ocean-breeze` o `/?product=gorra-mickey-mouse`) — breadcrumbs con categoría correcta
+* gallery de imágenes — zoom al hacer clic (si hay imágenes)
+* lightbox — clic en gallery abre lightbox
+* add-to-cart — seleccionar cantidad, clic en "Añadir al carrito", ver notificación/toast
+* product tabs — clic en "Descripción" y "Valoraciones (0)", contenido cambia
+* reviews form — visible y funcional
+* related products — sección visible con productos y add-to-cart buttons
+* DevTools → inspeccionar HTML — exactamente 1 `<div id="product-*">`
+* DevTools → inspeccionar HTML — exactamente 1 `<h1>`
+* shop page (`/shop/`) — sin regresiones, breadcrumbs "Inicio / Shop", 30 resultados
+* categoría (`/?product_cat=medias`) — sin regresiones, breadcrumbs "Inicio / Medias"
+* homepage — todas las secciones siguen funcionando
+* mobile responsive — sin overflow, layout correcto
+* consola del navegador — sin errores JS
+
+---
+
 # Aprendizaje prioritario actual
 
 Estudiar:

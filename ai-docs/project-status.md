@@ -1186,11 +1186,90 @@ mismo import defectuoso pero no generan errores funcionales.
 a `wp_unique_post_slug()` manualmente. Alternativa: agregar UNIQUE INDEX en
 `wp_posts.post_name` para prevenir duplicados a nivel DB.
 
-## Próximo paso opcional
+---
 
-`woocommerce/single-product.php` agregaría breadcrumbs en páginas de producto
-individual (actualmente no tienen). Prioridad: MEDIA (el bug de doble renderizado
-ya está resuelto sin tocar templates).
+# FASE 6C.2/B — Single Product Template con breadcrumbs (2026-06-20)
+
+## Cambio aplicado
+
+Creación de `woocommerce/single-product.php` con breadcrumbs funcionales en
+páginas de producto individual. Simplificación del routing en `woocommerce.php`.
+
+## Template hierarchy actualizada
+
+```
+woocommerce.php (theme root — routing)
+├── is_singular('product') → wc_get_template('single-product.php')
+│                           └── woocommerce/single-product.php ✓ NUEVO
+└── archive pages → wc_get_template('archive-product.php')
+                     └── woocommerce/archive-product.php
+```
+
+## Archivos modificados/creados
+
+| Archivo | Cambio |
+|---------|--------|
+| `woocommerce/single-product.php` | **Nuevo**: template de producto individual con `<main><div class="container">`, `woocommerce_breadcrumb()`, loop con `wc_get_template_part('content', 'single-product')` |
+| `woocommerce.php` | Routing simplificado: `wc_get_template('single-product.php')` en vez de `woocommerce_content()` + wrapper inline |
+
+## Detalles técnicos
+
+- Mismo patrón que `archive-product.php`: wrapper `<main><div class="container">`, breadcrumbs llamados directamente
+- `woocommerce_breadcrumb()` se llama directamente (no via hook `woocommerce_before_main_content`)
+- Todos los hooks de WooCommerce preservados: gallery, zoom, lightbox, add-to-cart, tabs, reviews, related products
+- No se modificó ningún CSS
+- No se modificó `functions.php`
+
+## Routing en woocommerce.php
+
+**Antes** (wrapper inline con `woocommerce_content()`):
+```php
+if (is_singular('product')) {
+    get_header(); ?>
+    <main><div class="container">
+        <?php woocommerce_content(); ?>
+    </div></main>
+    <?php get_footer();
+}
+```
+
+**Después** (delega al template, igual que archive):
+```php
+if (is_singular('product')) {
+    wc_get_template('single-product.php');
+}
+```
+
+## SEO — H1 por template (actualizado 2026-06-20)
+
+| Template | H1 | Fuente | Breadcrumbs |
+|----------|----|--------|-------------|
+| `front-page.php` | "Todo a medias" (logo) | Customizer | N/A |
+| `page.php` | `the_title()` | WordPress editor | N/A |
+| `single.php` | `the_title()` | WordPress editor | N/A |
+| `single-product.php` | `woocommerce_template_single_title` | WooCommerce product title | **`woocommerce_breadcrumb()`** ✅ |
+| `archive.php` | `the_archive_title()` | WordPress | N/A |
+| `search.php` | `sprintf(__('Search results for: "%s"'))` | Search query | N/A |
+| `404.php` | `esc_html__('Page not found')` | Hardcodeado | N/A |
+| `archive-product.php` | `woocommerce_page_title()` | WC (shop page / category) | **`woocommerce_breadcrumb()`** ✅ |
+
+## QA verificado
+
+| Prueba | Resultado |
+|--------|-----------|
+| Breadcrumbs en single product | ✅ "Inicio / Categoría / Producto" |
+| Gallery, zoom, lightbox | ✅ Intactos (hooks nativos de WC) |
+| Add-to-cart (quantity + button) | ✅ Formulario funcional |
+| Product tabs (Descripción, Valoraciones) | ✅ Presentes |
+| Reviews section + form | ✅ Funcional |
+| Related products | ✅ Visibles |
+| Único `#product-*` en HTML | ✅ 1 sola instancia |
+| Único H1 por página | ✅ Solo título del producto |
+| Sin warnings PHP | ✅ Ninguno |
+| Sin errores JS | ✅ Ninguno visible |
+| Shop page | ✅ Sin regresiones |
+| Category pages | ✅ Sin regresiones |
+| Homepage | ✅ Sin regresiones |
 
 ---
 
@@ -1206,5 +1285,6 @@ Estabilizar:
 
 Antes de agregar nuevas funcionalidades.
 
-El bug de doble renderizado en single product está **resuelto** (FASE 6C.2/A).
-No requiere más intervención en templates.
+**Completado**: FASE 6C.2/A (fix doble renderizado) y FASE 6C.2/B
+(single-product.php con breadcrumbs). La arquitectura WooCommerce del theme está
+completa con override parcial en catálogo y producto individual.

@@ -73,8 +73,8 @@ anon-theme/
 └── index.php                  # Dead code — fallback solo si ningún otro template matchea
 ```
 
-NOTA: El directorio `woocommerce/` existe con `archive-product.php` (override parcial del catálogo).
-Single products siguen usando templates default de WooCommerce vía `woocommerce_content()`.
+NOTA: El directorio `woocommerce/` existe con `archive-product.php` (catálogo) y
+`single-product.php` (producto individual). Ambos con breadcrumbs funcionales.
 Los estilos WC están en style.css (#WOOCOMMERCE section).
 
 ---
@@ -151,9 +151,11 @@ Cada template part que usa imágenes define su propio `$img` local.
 Uso de WooCommerce con override parcial:
 
 * **`woocommerce/archive-product.php`**: override del catálogo (shop, categorías, tags) con breadcrumbs + H1 + loop completo
-* **`woocommerce.php`**: routing condicional — single products → `woocommerce_content()`, archives → `wc_get_template('archive-product.php')`
-* NO hay woocommerce/content-product.php ni single-product.php (default WC)
+* **`woocommerce/single-product.php`**: override del producto individual con breadcrumbs + wrapper consistente
+* **`woocommerce.php`**: routing condicional — single products → `wc_get_template('single-product.php')`, archives → `wc_get_template('archive-product.php')`
+* NO hay woocommerce/content-product.php ni content-single-product.php (default WC)
 * Se usa renderizado default de WC para product cards (ul.products > li.product)
+* Todos los hooks nativos preservados (gallery, zoom, lightbox, add-to-cart, tabs, reviews, related)
 * Estilos CSS en style.css (#WOOCOMMERCE section)
 * CSS plugin nativo desactivado (woocommerce_enqueue_styles filter)
 * front-page.php usa queries custom con .product-grid > .showcase (contexto separado)
@@ -161,8 +163,8 @@ Uso de WooCommerce con override parcial:
 ### Breadcrumbs
 
 `woocommerce_breadcrumb()` se llama directamente en `woocommerce/archive-product.php`
-(no via hook `woocommerce_before_main_content` porque ese hook también dispara
-wrappers div que rompen el layout del theme).
+y `woocommerce/single-product.php` (no via hook `woocommerce_before_main_content`
+porque ese hook también dispara wrappers div que rompen el layout del theme).
 
 ## Sidebar categories dinámicas (2026-05-27)
 
@@ -232,12 +234,12 @@ El flexbox es solo interno de la card para alinear contenido verticalmente.
 
 # WooCommerce override parcial (RESUELTO 2026-06-19)
 
-Existe `woocommerce/archive-product.php` en el theme.
-Es un override controlado — solo para el catálogo (shop, categorías).
-Single products siguen usando templates default WC + CSS del theme.
-Breadcrumbs funcionan correctamente.
+Existen `woocommerce/archive-product.php` y `woocommerce/single-product.php`.
+Override controlado — catálogo (shop, categorías) + producto individual.
+Breadcrumbs funcionales en todas las páginas WooCommerce.
 
 Ver: project-status.md → "FASE 6C.1 — WooCommerce Catalog Template + Breadcrumbs"
+Ver: project-status.md → "FASE 6C.2/B — Single Product Template con breadcrumbs"
 
 ---
 

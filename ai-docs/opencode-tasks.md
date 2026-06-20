@@ -467,6 +467,23 @@ en la DB.
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-20)
+
+### FASE 6C.2/B: Single Product Template con breadcrumbs
+
+1. ✅ Auditado: template oficial de WC (`single-product.php`) usa `get_header('shop')` + `woocommerce_before_main_content` hook que dispara wrappers div incompatibles con el layout del theme
+2. ✅ Creado `woocommerce/single-product.php`: wrapper `<main><div class="container">`, `woocommerce_breadcrumb()` directo, loop con `wc_get_template_part('content', 'single-product')`
+3. ✅ Simplificado `woocommerce.php`: `wc_get_template('single-product.php')` en lugar de wrapper inline con `woocommerce_content()`
+4. ✅ Verificado: todos los hooks nativos preservados (gallery, zoom, lightbox, add-to-cart, tabs, reviews, related)
+5. ✅ Verificado: breadcrumbs visibles en todas las páginas de producto individual
+6. ✅ Verificado: exactamente 1 H1 por página (título del producto)
+7. ✅ Verificado: sin regresiones en shop, categorías, homepage
+8. ✅ Sin cambios a CSS, functions.php, o templates existentes (excepto woocommerce.php)
+
+**Decisión**: Mismo patrón que `archive-product.php` con breadcrumbs llamados directamente. No se usa el hook `woocommerce_before_main_content` para evitar wrappers div incompatibles. Todos los hooks de producto individual se mantienen intactos via `content-single-product.php`.
+
+---
+
 # Baja prioridad
 
 * wishlist real

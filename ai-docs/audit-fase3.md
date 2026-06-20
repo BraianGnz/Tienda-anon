@@ -296,11 +296,12 @@
 - CSS plugin desactivado ✅
 - Sidebar WC removido ✅
 - Shop page con templates default WC + CSS ✅
-- Single products via `woocommerce_content()` en `woocommerce.php` ✅
+- **Single products** via `woocommerce/single-product.php` con breadcrumbs + wrapper consistente ✅
 - **Catalog (shop + categories)** via `woocommerce/archive-product.php` con breadcrumbs + H1 ✅
-- Breadcrumbs funcionales en todas las archive pages WooCommerce ✅
+- **Breadcrumbs funcionales en TODAS las páginas WooCommerce** (shop, categorías, single product) ✅
+- Routing simplificado en `woocommerce.php`: `wc_get_template()` para ambos casos ✅
 
-**Nivel integración WP**: **100%** (override parcial controlado)
+**Nivel integración WP**: **100%** (override parcial controlado — catálogo + producto individual)
 
 ---
 
