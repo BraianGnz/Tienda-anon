@@ -77,8 +77,57 @@ Siempre:
 1. revisar frontend
 2. revisar mobile
 3. revisar consola
-4. revisar WooCommerce
+4. revisar WooCommerce (shop, categorías, single product, breadcrumbs)
 5. revisar responsive
+6. revisar archive pages (blog categories, search, dates)
+7. revisar H1 único por página
+
+---
+
+# QA para FASE 6B — Archive templates
+
+Revisar manualmente:
+
+* blog category archive (`/category/diseno/`) — título, descripción, posts, excerpt, fecha, pagination
+* blog tag archive (si existe) — mismo comportamiento que category
+* blog date archive (`/2026/`) — mismo comportamiento
+* search results (`/?s=medias`) — resultados, pagination, "no results" message
+* search without results (`/?s=xxxxxxxxx`) — mensaje "No encontramos resultados"
+* pagination styles en archive y search (.pagination .nav-links) en desktop y mobile
+
+---
+
+# QA para FASE 6C.1 — WooCommerce catalog + breadcrumbs
+
+Revisar manualmente:
+
+* shop page (`/shop/`) — breadcrumbs "Inicio / Shop", H1 "Shop", productos, sorting, pagination
+* shop page 2 (`/shop/page/2/`) — breadcrumbs con "Página 2"
+* product category (`/?product_cat=medias`) — breadcrumbs "Inicio / Medias", H1 "Medias", description, productos
+* product category with 1 product (`/?product_cat=uncategorized`) — breadcrumbs, H1, "Mostrando el único resultado"
+* generic product archive (`/?post_type=product`) — breadcrumbs "Inicio / Shop", H1 "Shop"
+* single product page — sigue funcionando (no roto por el cambio en woocommerce.php)
+* exactamente 1 H1 por página (inspeccionar con DevTools)
+* responsive: product grid 1/2/3/4 columnas según viewport
+* mobile: breadcrumbs legibles, sin overflow
+
+---
+
+# QA para FASE 6C.2/A — Fix doble renderizado single product
+
+Revisar manualmente:
+
+* single product page de Medias Argentina Campeón (`/?product=medias-argentina-campeon`) — exactamente 1 `<div id="product-599">` en el HTML
+* single product page de Perfume Ocean Breeze (`/?product=perfume-ocean-breeze`) — exactamente 1 `<div id="product-601">`
+* single product page de Soquetes Minnie Pack (`/?product=soquetes-minnie-pack`) — exactamente 1 `<div id="product-611">`
+* cualquier otro single product — sin cambios (sigue funcionando)
+* shop page (`/shop/`) — 30 resultados (no 33)
+* categoría Medias (`/?product_cat=medias`) — 10 resultados
+* categoría Perfumes (`/?product_cat=perfumes`) — 5 resultados (no 6)
+* add to cart en single product — botón y form funcionan
+* related products en single product — se muestran correctamente
+* homepage — product-minimal y product-grid siguen funcionando
+* responsive: sin regresiones en mobile/tablet
 
 ---
 

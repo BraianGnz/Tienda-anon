@@ -409,6 +409,64 @@ Decisión: La migración de product-minimal a grid elimina la dependencia de `ov
 
 ---
 
+---
+
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-19)
+
+### FASE 6B: Blog Archive Templates
+
+1. ✅ Creado `archive.php`: template genérico de archive con `the_archive_title()` (h1), `the_archive_description()`, loop con excerpt, `the_posts_pagination()`, mensaje sin resultados
+2. ✅ Agregados filtros `excerpt_length=30` y `excerpt_more='...'` en `functions.php`
+3. ✅ Corregido `search.php`: pagination movido fuera de `.blog-content`
+4. ✅ Agregados estilos `.pagination .nav-links` en `style.css` (flex, gap, hover/current state)
+5. ✅ Verificado: no se necesita `category.php`, `tag.php`, `date.php`, `author.php` → archive.php los cubre (mismo layout)
+6. ✅ Verificado: `index.php` es dead code (no hay "Posts page", `page_for_posts=0`)
+
+**Decisión**: Layout de archive idéntico para todos los tipos de archive (categorías, tags, fechas, autores). No se crean templates específicos.
+
+---
+
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-19)
+
+### FASE 6C.1: WooCommerce Catalog Template + Breadcrumbs
+
+1. ✅ Auditado: `woocommerce_content()` saltea `woocommerce_before_main_content` → breadcrumbs nunca se disparaban
+2. ✅ Descubierto: `woocommerce.php` en theme root tiene prioridad absoluta (índice 0 en search array de `template_loader()`)
+3. ✅ Modificado `woocommerce.php`: routing condicional — `is_singular('product')` → `woocommerce_content()`, archives → `wc_get_template('archive-product.php')`
+4. ✅ Creado `woocommerce/archive-product.php`: template completo del catálogo con `woocommerce_breadcrumb()`, H1 (`woocommerce-products-header__title`), `woocommerce_archive_description`, loop, sorting, pagination
+5. ✅ Verificado: breadcrumbs en shop, categorías (con/sin descripción), página 2 del shop
+6. ✅ Verificado: H1 único por página en todos los casos
+7. ✅ Verificado: single products siguen funcionando
+8. ✅ Verificado: responsive sin cambios (mismas clases CSS)
+9. ✅ Verificado: WooCommerce activo — todas las páginas OK
+
+**Decisión**: No se usa el hook `woocommerce_before_main_content` para breadcrumbs porque también dispara wrappers div que rompen el layout del theme. `woocommerce_breadcrumb()` se llama directamente en `archive-product.php`.
+
+---
+
+# Completado — No requiere template changes
+
+### FASE 6C.2/A: Fix de doble renderizado en single product
+
+**Contexto**: Al inspeccionar single product pages, se detectaron 2 `<div id="product-...">`
+en el HTML. Se confirmó que NO era un problema de templates sino de datos duplicados
+en la DB.
+
+**Causa raíz**: 3 pares de productos compartían slugs idénticos en `wp_posts.post_name`
+(no hay UNIQUE INDEX). `woocommerce_content()` renderiza todos los posts del main query.
+
+**Solución (solo DB, sin cambios a templates)**:
+1. ✅ Auditoría de seguridad: verificadas 0 dependencias (órdenes, reviews, upsells, widgets, menús)
+2. ✅ Eliminados IDs 600, 602, 612 vía PHP + PDO MySQL
+3. ✅ 54 rows de postmeta + 8 term_relationships limpiados
+4. ✅ QA: single products OK, shop 30 productos (antes 33), categorías OK, add-to-cart OK
+
+**Lección**: Para imports futuros, usar `wp_insert_post()` o UNIQUE INDEX en `post_name`.
+
+[Ver documentación completa en `project-status.md` → FASE 6C.2/A]
+
+---
+
 # Baja prioridad
 
 * wishlist real

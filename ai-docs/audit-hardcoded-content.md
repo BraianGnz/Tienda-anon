@@ -67,13 +67,13 @@ y datos no administrables desde WordPress.
 
 ### H. TEMPLATES FALTANTES
 
-| # | Archivo | Hallazgo | Riesgo | Prioridad |
-|---|---|---|---|---|
-| H1 | — | No existe `single.php` (usa `index.php` para single post) | Medio | Alta |
-| H2 | — | No existe `page.php` (usa `index.php` para páginas) | Medio | Alta |
-| H3 | — | No existe `archive.php` (usa `index.php` para archivos) | Medio | Alta |
-| H4 | — | No existe `search.php` (usa `index.php`) | Medio | Media |
-| H5 | — | No existe `404.php` (usa `index.php`) | Medio | Alta |
+| # | Archivo | Hallazgo | Riesgo | Prioridad | Estado |
+|---|---|---|---|---|---|
+| H1 | — | No existe `single.php` (usa `index.php` para single post) | Medio | Alta | ✅ RESUELTO |
+| H2 | — | No existe `page.php` (usa `index.php` para páginas) | Medio | Alta | ✅ RESUELTO |
+| H3 | — | No existe `archive.php` (usa `index.php` para archivos) | Medio | Alta | ✅ RESUELTO (2026-06-19) |
+| H4 | — | No existe `search.php` (usa `index.php`) | Medio | Media | ✅ RESUELTO |
+| H5 | — | No existe `404.php` (usa `index.php`) | Medio | Alta | ✅ RESUELTO |
 
 ### I. ARCHIVOS LEGACY
 
@@ -93,7 +93,8 @@ y datos no administrables desde WordPress.
 - **Secciones parcialmente hardcodeadas (fallbacks)**: Hero slides, CTA banner, categorías icons
 - **Secciones dinámicas agregadas**: Footer Brand Directory, Popular Categories, Our Company (wp_nav_menu con páginas reales)
 - **Páginas creadas automáticamente**: about-us, terms-and-conditions, privacy-policy, legal-notice, shipping-returns (5 páginas con placeholder content)
-- **Templates faltantes**: single.php, page.php, archive.php, search.php, 404.php
+- **Templates faltantes**: ~~single.php, page.php, archive.php, search.php, 404.php~~ → **NINGUNO** (todos resueltos)
+- **WooCommerce override**: `woocommerce/archive-product.php` con breadcrumbs + H1 (2026-06-19)
 - **Archivos legacy**: html-template/, website-demo-image/
 
 ---
@@ -110,10 +111,10 @@ y datos no administrables desde WordPress.
 6. Services section (5 items hardcodeados) → convertir a CPT o ACF repeater-free workaround
 7. Hero fallback slides (3 slides con texto demo y `#`) → mejorar fallback con contenido del negocio
 8. CTA banner fallback → alinear con valores seed del negocio
-9. No existe 404.php → crear template con diseño del theme
-10. No existe single.php → reemplazar index.php con template dedicado
-11. No existe page.php → template dedicado
-12. No existe archive.php → template dedicado
+9. No existe 404.php → ✅ RESUELTO
+10. No existe single.php → ✅ RESUELTO
+11. No existe page.php → ✅ RESUELTO
+12. No existe archive.php → ✅ RESUELTO (2026-06-19)
 
 ### Prioridad Media (mejorable, no urgente)
 
@@ -148,9 +149,18 @@ y datos no administrables desde WordPress.
 - Hacer editable el banner "Free Shipping" (ACF field o widget)
 - Conectar iconos sociales con datos existentes de ACF footer o menú
 
-### Fase 7: Templates faltantes
-- Crear single.php, page.php, archive.php, search.php, 404.php
-- Index.php queda como fallback genérico
+### Fase 7: Templates faltantes ✅ COMPLETADO (2026-06-19)
+- ✅ single.php, page.php, archive.php, search.php, 404.php — todos creados
+- ✅ archive.php cubre categorías/tags/fechas/autores
+- ✅ search.php con paginación corregida
+- ✅ woocommerce/archive-product.php con breadcrumbs + H1
+- Index.php queda como dead code (fallback final)
+
+### Fase 7b: WooCommerce catalog template ✅ COMPLETADO (2026-06-19)
+- ✅ woocommerce/archive-product.php con breadcrumbs funcionales
+- ✅ woocommerce.php routing condicional single vs archive
+- ✅ H1 + description + loop + sorting + pagination
+- ✅ Verificado: shop, categorías, página 2
 
 ### Fase 8: Sistema de iconos
 - Añadir campo ACF image a la taxonomía product_cat

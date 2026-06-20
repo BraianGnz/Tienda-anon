@@ -54,6 +54,9 @@ SÍ priorizar:
 * front-page.php OK
 * header.php integrado
 * footer.php integrado
+* archive.php OK (blog archives: categories, tags, dates, authors)
+* search.php OK (pagination corregida)
+* 404.php OK
 * WooCommerce instalado
 * productos reales WooCommerce funcionando
 * queries dinámicas WooCommerce funcionando
@@ -289,10 +292,11 @@ la duplicación de ~30 líneas entre el main query y el fallback.
 
 # Arquitectura WooCommerce actual
 
-## Estado override templates
+## Estado override templates (2026-06-19)
 
-NO existen overrides en woocommerce/.
-Se usa renderizado default WooCommerce (ul.products > li.product).
+Existe `woocommerce/archive-product.php` con breadcrumbs + H1 + loop completo.
+Es un override parcial: solo para catálogo (shop, categorías, etiquetas de producto).
+Single products siguen usando `woocommerce_content()` vía `woocommerce.php`.
 
 El front-page.php usa queries custom con .product-grid > .showcase.
 Ambos conviven sin nesting inválido porque son contextos separados.
@@ -946,6 +950,250 @@ Reemplazar 3 secciones hardcodeadas del footer con menús WordPress administrabl
 
 ---
 
+# FASE 6B — Blog Archive Templates (2026-06-19)
+
+## Cambio aplicado
+
+Creación de `archive.php` para cubrir todos los tipos de archivo de WordPress
+(categorías, tags, fechas, autores) que antes caían en `index.php`. Mejora de
+`search.php` y adición de estilos de paginación.
+
+## Templates creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `archive.php` | **Nuevo**: template genérico de archive con `the_archive_title()` (h1), `the_archive_description()`, loop con `the_excerpt()`, `the_posts_pagination()`, y mensaje sin resultados |
+| `functions.php` | Agregado filtro `excerpt_length=30` y `excerpt_more='...'` |
+| `search.php` | Pagination movido fuera de `.blog-content` al nivel del container |
+| `style.css` | Agregado bloque `.pagination .nav-links` con flex, gap, hover/current state salmon-pink |
+
+## Detalles técnicos
+
+- `archive.php` cubre: categorías (`category.php`), tags (`tag.php`), fechas (`date.php`), autores (`author.php`) — WP hierarchy los resuelve a `archive.php`
+- No se crearon `category.php` / `tag.php` porque el layout es idéntico para todos los archive types
+- `excerpt_length=30`: balanced para cards; `excerpt_more='...'`: cleaner que `[...]`
+- `index.php` queda como dead code (no hay "Posts page" configurada; `show_on_front=page`, `page_for_posts=0`)
+
+## Template hierarchy — WordPress (blog posts)
+
+```
+index.php (dead code — no se usa)
+├── home.php (no existe — no hay posts page)
+├── front-page.php (homepage estática)
+├── single.php (ya existe)
+├── page.php (ya existe)
+├── archive.php ✓ NUEVO
+│   ├── category.php (no necesita — fallback a archive.php)
+│   ├── tag.php (no necesita — fallback a archive.php)
+│   ├── date.php (no necesita — fallback a archive.php)
+│   └── author.php (no necesita — fallback a archive.php)
+├── search.php ✓ MEJORADO
+└── 404.php (ya existe)
+```
+
+---
+
+# FASE 6C.1 — WooCommerce Catalog Template + Breadcrumbs (2026-06-19)
+
+## Cambio aplicado
+
+Creación de `woocommerce/archive-product.php` con breadcrumbs funcionales y
+H1 correcto. Modificación de `woocommerce.php` para routing condicional entre
+single product y archive pages.
+
+## Templates creados/modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `woocommerce/archive-product.php` | **Nuevo**: template completo del catálogo WooCommerce con `woocommerce_breadcrumb()`, `<h1 class="woocommerce-products-header__title page-title">`, `woocommerce_archive_description`, loop `woocommerce_product_loop()`, sorting, pagination |
+| `woocommerce.php` | Routing condicional: `is_singular('product')` → `woocommerce_content()`, resto → `wc_get_template('archive-product.php')` |
+
+## Problema resuelto — Breadcrumbs
+
+### Causa raíz
+
+`woocommerce_content()` (función nativa de WC usada en el wrapper del theme)
+ejecuta su propio `WC_Shortcode_Products` internamente y **saltea** la acción
+`woocommerce_before_main_content` donde vive el hook de `woocommerce_breadcrumb()`.
+El breadcrumb nunca se disparaba.
+
+### Solución
+
+1. `woocommerce.php` ahora hace routing explícito:
+   - **Single product**: mantiene `woocommerce_content()` — breadcrumbs no necesarios
+   - **Archive pages** (shop, categorías, tags): llama a `wc_get_template('archive-product.php')`
+
+2. `woocommerce/archive-product.php` llama `woocommerce_breadcrumb()` directamente
+   antes del H1, dentro del `<div class="container">`.
+
+No se usó el hook `woocommerce_before_main_content` porque también dispara
+wrappers div (`<div id="primary">`, `<div id="main">`) que rompen el layout
+del theme.
+
+### Routing en woocommerce.php
+
+```php
+if (is_singular('product')) {
+    // single product → woocommerce_content() (wrapper original)
+    get_header();
+    ?><main><div class="container"><?php woocommerce_content(); ?></div></main><?php
+    get_footer();
+} else {
+    // archive pages → nuevo archive-product.php
+    wc_get_template('archive-product.php');
+}
+```
+
+## SEO — H1 por template (2026-06-19)
+
+| Template | H1 | Fuente | Breadcrumbs |
+|----------|----|--------|-------------|
+| `front-page.php` | "Todo a medias" (logo) | Customizer | N/A |
+| `page.php` | `the_title()` | WordPress editor | N/A |
+| `single.php` | `the_title()` | WordPress editor | N/A |
+| `single-product.php` | `the_title()` | WooCommerce product title | N/A (default WC) |
+| `archive.php` | `the_archive_title()` | WordPress | N/A |
+| `search.php` | `sprintf(__('Search results for: "%s"'))` | Search query | N/A |
+| `404.php` | `esc_html__('Page not found')` | Hardcodeado | N/A |
+| **archive-product.php** | **`woocommerce_page_title()`** | WooCommerce (shop page title / category name) | **`woocommerce_breadcrumb()`** ✅ |
+
+## WooCommerce template hierarchy (2026-06-19)
+
+```
+woocommerce.php (theme root — routing)
+├── is_singular('product') → woocommerce_content()
+└── archive pages → wc_get_template('archive-product.php')
+                         └── woocommerce/archive-product.php ✓ NUEVO
+```
+
+El search array de WooCommerce `template_loader()` es:
+`[woocommerce.php, archive-product.php, woocommerce/archive-product.php]`
+
+`woocommerce.php` en el theme root tiene prioridad absoluta (índice 0).
+El routing condicional dentro de `woocommerce.php` permite que single products
+sigan usando `woocommerce_content()` mientras que las archive pages usan el
+nuevo `woocommerce/archive-product.php`.
+
+## Estado actual de la jerarquía de templates
+
+```
+anon-theme/
+├── index.php (dead code — solo se usa si ningún otro template matchea)
+├── front-page.php
+├── home.php (no existe)
+├── single.php
+├── page.php
+├── archive.php ✓
+│   ├── category.php (no necesita — fallback a archive.php)
+│   ├── tag.php (no necesita — fallback a archive.php)
+│   └── ...otros archive types (date, author, taxonomías de post)
+├── search.php ✓ (pagination corregida)
+├── 404.php
+├── woocommerce.php (routing)
+└── woocommerce/
+    └── archive-product.php ✓ (shop + categorías + tags WC)
+```
+
+Templates **no creados** (innecesarios por WP hierarchy + mismo layout):
+- `category.php` → archive.php lo cubre
+- `tag.php` → archive.php lo cubre
+- `taxonomy-product_cat.php` → archive-product.php lo cubre
+
+---
+
+# FASE 6C.2/A — Fix de doble renderizado en single product (2026-06-20)
+
+## Cambio aplicado
+
+Eliminación de 3 productos duplicados en la base de datos (IDs 600, 602, 612)
+que compartían slugs idénticos con otros productos, causando doble renderizado
+en las páginas de producto individual.
+
+## Causa raíz
+
+`wp_posts.post_name` **no tiene UNIQUE INDEX** en WordPress. La unicidad de slugs
+solo la garantiza `wp_insert_post()`. El import script de productos usaba
+`$wpdb->insert()` (bypassing slug deduplication), lo que permitió crear 3 pares
+de productos con slugs idénticos:
+
+| Slug duplicado | ID original | ID duplicado | Producto |
+|---|---|---|---|
+| `medias-argentina-campeon` | 599 | 600 | Medias Argentina Campeón |
+| `perfume-ocean-breeze` | 601 | 602 | Perfume Ocean Breeze |
+| `soquetes-minnie-pack` | 611 | 612 | Soquetes Minnie Pack |
+
+`woocommerce_content()` usa `while (have_posts())` y renderiza **todos** los posts
+del main query. Con slugs duplicados, `WP_Query::get_posts()` devolvía 2 resultados
+en lugar de 1, generando 2 `<div id="product-...">` en el HTML.
+
+Otros 9 productos duplicados del mismo import fueron correctamente deduplicados
+por WordPress con sufijo `-2` (ej: `calcetines-capitan-america-2`). Esos no
+causaban doble renderizado porque cada slug era único.
+
+## Auditoría de seguridad pre-deleción
+
+Antes de eliminar los IDs 600, 602, 612 se verificó:
+
+- **Órdenes**: 0 en toda la DB (WooCommerce recién instalado, sin ventas)
+- **Reviews**: 0 asociadas a estos IDs
+- **Upsells/cross-sells**: 0 referencias
+- **Featured products**: IDs 599 y 600 tenían `product_visibility → featured`;
+  al eliminar 600, 599 conserva el término featured
+- **Deal of the day**: query en front-page.php usa un criterio de fecha, no IDs
+  específicos
+- **Widgets/menús**: 0 referencias a estos IDs
+- **Posts/pages**: 0 referencias a estos IDs
+
+## Eliminación
+
+Se ejecutó vía PHP + PDO directo a MySQL (puerto 10011):
+
+```php
+$ids = [600, 602, 612];
+// wp_postmeta: 54 rows deleted
+// wp_term_relationships: 8 rows deleted
+// wp_posts: 3 rows deleted
+```
+
+Productos publicados: 33 → 30.
+
+## QA post-fix
+
+| Página | Resultado |
+|--------|-----------|
+| `/?product=medias-argentina-campeon` | 1 solo `#product` ✅ (antes: 2) |
+| `/?product=perfume-ocean-breeze` | 1 solo `#product` ✅ (antes: 2) |
+| `/?product=soquetes-minnie-pack` | 1 solo `#product` ✅ (antes: 2) |
+| `/?product=...` (otros productos sin duplicado) | Sin cambios ✅ |
+| `/shop/` | 30 resultados (antes: 33) ✅ |
+| `/?product_cat=medias` | 10 resultados ✅ |
+| `/?product_cat=perfumes` | 5 resultados (antes: 6) ✅ |
+| Related products en single product | Funcionan ✅ |
+| Add to cart forms | Funcionan ✅ |
+
+### Nota sobre productos con sufijo `-2`
+
+Productos como `calcetines-capitan-america-2` (ID 628), `calcetines-andes-2` (ID 642),
+`gorra-argentina-2` (ID 618), `gorra-guardians-2` (ID 637) aparecen en el shop grid
+como entradas separadas. Esto es correcto — son productos distintos en la DB con
+slugs únicos. No causan doble renderizado en single product. Son artifacts del
+mismo import defectuoso pero no generan errores funcionales.
+
+## Lección aprendida
+
+**Para futuros imports de productos**: usar `wp_insert_post()` que aplica
+`wp_unique_post_slug()` automáticamente. Si se usa `$wpdb->insert()`, llamar
+a `wp_unique_post_slug()` manualmente. Alternativa: agregar UNIQUE INDEX en
+`wp_posts.post_name` para prevenir duplicados a nivel DB.
+
+## Próximo paso opcional
+
+`woocommerce/single-product.php` agregaría breadcrumbs en páginas de producto
+individual (actualmente no tienen). Prioridad: MEDIA (el bug de doble renderizado
+ya está resuelto sin tocar templates).
+
+---
+
 # Prioridad actual
 
 Estabilizar:
@@ -957,3 +1205,6 @@ Estabilizar:
 * CSS reusable
 
 Antes de agregar nuevas funcionalidades.
+
+El bug de doble renderizado en single product está **resuelto** (FASE 6C.2/A).
+No requiere más intervención en templates.

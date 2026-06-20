@@ -56,16 +56,25 @@ anon-theme/
 │       ├── testimonials.php
 │       └── blog.php
 │
-├── front-page.php          # Homepage orchestrator (get_template_part calls)
-├── woocommerce.php          # Thin wrapper → woocommerce_content()
+├── woocommerce/
+│   └── archive-product.php  # Catalog template (shop + categories) with breadcrumbs
+│
+├── front-page.php            # Homepage orchestrator (get_template_part calls)
+├── woocommerce.php            # Routing: single → woocommerce_content(), archive → archive-product.php
+├── archive.php                # Blog archives (category, tag, date, author)
+├── search.php                 # Search results with pagination
+├── 404.php                    # 404 page
+├── single.php                 # Single post
+├── page.php                   # Pages
 ├── header.php
 ├── footer.php
 ├── functions.php
-├── style.css                # Monolítico, incluye #WOOCOMMERCE section
+├── style.css                  # Monolítico, incluye #WOOCOMMERCE section
+└── index.php                  # Dead code — fallback solo si ningún otro template matchea
 ```
 
-NOTA: No existe directorio woocommerce/ con overrides.
-El shop usa templates default de WooCommerce.
+NOTA: El directorio `woocommerce/` existe con `archive-product.php` (override parcial del catálogo).
+Single products siguen usando templates default de WooCommerce vía `woocommerce_content()`.
 Los estilos WC están en style.css (#WOOCOMMERCE section).
 
 ---
@@ -137,15 +146,23 @@ Los wrappers estructurales que agrupan secciones se mantienen en el orquestador:
 
 Cada template part que usa imágenes define su propio `$img` local.
 
-## Enfoque actual
+## Enfoque actual (2026-06-19)
 
-Usar WooCommerce clásico sin overrides de templates:
+Uso de WooCommerce con override parcial:
 
-* NO hay woocommerce/archive-product.php ni woocommerce/content-product.php
-* Se usa renderizado default de WC (ul.products > li.product)
+* **`woocommerce/archive-product.php`**: override del catálogo (shop, categorías, tags) con breadcrumbs + H1 + loop completo
+* **`woocommerce.php`**: routing condicional — single products → `woocommerce_content()`, archives → `wc_get_template('archive-product.php')`
+* NO hay woocommerce/content-product.php ni single-product.php (default WC)
+* Se usa renderizado default de WC para product cards (ul.products > li.product)
 * Estilos CSS en style.css (#WOOCOMMERCE section)
 * CSS plugin nativo desactivado (woocommerce_enqueue_styles filter)
 * front-page.php usa queries custom con .product-grid > .showcase (contexto separado)
+
+### Breadcrumbs
+
+`woocommerce_breadcrumb()` se llama directamente en `woocommerce/archive-product.php`
+(no via hook `woocommerce_before_main_content` porque ese hook también dispara
+wrappers div que rompen el layout del theme).
 
 ## Sidebar categories dinámicas (2026-05-27)
 
@@ -213,13 +230,14 @@ El flexbox es solo interno de la card para alinear contenido verticalmente.
 
 ---
 
-# Riesgo actual importante (RESUELTO 2026-05-26)
+# WooCommerce override parcial (RESUELTO 2026-06-19)
 
-No existe archive-product.php en el theme.
-No hay conflicto con ul.products/li.product porque no hay overrides.
-El shop usa templates default WC + CSS del theme.
+Existe `woocommerce/archive-product.php` en el theme.
+Es un override controlado — solo para el catálogo (shop, categorías).
+Single products siguen usando templates default WC + CSS del theme.
+Breadcrumbs funcionan correctamente.
 
-Ver: project-status.md → "Shop page estabilizada"
+Ver: project-status.md → "FASE 6C.1 — WooCommerce Catalog Template + Breadcrumbs"
 
 ---
 

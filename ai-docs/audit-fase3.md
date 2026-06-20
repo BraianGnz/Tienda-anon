@@ -285,9 +285,9 @@
 
 ---
 
-## 13. WOOCOMMERCE
+## 13. WOOCOMMERCE (2026-06-19)
 
-**Archivos**: `woocommerce.php`, `functions.php`
+**Archivos**: `woocommerce.php`, `woocommerce/archive-product.php`, `functions.php`
 **Estado actual**: 100% FUNCIONAL
 
 **Lo que funciona**:
@@ -296,10 +296,11 @@
 - CSS plugin desactivado ✅
 - Sidebar WC removido ✅
 - Shop page con templates default WC + CSS ✅
-- No existe `woocommerce/` override directory ✅
-- No existe `archive-product.php` ni `single-product.php` en el theme ✅
+- Single products via `woocommerce_content()` en `woocommerce.php` ✅
+- **Catalog (shop + categories)** via `woocommerce/archive-product.php` con breadcrumbs + H1 ✅
+- Breadcrumbs funcionales en todas las archive pages WooCommerce ✅
 
-**Nivel integración WP**: **100%** (delega todo a WooCommerce)
+**Nivel integración WP**: **100%** (override parcial controlado)
 
 ---
 
