@@ -147,3 +147,4 @@ require_once get_template_directory() . '/inc/testimonials.php';
 require_once get_template_directory() . '/inc/footer-contact.php';
 require_once get_template_directory() . '/inc/footer-menus.php';
 require_once get_template_directory() . '/inc/header-settings.php';
+require_once get_template_directory() . '/inc/services.php';

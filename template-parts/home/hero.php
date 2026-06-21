@@ -31,35 +31,10 @@ if (function_exists('get_field')) {
 }
 
 if (empty($slides)) {
-    $img = get_template_directory_uri() . '/html-template/assets/images';
-    $slides = array(
-        array(
-            'image'       => $img . '/banner-1.jpg',
-            'subtitle'    => "Trending item",
-            'title'       => "Women's latest fashion sale",
-            'price'       => 'starting at &dollar; <b>20</b>.00',
-            'button_text' => 'Shop now',
-            'button_url'  => '#',
-        ),
-        array(
-            'image'       => $img . '/banner-2.jpg',
-            'subtitle'    => 'Trending accessories',
-            'title'       => 'Modern sunglasses',
-            'price'       => 'starting at &dollar; <b>15</b>.00',
-            'button_text' => 'Shop now',
-            'button_url'  => '#',
-        ),
-        array(
-            'image'       => $img . '/banner-3.jpg',
-            'subtitle'    => 'Sale Offer',
-            'title'       => "New fashion summer sale",
-            'price'       => 'starting at &dollar; <b>29</b>.99',
-            'button_text' => 'Shop now',
-            'button_url'  => '#',
-        ),
-    );
+    return;
 }
 ?>
+
 <div class="banner">
 
   <div class="container">

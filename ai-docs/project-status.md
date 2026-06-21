@@ -1273,6 +1273,76 @@ if (is_singular('product')) {
 
 ---
 
+# HOME ADMINISTRABILITY AUDIT (2026-06-20)
+
+Clasificación del estado de cada bloque de la homepage según su capacidad
+de ser administrado desde WordPress sin modificar código.
+
+| Bloque | Archivo | Estado | Resumen |
+|--------|---------|--------|---------|
+| Hero | `hero.php` | **Parcial** | ACF CPT hero_slide con seed de contenido real ✅ — Fallback demo inglés + `#` links ❌ |
+| Categories | `categories.php` | **Parcial** | Categorías WC dinámicas ✅ — Iconos SVG mapeados por slug hardcodeado ❌ |
+| Sidebar | `sidebar.php` | **Dinámico** | Categorías WC + best sellers query con fallback a últimos productos ✅ |
+| New Arrivals | `product-minimal.php` | **Parcial** | Query últimas 8 productos ✅ — Título "New Arrivals" hardcodeado (inglés) ❌ |
+| Deal of the Day | `product-featured.php` | **Parcial** | ACF true_false deal_of_the_day + fallback ✅ — Título "Deal of the day" hardcodeado ❌ |
+| New Products | `product-grid.php` | **Parcial** | Query + badge system + gallery hover ✅ — Título hardcodeado + action buttons decorativos (sin wishlist/compare real) ❌ |
+| Testimonials | `testimonials.php` | **Parcial** | CPT testimonial con ACF + seed real ✅ — **Our Services** (5 items) 100% hardcodeado ❌ |
+| CTA Banner | `banners.php` | **Dinámico** | ACF fields en front page con seed de contenido real del negocio ✅ |
+| Blog | `blog.php` | **Dinámico** | Posts reales, categorías, autor ✅ — Fallback images placeholder demo ⚠️ |
+
+**Totales**: 3 Dinámico · 6 Parcial · 0 Hardcodeado puro
+
+Ver: `ai-docs/audit-homepage.md` para auditoría detallada por bloque.
+
+---
+
+# HOME ADMINISTRABILITY — FASE 7B COMPLETADA (2026-06-20)
+
+## Cambios aplicados
+
+### Hero — Fallback demo eliminado
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Archivo** | `template-parts/home/hero.php` |
+| **Antes** | Array hardcodeado de 3 slides en inglés con `#` links mostraba contenido demo si no había slides ACF |
+| **Después** | `if (empty($slides)) { return; }` — la sección no se renderiza si no hay slides configurados |
+| **Riesgo** | Mínimo — el ACF query se evalúa primero; sin slides la sección simplemente no aparece |
+| **Beneficio** | Hero 100% administrable. Sin contenido demo en inglés. Sin enlaces rotos. |
+
+### Our Services — CPT + ACF creado
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Archivos** | `inc/services.php` (nuevo), `template-parts/home/testimonials.php` (modificado), `functions.php` (modificado) |
+| **Antes** | 5 items 100% hardcodeados con English text, `#` links, iconos fijos |
+| **Después** | CPT `service` con ACF fields (`service_icon`, `service_desc`, `service_url`) + seed con 5 servicios reales del negocio en español |
+| **Riesgo** | Bajo — sin servicios, la sección no se renderiza |
+| **Beneficio** | Servicios editables desde WP. Enlaces funcionales. Contenido en español. |
+
+### Testimonial image — fallback eliminado
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Archivo** | `template-parts/home/testimonials.php` |
+| **Antes** | Si no había thumbnail, mostraba `testimonial-1.jpg` (demo placeholder) |
+| **Después** | Sin thumbnail, no se muestra imagen. Solo nombre, ciudad/producto y texto. |
+
+## Nuevo estado de los bloques
+
+| Bloque | Estado anterior | Estado actual |
+|--------|----------------|---------------|
+| Hero | Parcial | **Dinámico** ✅ |
+| Testimonials (Services) | Parcial (hardcodeado) | **Dinámico** ✅ |
+| Testimonials (sección) | Parcial | **Dinámico** ✅ |
+
+## Porcentaje de administrabilidad actualizado
+
+**Anterior**: ~65%
+**Actual**: **~73%** (Hero y Services convertidos a dinámicos)
+
+---
+
 # Prioridad actual
 
 Estabilizar:
@@ -1288,3 +1358,5 @@ Antes de agregar nuevas funcionalidades.
 **Completado**: FASE 6C.2/A (fix doble renderizado) y FASE 6C.2/B
 (single-product.php con breadcrumbs). La arquitectura WooCommerce del theme está
 completa con override parcial en catálogo y producto individual.
+
+**Próximo**: FASE 7 — Administrabilidad completa de la Home.

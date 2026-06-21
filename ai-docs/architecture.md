@@ -59,7 +59,7 @@ anon-theme/
 ├── woocommerce/
 │   └── archive-product.php  # Catalog template (shop + categories) with breadcrumbs
 │
-├── front-page.php            # Homepage orchestrator (get_template_part calls)
+├── front-page.php              # Homepage orchestrator (get_template_part calls)
 ├── woocommerce.php            # Routing: single → woocommerce_content(), archive → archive-product.php
 ├── archive.php                # Blog archives (category, tag, date, author)
 ├── search.php                 # Search results with pagination
@@ -69,6 +69,16 @@ anon-theme/
 ├── header.php
 ├── footer.php
 ├── functions.php
+├── inc/
+│   ├── hero-slider.php       # CPT hero_slide + ACF + seed
+│   ├── testimonials.php       # CPT testimonial + ACF + seed
+│   ├── services.php           # CPT service + ACF + seed
+│   ├── product-deal.php       # ACF deal_of_the_day + query
+│   ├── cta-banner.php         # ACF CTA fields + seed
+│   ├── blog-seeder.php        # Blog post seeder
+│   ├── footer-contact.php     # Footer contact ACF
+│   ├── footer-menus.php       # Footer menu fallbacks
+│   └── header-settings.php    # Header settings ACF
 ├── style.css                  # Monolítico, incluye #WOOCOMMERCE section
 └── index.php                  # Dead code — fallback solo si ningún otro template matchea
 ```

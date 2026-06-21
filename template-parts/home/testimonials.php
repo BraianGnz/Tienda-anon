@@ -27,8 +27,6 @@ if ($testimonials_query->have_posts()) :
 
     <?php if (has_post_thumbnail()) : ?>
       <?php the_post_thumbnail('thumbnail', array('class' => 'testimonial-banner', 'width' => 80, 'height' => 80)); ?>
-    <?php else : ?>
-      <img src="<?php echo $img; ?>/testimonial-1.jpg" alt="<?php the_title_attribute(); ?>" class="testimonial-banner" width="80" height="80">
     <?php endif; ?>
 
     <p class="testimonial-name"><?php the_title(); ?></p>
@@ -54,87 +52,52 @@ if ($testimonials_query->have_posts()) :
 </div>
 <?php endif; ?>
 
+<?php
+$services_query = new WP_Query(array(
+    'post_type'      => 'service',
+    'posts_per_page' => 10,
+    'post_status'    => 'publish',
+    'orderby'        => 'menu_order',
+    'order'          => 'ASC',
+));
+
+if ($services_query->have_posts()) :
+?>
+
 <div class="service">
 
   <h2 class="title">Our Services</h2>
 
   <div class="service-container">
 
-    <a href="#" class="service-item">
+    <?php while ($services_query->have_posts()) : $services_query->the_post();
+      $icon = get_field('service_icon') ?: 'boat-outline';
+      $desc = get_field('service_desc');
+      $url  = get_field('service_url') ?: '#';
+    ?>
+
+    <a href="<?php echo esc_url($url); ?>" class="service-item">
 
       <div class="service-icon">
-        <ion-icon name="boat-outline"></ion-icon>
+        <ion-icon name="<?php echo esc_attr($icon); ?>"></ion-icon>
       </div>
 
       <div class="service-content">
 
-        <h3 class="service-title">Worldwide Delivery</h3>
-        <p class="service-desc">For Order Over $100</p>
+        <h3 class="service-title"><?php the_title(); ?></h3>
+        <?php if ($desc) : ?>
+        <p class="service-desc"><?php echo esc_html($desc); ?></p>
+        <?php endif; ?>
 
       </div>
 
     </a>
 
-    <a href="#" class="service-item">
-
-      <div class="service-icon">
-        <ion-icon name="rocket-outline"></ion-icon>
-      </div>
-
-      <div class="service-content">
-
-        <h3 class="service-title">Next Day delivery</h3>
-        <p class="service-desc">UK Orders Only</p>
-
-      </div>
-
-    </a>
-
-    <a href="#" class="service-item">
-
-      <div class="service-icon">
-        <ion-icon name="call-outline"></ion-icon>
-      </div>
-
-      <div class="service-content">
-
-        <h3 class="service-title">Best Online Support</h3>
-        <p class="service-desc">Hours: 8AM - 11PM</p>
-
-      </div>
-
-    </a>
-
-    <a href="#" class="service-item">
-
-      <div class="service-icon">
-        <ion-icon name="arrow-undo-outline"></ion-icon>
-      </div>
-
-      <div class="service-content">
-
-        <h3 class="service-title">Return Policy</h3>
-        <p class="service-desc">Easy & Free Return</p>
-
-      </div>
-
-    </a>
-
-    <a href="#" class="service-item">
-
-      <div class="service-icon">
-        <ion-icon name="ticket-outline"></ion-icon>
-      </div>
-
-      <div class="service-content">
-
-        <h3 class="service-title">30% money back</h3>
-        <p class="service-desc">For Order Over $100</p>
-
-      </div>
-
-    </a>
+    <?php endwhile; ?>
+    <?php wp_reset_postdata(); ?>
 
   </div>
 
 </div>
+
+<?php endif; ?>

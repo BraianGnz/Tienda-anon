@@ -484,6 +484,36 @@ en la DB.
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-20)
+
+### FASE 7B: Hero + Services administrables
+
+**Hero**:
+1. ✅ Eliminado array fallback demo (3 slides en inglés con `#` links)
+2. ✅ Reemplazado con `return` temprano si no hay slides
+3. ✅ Verificado: slides ACF se renderizan normalmente
+4. ✅ Verificado: sin slides, la sección no se muestra (sección oculta, no demo)
+
+**Services**:
+1. ✅ Creado CPT `service` en `inc/services.php`
+2. ✅ ACF fields: `service_icon` (text, Ionicon name), `service_desc` (text), `service_url` (url)
+3. ✅ Seed de 5 servicios con contenido real del negocio (español, URLs válidas)
+4. ✅ Actualizado `testimonials.php`: query dinámica del CPT en lugar de HTML hardcodeado
+5. ✅ Eliminado fallback de imagen demo (`testimonial-1.jpg`) en testimonios
+6. ✅ Agregado `require_once` en `functions.php`
+
+**QA**:
+- ✅ Hero con slides seeded se renderiza correctamente
+- ✅ Services con 5 items seeded se muestran con iconos, títulos, descripciones y URLs
+- ✅ Sin contenido demo en inglés
+- ✅ Sin enlaces `#`
+- ✅ Sin errores PHP ni JS
+- ✅ Sin regresiones en otras secciones de la homepage
+
+**Decisión**: Se eligió CPT (Opción A) por consistencia con la arquitectura existente (hero_slide, testimonial usan el mismo patrón). Repeater ACF (Opción B) se descartó por ser menos consistente con el proyecto.
+
+---
+
 # Baja prioridad
 
 * wishlist real
