@@ -141,6 +141,7 @@ add_filter('excerpt_more', 'anon_theme_excerpt_more');
 
 require_once get_template_directory() . '/inc/hero-slider.php';
 require_once get_template_directory() . '/inc/cta-banner.php';
+require_once get_template_directory() . '/inc/homepage-sections.php';
 require_once get_template_directory() . '/inc/blog-seeder.php';
 require_once get_template_directory() . '/inc/product-deal.php';
 require_once get_template_directory() . '/inc/testimonials.php';

@@ -1,15 +1,4 @@
 <?php
-$img = get_template_directory_uri() . '/html-template/assets/images';
-
-$cat_icons = array(
-    'medias'       => 'shoes.svg',
-    'calcetines'   => 'shoes.svg',
-    'gorras'       => 'hat.svg',
-    'perfumes'     => 'perfume.svg',
-    'remeras'      => 'tee.svg',
-    'uncategorized' => 'bag.svg',
-);
-
 $product_cats = get_terms(array(
     'taxonomy'   => 'product_cat',
     'hide_empty' => true,
@@ -18,6 +7,8 @@ $product_cats = get_terms(array(
 ));
 
 $product_cats = wp_list_filter($product_cats, array('slug' => 'uncategorized'), 'NOT');
+
+$fallback_icon = get_template_directory_uri() . '/html-template/assets/images/icons/bag.svg';
 
 if (!empty($product_cats) && !is_wp_error($product_cats)) :
 ?>
@@ -28,12 +19,16 @@ if (!empty($product_cats) && !is_wp_error($product_cats)) :
     <div class="category-item-container has-scrollbar">
 
       <?php foreach ($product_cats as $cat) :
-        $icon = isset($cat_icons[$cat->slug]) ? $cat_icons[$cat->slug] : 'bag.svg';
+        $icon_id = get_field('category_icon', 'product_cat_' . $cat->term_id);
+        $icon_url = $icon_id ? wp_get_attachment_image_url($icon_id, 'thumbnail') : '';
+        if (empty($icon_url)) {
+            $icon_url = $fallback_icon;
+        }
       ?>
       <div class="category-item">
 
         <div class="category-img-box">
-          <img src="<?php echo $img; ?>/icons/<?php echo $icon; ?>" alt="<?php echo esc_attr($cat->name); ?>" width="30">
+          <img src="<?php echo esc_url($icon_url); ?>" alt="<?php echo esc_attr($cat->name); ?>" width="30">
         </div>
 
         <div class="category-content-box">
@@ -44,7 +39,7 @@ if (!empty($product_cats) && !is_wp_error($product_cats)) :
             <p class="category-item-amount">(<?php echo esc_html($cat->count); ?>)</p>
           </div>
 
-          <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="category-btn">Show all</a>
+          <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="category-btn">Ver más</a>
 
         </div>
 

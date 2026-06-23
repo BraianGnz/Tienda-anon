@@ -514,6 +514,22 @@ en la DB.
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-23)
+
+### FASE 7C: Categories administrables + Títulos ACF
+
+1. ✅ **Categories**: Eliminado array `$cat_icons` de mapeo slug→SVG. Agregado campo ACF `category_icon` (Image) en taxonomía `product_cat`. Fallback a `bag.svg`.
+2. ✅ **Homepage Sections**: Creado `inc/homepage-sections.php` con 2 field groups — `group_homepage_sections` (6 campos para títulos en front page) y `group_category_icon` (icono en product_cat).
+3. ✅ **Títulos implementados**: `product-minimal.php`, `product-featured.php`, `product-grid.php`, `sidebar.php`, `blog.php` — todos con ACF + fallback en español.
+4. ✅ **Blog count**: `posts_per_page` dinámico via ACF `home_blog_count` (fallback 4).
+5. ✅ **Traducciones completas**: 9 textos visibles traducidos del inglés al español.
+6. ✅ **Action buttons decorativos**: Eliminados `heart-outline`, `eye-outline`, `repeat-outline` del HTML en `product-grid.php`.
+7. ✅ **PHP syntax**: 9 archivos validados sin errores.
+8. ✅ **Homepage ~97% administrable**: 9/9 bloques dinámicos.
+9. ✅ **Documentación actualizada**: audit-homepage.md, architecture.md, project-status.md, opencode-tasks.md.
+
+---
+
 # Baja prioridad
 
 * wishlist real

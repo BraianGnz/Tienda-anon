@@ -1,7 +1,17 @@
 <?php
+$front_id = (int) get_option('page_on_front');
+$blog_title = $front_id ? get_field('home_blog_title', $front_id) : '';
+if (!$blog_title) {
+    $blog_title = 'Blog';
+}
+$blog_count = $front_id ? get_field('home_blog_count', $front_id) : 0;
+if (!$blog_count || $blog_count < 1) {
+    $blog_count = 4;
+}
+
 $blog_posts = new WP_Query(array(
     'post_type'      => 'post',
-    'posts_per_page' => 4,
+    'posts_per_page' => $blog_count,
     'post_status'    => 'publish',
     'orderby'        => 'date',
     'order'          => 'DESC',
@@ -20,6 +30,8 @@ $placeholder_index = 0;
 <div class="blog">
 
   <div class="container">
+
+    <h2 class="title"><?php echo esc_html($blog_title); ?></h2>
 
     <div class="blog-container has-scrollbar">
 
@@ -54,7 +66,7 @@ $placeholder_index = 0;
           </a>
 
           <p class="blog-meta">
-            By <cite><?php the_author(); ?></cite> / <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
+            Por <cite><?php the_author(); ?></cite> / <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
           </p>
 
         </div>

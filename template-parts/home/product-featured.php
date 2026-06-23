@@ -1,6 +1,13 @@
 <div class="product-featured">
 
-  <h2 class="title">Deal of the day</h2>
+  <?php
+  $front_id = (int) get_option('page_on_front');
+  $deal_title = $front_id ? get_field('home_deal_title', $front_id) : '';
+  if (!$deal_title) {
+      $deal_title = 'Oferta del día';
+  }
+  ?>
+  <h2 class="title"><?php echo esc_html($deal_title); ?></h2>
 
   <div class="showcase-wrapper has-scrollbar">
 

@@ -3,7 +3,7 @@
   <div class="sidebar-category">
 
     <div class="sidebar-top">
-      <h2 class="sidebar-title">Category</h2>
+      <h2 class="sidebar-title">Categorías</h2>
 
       <button class="sidebar-close-btn" data-mobile-menu-close-btn>
         <ion-icon name="close-outline"></ion-icon>
@@ -25,7 +25,7 @@
           <div class="menu-title-flex">
             <p class="menu-title"><?php echo esc_html($cat->name); ?></p>
           </div>
-          <data value="<?php echo esc_attr($cat->count); ?>" class="stock" title="Available Stock"><?php echo esc_html($cat->count); ?></data>
+          <data value="<?php echo esc_attr($cat->count); ?>" class="stock" title="Stock disponible"><?php echo esc_html($cat->count); ?></data>
         </a>
       </li>
       <?php
@@ -39,7 +39,14 @@
 
   <div class="product-showcase">
 
-    <h3 class="showcase-heading">best sellers</h3>
+    <?php
+    $front_id = (int) get_option('page_on_front');
+    $bs_title = $front_id ? get_field('home_best_sellers_title', $front_id) : '';
+    if (!$bs_title) {
+        $bs_title = 'Más vendidos';
+    }
+    ?>
+    <h3 class="showcase-heading"><?php echo esc_html($bs_title); ?></h3>
 
     <div class="showcase-wrapper">
 

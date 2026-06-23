@@ -34,6 +34,7 @@ anon-theme/
 ├── inc/
 │   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
 │   ├── cta-banner.php      # CTA Banner ACF fields + seeder (front page meta)
+│   ├── homepage-sections.php # Homepage section titles ACF + category icon ACF
 │   ├── blog-seeder.php     # Default blog posts + categories on theme activation
 │   ├── product-deal.php    # Deal of the Day ACF true/false field + query function
 │   ├── testimonials.php    # Testimonial CPT + ACF fields + demo seeder
@@ -73,6 +74,7 @@ anon-theme/
 │   ├── hero-slider.php       # CPT hero_slide + ACF + seed
 │   ├── testimonials.php       # CPT testimonial + ACF + seed
 │   ├── services.php           # CPT service + ACF + seed
+│   ├── homepage-sections.php  # Homepage titles + category icon ACF
 │   ├── product-deal.php       # ACF deal_of_the_day + query
 │   ├── cta-banner.php         # ACF CTA fields + seed
 │   ├── blog-seeder.php        # Blog post seeder

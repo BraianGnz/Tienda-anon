@@ -1,6 +1,13 @@
 <div class="product-main">
 
-  <h2 class="title">New Products</h2>
+  <?php
+  $front_id = (int) get_option('page_on_front');
+  $grid_title = $front_id ? get_field('home_new_products_title', $front_id) : '';
+  if (!$grid_title) {
+      $grid_title = 'Nuevos productos';
+  }
+  ?>
+  <h2 class="title"><?php echo esc_html($grid_title); ?></h2>
 
   <div class="product-grid">
 
@@ -57,20 +64,6 @@
             }
             ?>
             <?php echo $badge_html; ?>
-            <div class="showcase-actions">
-              <button class="btn-action">
-                <ion-icon name="heart-outline"></ion-icon>
-              </button>
-              <button class="btn-action">
-                <ion-icon name="eye-outline"></ion-icon>
-              </button>
-              <button class="btn-action">
-                <ion-icon name="repeat-outline"></ion-icon>
-              </button>
-              <button class="btn-action">
-                <ion-icon name="bag-add-outline"></ion-icon>
-              </button>
-            </div>
           </div>
           <div class="showcase-content">
             <?php if ($cat_name) : ?>

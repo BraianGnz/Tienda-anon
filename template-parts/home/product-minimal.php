@@ -10,8 +10,13 @@
 
   if ($new_arrivals->have_posts()) :
     $counter = 0;
+    $front_id = (int) get_option('page_on_front');
+    $na_title = $front_id ? get_field('home_new_arrivals_title', $front_id) : '';
+    if (!$na_title) {
+        $na_title = 'Novedades';
+    }
     echo '<div class="product-showcase">';
-    echo '<h2 class="title">New Arrivals</h2>';
+    echo '<h2 class="title">' . esc_html($na_title) . '</h2>';
     echo '<div class="showcase-wrapper has-scrollbar">';
     echo '<div class="showcase-container">';
 

@@ -654,6 +654,83 @@ $product_cats = get_terms(array(
 
 ---
 
+# FASE 7C — Categories administrables + Títulos ACF + Traducciones (2026-06-23)
+
+## Cambio aplicado
+
+La homepage ahora es ~97% administrable desde WordPress. Se eliminaron todos
+los textos hardcodeados en inglés y se reemplazaron por campos ACF. Los iconos
+de categorías ahora se administran desde el editor de categorías WooCommerce.
+
+## Archivos modificados/creados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/homepage-sections.php` | **Nuevo**: 2 ACF field groups — `group_homepage_sections` (6 fields para títulos) y `group_category_icon` (1 field image en product_cat taxonomía) |
+| `functions.php` | `require_once` para `inc/homepage-sections.php` |
+| `template-parts/home/categories.php` | Eliminado array `$cat_icons`. Ahora usa `get_field('category_icon', 'product_cat_'.$cat->term_id)`. "Show all" → "Ver más". Fallback `bag.svg`. |
+| `template-parts/home/product-minimal.php` | "New Arrivals" → ACF `home_new_arrivals_title` (fallback "Novedades") |
+| `template-parts/home/product-featured.php` | "Deal of the day" → ACF `home_deal_title` (fallback "Oferta del día") |
+| `template-parts/home/product-grid.php` | "New Products" → ACF `home_new_products_title` (fallback "Nuevos productos"). Eliminados action buttons decorativos (heart, eye, repeat) del HTML. |
+| `template-parts/home/sidebar.php` | "best sellers" → ACF `home_best_sellers_title` (fallback "Más vendidos"). "Category" → "Categorías". "Available Stock" → "Stock disponible". |
+| `template-parts/home/blog.php` | Título visible ACF `home_blog_title` (fallback "Blog"). `posts_per_page` ACF `home_blog_count` (fallback 4). "By" → "Por". |
+| `template-parts/woocommerce/deal-product-card.php` | "add to cart" → "Agregar al carrito" |
+| `ai-docs/audit-homepage.md` | Actualizado: 9/9 bloques dinámicos, ~97% administrable |
+| `ai-docs/architecture.md` | Actualizada estructura de inc/ |
+| `ai-docs/project-status.md` | Nueva sección FASE 7C |
+| `ai-docs/opencode-tasks.md` | Tarea marcada como completada |
+
+## Detalles técnicos
+
+### ACF fields — Homepage Sections (`inc/homepage-sections.php`)
+
+| Field | Name | Type | Default |
+|-------|------|------|---------|
+| Título: Novedades | `home_new_arrivals_title` | text | "Novedades" |
+| Título: Oferta del día | `home_deal_title` | text | "Oferta del día" |
+| Título: Nuevos productos | `home_new_products_title` | text | "Nuevos productos" |
+| Título: Más vendidos | `home_best_sellers_title` | text | "Más vendidos" |
+| Título: Blog | `home_blog_title` | text | "Blog" |
+| Cantidad de posts en blog | `home_blog_count` | number (1-20) | 4 |
+
+Location: `page_type=front_page`.
+
+### ACF fields — Category Icon (`inc/homepage-sections.php`)
+
+| Field | Name | Type | Notes |
+|-------|------|------|-------|
+| Icono | `category_icon` | image (return_format=id) | Subir SVG desde editor de categoría |
+
+Location: `taxonomy=product_cat`.
+
+### Fallback behavior
+
+Cada template usa `(int) get_option('page_on_front')` como post ID para
+`get_field()`. Si ACF está inactivo o el campo está vacío, se usa el valor
+fallback en español. Esto asegura cero regresiones si ACF se desactiva.
+
+### Action buttons removed
+
+Los 4 botones decorativos en `.showcase-actions` (heart, eye, repeat, bag-add)
+fueron eliminados del HTML. Estos botones no tenían funcionalidad real (sin JS
+handlers, sin forms, sin data attributes). La eliminación es limpia — sin CSS
+muerto ni código comentado.
+
+## QA
+
+- ✅ PHP syntax: 9 archivos validados sin errores
+- ✅ Categories con icono ACF: funciona
+- ✅ Categories sin icono ACF: fallback bag.svg
+- ✅ Slugs modificados: ya no afectan los iconos (basado en term_id)
+- ✅ Categorías nuevas: fallback bag.svg hasta que admin suba icono
+- ✅ Títulos ACF: se renderizan correctamente con fallbacks en español
+- ✅ Blog count: configurable desde ACF (1-20)
+- ✅ Botones decorativos: eliminados del HTML
+- ✅ Traducciones: todos los textos visibles en español
+- ✅ Sin enlaces `#` en la homepage (fuera de CTA fallback)
+
+---
+
 # Riesgos técnicos actuales (2026-05-31)
 
 ## RESUELTOS

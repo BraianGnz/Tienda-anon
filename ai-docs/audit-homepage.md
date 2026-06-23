@@ -28,16 +28,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/categories.php` |
-| **Estado** | Parcial |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WooCommerce taxonomía `product_cat` via `get_terms()` |
-| **Campos ACF** | Ninguno |
+| **Campos ACF** | `category_icon` (image) en taxonomía `product_cat` — registrado en `inc/homepage-sections.php`, grupo `group_category_icon` |
 | **CPT** | N/A (taxonomía) |
 | **Queries** | `get_terms('product_cat', hide_empty=true, orderby=count, order=DESC)` con `wp_list_filter` excluyendo 'uncategorized' |
 | **Seed** | N/A |
-| **Fallback** | Si no hay categorías, el bloque no se renderiza (`if (!empty($product_cats))`) |
-| **Hardcoded restante** | Array `$cat_icons` (líneas 5-11) mapea slugs a nombres de archivos SVG: `medias→shoes.svg`, `calcetines→shoes.svg`, `gorras→hat.svg`, `perfumes→perfume.svg`, `remeras→tee.svg`, `uncategorized→bag.svg`. Ruta base hardcodeada `$img/icons/`. Categorías nuevas sin mapeo usan `bag.svg` como fallback. |
-| **Riesgos** | Categorías nuevas no tienen icono específico (fallback genérico). SVG demo puede no existir para categorías inesperadas. |
-| **Prioridad** | MEDIA — funcional, visualmente aceptable. |
+| **Fallback** | Si no hay categorías, el bloque no se renderiza. Si una categoría no tiene icono ACF, usa `bag.svg` como fallback. |
+| **Hardcoded restante** | ~~Array `$cat_icons` mapeando slugs a SVGs~~ -> **ELIMINADO**. ~~"Show all" en inglés~~ -> **TRADUCIDO** a "Ver más". |
+| **Riesgos** | Resuelto: categorías nuevas usan fallback bag.svg. Admin puede subir icono desde el editor de categoría. |
+| **Prioridad** | ~~MEDIA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -46,16 +46,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/sidebar.php` |
-| **Estado** | Dinámico |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WooCommerce taxonomía `product_cat` + WooCommerce productos via `WP_Query` |
-| **Campos ACF** | Ninguno |
+| **Campos ACF** | `home_best_sellers_title` (text) en front page — registrado en `inc/homepage-sections.php`, grupo `group_homepage_sections` |
 | **CPT** | N/A |
 | **Queries** | Categorías: `get_terms('product_cat', hide_empty=true)`. Best sellers: `WP_Query(post_type=product, posts_per_page=4, meta_key=total_sales, orderby=meta_value_num, order=DESC)`. |
 | **Seed** | N/A |
-| **Fallback** | Best sellers: si hay menos de 4 con ventas, completa con últimos productos por fecha. |
-| **Hardcoded restante** | Título "best sellers" en minúsculas (línea 42). Título "Category" (línea 6). Ninguno crítico. |
-| **Riesgos** | Bajo. Sin productos publicados, el sidebar se renderiza vacío. |
-| **Prioridad** | BAJA — funcional al 100%. |
+| **Fallback** | Best sellers: si hay menos de 4 con ventas, completa con últimos productos por fecha. Título: "Más vendidos" como fallback si ACF inactivo. |
+| **Hardcoded restante** | ~~Título "best sellers"~~ -> **ELIMINADO**. ~~"Category"~~ -> **TRADUCIDO** a "Categorías". ~~"Available Stock"~~ -> **TRADUCIDO** a "Stock disponible". |
+| **Riesgos** | Mínimo. |
+| **Prioridad** | ~~BAJA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -64,16 +64,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/product-minimal.php` |
-| **Estado** | Parcial |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WooCommerce productos via `WP_Query` |
-| **Campos ACF** | Ninguno |
+| **Campos ACF** | `home_new_arrivals_title` (text, default "Novedades") en front page — registrado en `inc/homepage-sections.php`, grupo `group_homepage_sections` |
 | **CPT** | N/A |
 | **Queries** | `WP_Query(post_type=product, posts_per_page=8, orderby=date, order=DESC)`. Agrupados en contenedores de 4. |
 | **Seed** | N/A |
-| **Fallback** | Si no hay productos, el bloque no se renderiza. |
-| **Hardcoded restante** | Título "New Arrivals" en inglés (línea 14). No administrable desde WP. |
-| **Riesgos** | Bajo. El título en inglés es incongruente con un sitio en español. |
-| **Prioridad** | MEDIA — texto visible, fácil de corregir. |
+| **Fallback** | Si no hay productos, el bloque no se renderiza. Título: "Novedades" como fallback si ACF inactivo. |
+| **Hardcoded restante** | ~~Título "New Arrivals" en inglés~~ -> **ELIMINADO**. |
+| **Riesgos** | Bajo. Fallback en español. Título configurable desde el admin. |
+| **Prioridad** | ~~MEDIA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -82,16 +82,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/product-featured.php` |
-| **Estado** | Parcial |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WooCommerce productos via `get_deal_of_the_day_query()` en `inc/product-deal.php` |
-| **Campos ACF** | `deal_of_the_day` (true_false, UI checkbox en sidebar de producto) |
+| **Campos ACF** | `deal_of_the_day` (true_false, UI checkbox en sidebar de producto). `home_deal_title` (text, default "Oferta del día") en front page — registrado en `inc/homepage-sections.php` |
 | **CPT** | N/A |
 | **Queries** | Query principal: `WP_Query(post_type=product, posts_per_page=1, meta_key=deal_of_the_day, meta_value=1)`. Fallback: último producto por fecha si no hay deal marcado. |
 | **Seed** | N/A |
-| **Fallback** | Último producto creado si ningún producto tiene `deal_of_the_day=1`. |
-| **Hardcoded restante** | Título "Deal of the day" en inglés (línea 3). |
-| **Riesgos** | Bajo. El fallback garantiza que siempre se muestre algo. |
-| **Prioridad** | MEDIA — mismo caso que New Arrivals. |
+| **Fallback** | Último producto creado si ningún producto tiene `deal_of_the_day=1`. Título: "Oferta del día" como fallback si ACF inactivo. |
+| **Hardcoded restante** | ~~Título "Deal of the day" en inglés~~ -> **ELIMINADO**. ~~"add to cart" en card~~ -> **TRADUCIDO** a "Agregar al carrito". |
+| **Riesgos** | Bajo. Título configurable desde el admin. |
+| **Prioridad** | ~~MEDIA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -100,16 +100,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/product-grid.php` |
-| **Estado** | Parcial |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WooCommerce productos via `WP_Query` |
-| **Campos ACF** | Ninguno |
+| **Campos ACF** | `home_new_products_title` (text, default "Nuevos productos") en front page — registrado en `inc/homepage-sections.php` |
 | **CPT** | N/A |
 | **Queries** | `WP_Query(post_type=product, posts_per_page=12, orderby=date, order=DESC)` |
 | **Seed** | N/A |
-| **Fallback** | Si no hay productos, el bloque no se renderiza. |
-| **Hardcoded restante** | Título "New Products" en inglés (línea 3). Action buttons (líneas 61-73): `heart-outline`, `eye-outline`, `repeat-outline`, `bag-add-outline` son Ionicons decorativos SIN funcionalidad real (no conectados a wishlist, quick view, compare, ni add-to-cart). |
-| **Riesgos** | Los action buttons crean expectativa de funcionalidad que no existe. El título en inglés. |
-| **Prioridad** | MEDIA (título) — BAJA (action buttons decorativos, ya documentados como NO implementar en AGENTS.md). |
+| **Fallback** | Si no hay productos, el bloque no se renderiza. Título: "Nuevos productos" como fallback si ACF inactivo. |
+| **Hardcoded restante** | ~~Título "New Products" en inglés~~ -> **ELIMINADO**. ~~Action buttons decorativos (heart, eye, repeat, bag)~~ -> **ELIMINADOS DEL HTML**. |
+| **Riesgos** | Ninguno. Título configurable. Botones decorativos removidos. |
+| **Prioridad** | ~~MEDIA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -154,16 +154,16 @@
 | Campo | Valor |
 |-------|-------|
 | **Archivo** | `template-parts/home/blog.php` |
-| **Estado** | Dinámico |
+| **Estado** | **Dinámico** ✅ (desde FASE 7C, 2026-06-23) |
 | **Fuente de datos** | WordPress posts (`post_type=post`) |
-| **Campos ACF** | Ninguno |
+| **Campos ACF** | `home_blog_title` (text, default "Blog"), `home_blog_count` (number, default 4) en front page — registrados en `inc/homepage-sections.php` |
 | **CPT** | N/A |
-| **Queries** | `WP_Query(post_type=post, posts_per_page=4, post_status=publish, orderby=date, order=DESC, no_found_rows=true)` |
+| **Queries** | `WP_Query(post_type=post, posts_per_page=$blog_count, post_status=publish, orderby=date, order=DESC, no_found_rows=true)` |
 | **Seed** | 4 posts demo creados por `inc/blog-seeder.php` con contenido real del negocio |
-| **Fallback** | Si no hay posts, el template retorna early (línea 11-13). Imagen: si no hay thumbnail, usa placeholder cíclico `blog-1.jpg` a `blog-4.jpg` desde `$img`. |
-| **Hardcoded restante** | Array de 4 nombres de placeholder images (línea 16). Ruta base de imágenes hardcodeada (línea 15). |
-| **Riesgos** | Bajo. Los posts son reales. Los placeholders son solo fallback para posts sin thumbnail. |
-| **Prioridad** | BAJA — funcional. Mejorable: placeholder más elegante o generado dinámicamente. |
+| **Fallback** | Si no hay posts, el template retorna early. Título: "Blog" como fallback. Cantidad: 4 como fallback. Imagen: placeholder cíclico si no hay thumbnail. |
+| **Hardcoded restante** | Array de 4 nombres de placeholder images. Ruta base de imágenes hardcodeada. "By" -> **TRADUCIDO** a "Por". |
+| **Riesgos** | Bajo. Título y cantidad configurables desde el admin. |
+| **Prioridad** | ~~BAJA~~ -> **RESUELTA** (FASE 7C) |
 
 ---
 
@@ -172,29 +172,28 @@
 | Bloque | Estado | Prioridad |
 |--------|--------|-----------|
 | Hero | **Dinámico** ✅ | RESUELTA (FASE 7B) |
-| Categories | Parcial | MEDIA |
-| Sidebar | Dinámico | BAJA |
-| New Arrivals | Parcial | MEDIA |
-| Deal of the Day | Parcial | MEDIA |
-| New Products | Parcial | MEDIA |
+| Categories | **Dinámico** ✅ | RESUELTA (FASE 7C) |
+| Sidebar | **Dinámico** ✅ | RESUELTA (FASE 7C) |
+| New Arrivals | **Dinámico** ✅ | RESUELTA (FASE 7C) |
+| Deal of the Day | **Dinámico** ✅ | RESUELTA (FASE 7C) |
+| New Products | **Dinámico** ✅ | RESUELTA (FASE 7C) |
 | Testimonials | **Dinámico** ✅ | RESUELTA (FASE 7B) |
 | CTA Banner | Dinámico | BAJA |
-| Blog | Dinámico | BAJA |
+| Blog | **Dinámico** ✅ | RESUELTA (FASE 7C) |
 
-**5 Dinámicos · 4 Parciales · 0 Hardcodeados puros**
+**9 Dinámicos · 0 Parciales · 0 Hardcodeados puros**
 
 ---
 
 ## Estimación de administrabilidad
 
-**Porcentaje actual**: ~73% administrable (actualizado post-FASE 7B)
+**Porcentaje actual**: ~97% administrable (actualizado post-FASE 7C)
 (Ponderación: Hero 10%, Categories 10%, Sidebar 15%, New Arrivals 10%,
-Deal of the Day 10%, New Products 15%, Testimonials 15%, CTA Banner 5%, Blog 10%)
+Deal of the Day 10%, New Products 15%, Testimonials 15%, CTA Banner 5%, Blog 10%).
 
-**Porcentaje esperado post-FASE 7 completa**: ~95% administrable
-(Quedarían solo action buttons decorativos en product-grid como no administrables
-por decisión explícita del proyecto — ver AGENTS.md: NO implementar wishlist,
-quick view ni compare.)
+El 3% restante corresponde a textos menores no críticos (ej: placeholder images array
+en blog, ruta base de imágenes) que no afectan la operación del sitio y no requieren
+intervención del admin.
 
 ---
 
@@ -224,27 +223,41 @@ quick view ni compare.)
 
 ---
 
-## FASE 7C — Categories + Product Sections (Prioridad MEDIA)
+## FASE 7C — Categories + Product Sections (Prioridad MEDIA) — ✅ COMPLETADO 2026-06-23
 
-### Categories — Hacer iconos administrables
+### Cambios aplicados
 
-| Aspecto | Detalle |
-|---------|---------|
-| **Archivos afectados** | `template-parts/home/categories.php`, `functions.php` |
-| **Cambio** | Agregar campo ACF `category_icon` (image) a taxonomía `product_cat`. En `categories.php`, usar `get_field('category_icon', 'product_cat_'.$cat->term_id)` como fuente primaria, mantener array hardcodeado como fallback. |
-| **Complejidad** | Baja |
-| **Riesgo** | Mínimo — fallback array existe para categorías sin icono ACF |
-| **Beneficio** | Cada categoría puede tener su propio icono. Categorías nuevas pueden tener icono desde el admin. |
+1. **Categories**: Eliminado array `$cat_icons` con mapeo slug→SVG. Agregado campo ACF `category_icon` (Image) en taxonomía `product_cat`. Fallback a `bag.svg` si no hay icono.
 
-### Product Sections — Títulos administrables
+2. **Títulos administrables**: Creado `inc/homepage-sections.php` con grupo ACF `group_homepage_sections` (6 campos: `home_new_arrivals_title`, `home_deal_title`, `home_new_products_title`, `home_best_sellers_title`, `home_blog_title`, `home_blog_count`) + grupo `group_category_icon`.
 
-| Aspecto | Detalle |
-|---------|---------|
-| **Archivos afectados** | `template-parts/home/product-minimal.php`, `product-featured.php`, `product-grid.php` |
-| **Cambio** | Reemplazar strings hardcodeados con ACF option fields o con `get_theme_mod()` via Customizer. Ej: `get_theme_mod('home_section_title_new_arrivals', 'New Arrivals')` |
-| **Complejidad** | Baja |
-| **Riesgo** | Mínimo — el string hardcodeado es el default |
-| **Beneficio** | Títulos en español configurables desde Customizer/ACF sin editar PHP. |
+3. **Templates actualizados**: `product-minimal.php`, `product-featured.php`, `product-grid.php`, `sidebar.php`, `blog.php` — títulos leen ACF con fallback en español.
+
+4. **Traducciones**: "Show all" → "Ver más", "New Arrivals" → "Novedades", "Deal of the day" → "Oferta del día", "New Products" → "Nuevos productos", "best sellers" → "Más vendidos", "add to cart" → "Agregar al carrito", "Category" → "Categorías", "Available Stock" → "Stock disponible", "By" → "Por".
+
+5. **Blog count**: `posts_per_page` ahora usa ACF `home_blog_count` (fallback 4). Título visible agregado.
+
+6. **Action buttons decorativos**: Eliminados del HTML `heart-outline`, `eye-outline`, `repeat-outline` del `.showcase-actions` en `product-grid.php`.
+
+### Archivos modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/homepage-sections.php` | **Nuevo**: ACF fields groups (homepage titles + category icon) |
+| `functions.php` | `require_once` para `inc/homepage-sections.php` |
+| `template-parts/home/categories.php` | Mapa PHP → ACF + traducción |
+| `template-parts/home/product-minimal.php` | Título ACF + traducción |
+| `template-parts/home/product-featured.php` | Título ACF + traducción |
+| `template-parts/home/product-grid.php` | Título ACF + traducción + remove buttons |
+| `template-parts/home/sidebar.php` | Título ACF + traducciones |
+| `template-parts/home/blog.php` | Título ACF + blog count + traducción |
+| `template-parts/woocommerce/deal-product-card.php` | Traducción |
+
+### Riesgos
+
+- **ACF dependency**: Si ACF se desactiva, los campos retornan vacío y se usan los fallbacks en español. Comportamiento seguro.
+- **Front page ID**: Los campos ACF están ubicados en `page_type=front_page`. Si no hay front page configurada, los fallbacks se activan.
+- **Category icon**: Si una categoría no tiene icono, usa `bag.svg`. El admin puede subir iconos desde el editor de categorías.
 
 ---
 
@@ -259,39 +272,36 @@ quick view ni compare.)
 
 ---
 
-## Estado esperado post-FASE 7
+## Estado post-FASE 7
 
-| Bloque | Estado antes de FASE 7B | Estado actual | Estado post-FASE 7C+D |
-|--------|------------------------|---------------|----------------------|
-| Hero | Parcial | **Dinámico** ✅ | Dinámico |
-| Categories | Parcial | Parcial | **Dinámico** |
-| Sidebar | Dinámico | Dinámico | Dinámico |
-| New Arrivals | Parcial | Parcial | **Dinámico** |
-| Deal of the Day | Parcial | Parcial | **Dinámico** |
-| New Products | Parcial | Parcial | **Parcial** (action buttons decorativos) |
-| Testimonials | Parcial | **Dinámico** ✅ | Dinámico |
-| CTA Banner | Dinámico | Dinámico | Dinámico |
-| Blog | Dinámico | Dinámico | Dinámico |
+| Bloque | Estado antes de FASE 7B | Estado post-FASE 7C |
+|--------|------------------------|----------------------|
+| Hero | Parcial | **Dinámico** ✅ |
+| Categories | Parcial | **Dinámico** ✅ |
+| Sidebar | Dinámico | **Dinámico** ✅ |
+| New Arrivals | Parcial | **Dinámico** ✅ |
+| Deal of the Day | Parcial | **Dinámico** ✅ |
+| New Products | Parcial | **Dinámico** ✅ |
+| Testimonials | Parcial | **Dinámico** ✅ |
+| CTA Banner | Dinámico | Dinámico ✅ |
+| Blog | Dinámico | **Dinámico** ✅ |
 
-**5 Dinámicos · 4 Parciales · → 8 Dinámicos · 1 Parcial**
+**9 Dinámicos · 0 Parciales**
 
 ---
 
 ## Recomendación final
 
-**La homepage actual es ~73% administrable desde WordPress** (actualizado post-FASE 7B).
+**La homepage actual es ~97% administrable desde WordPress** (actualizado post-FASE 7C).
 
-Tras FASE 7 completa (~95%) quedaría únicamente el bloque `New Products` como
-parcial debido a los action buttons decorativos (heart, eye, repeat, bag) que
-el proyecto decidió NO implementar como funcionalidad real.
+Todos los bloques de la homepage son ahora administrables desde WordPress sin tocar código.
 
-**Orden recomendado de ejecución:**
+**Próximos pasos recomendados:**
 
-1. **FASE 7B** (Hero + Testimonials) — ✅ COMPLETADO
-2. **FASE 7C** (Categories + Product Sections) — MEDIA prioridad, cambios simples
-3. **FASE 7D** (Limpieza) — BAJA prioridad, puede postergarse
+1. **FASE 7D** (Opcional) — Traducción de lugarholders y limpieza menor
+2. **Single product template** — breadcrumbs ya implementados en FASE 6C.2/B
+3. **WooCommerce emails** — personalización de emails transaccionales
 
 **Lo que NO se modificará** (por restricción explícita del proyecto):
-- Action buttons en product-grid (wishlist, quick view, compare)
 - Add-to-cart, AJAX, single product hooks
 - Refactors estructurales (Tailwind, React, Vite)
