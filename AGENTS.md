@@ -15,11 +15,12 @@ El shop usa templates default de WooCommerce. Todo el estilo se controla desde l
 
 | File/Dir | Role |
 |---|---|
-| `functions.php` | Theme setup: WooCommerce support, menus, scripts, sidebars. Removes default WC sidebar. |
+| `inc/branding.php` | Customizer Branding panel — 6 brand colors (`--brand-primary` etc.) via `wp_add_inline_style()`. |
+| `functions.php` | Theme setup: WooCommerce support, menus, scripts, sidebars, branding. Removes default WC sidebar. |
 | `front-page.php` | Homepage layout — thin orchestrator. Uses `get_template_part()` for all sections. |
 | `template-parts/home/` | Modular homepage sections: hero, categories, sidebar, product-minimal, product-featured, product-grid, banners, testimonials, blog. |
 | `woocommerce.php` | Thin wrapper — calls `woocommerce_content()`. |
-| `style.css` | Monolithic stylesheet. CSS custom properties at top. All component + WC styles here. |
+| `style.css` | Monolithic stylesheet. CSS custom properties at top (bridge layer `--salmon-pink: var(--brand-primary, hsl(...))`). All component + WC styles here. |
 | `header.php` / `footer.php` | Global header/footer with navigation, search, cart. |
 
 ## Badge system (front-page.php product grid)

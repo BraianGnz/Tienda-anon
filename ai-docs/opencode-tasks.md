@@ -530,6 +530,24 @@ en la DB.
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-24)
+
+### FASE 8C.1: Branding System — Customizer Colors
+
+1. ✅ Auditoría previa: 6 variables CSS (`--salmon-pink`, `--eerie-black`, `--sonic-silver`, `--ocean-green`, `--bittersweet`, `--sandy-brown`) — 0 redefiniciones posteriores, 349 usos totales, 0 usos en PHP
+2. ✅ Creado `inc/branding.php`: Customizer panel "Branding" + sección "Colores" con 6 `WP_Customize_Color_Control`, función `branding_get_custom_css()` que genera `:root { --brand-* }` desde `get_theme_mod()` con defaults HEX
+3. ✅ Bridge layer en `style.css`: `--salmon-pink: var(--brand-primary, hsl(353, 100%, 78%))` etc. — fallback HSL preservado
+4. ✅ Hook en `functions.php`: `require_once` + `wp_add_inline_style('anon-theme-style', branding_get_custom_css())`
+5. ✅ QA: PHP syntax OK en 3 archivos, output CSS correcto, bridge funcional
+6. ✅ Commit: `feat(branding): add Customizer-based brand color system with CSS bridge`
+7. ✅ Documentación: architecture.md, project-status.md, opencode-tasks.md actualizados
+
+**Mapeo brand → theme**: `--brand-primary` (salmon-pink, #f9a8b4), `--brand-dark` (eerie-black, #212121), `--brand-text` (sonic-silver, #787878), `--brand-success` (ocean-green, #46c389), `--brand-error` (bittersweet, #ff6666), `--brand-rating` (sandy-brown, #f0a050).
+
+**Decisión**: Customizer nativo + `sanitize_hex_color()` + `wp_add_inline_style()`. Sin ACF PRO, sin dependencias. Bridge layer con fallback HSL asegura zero regresiones.
+
+---
+
 # Baja prioridad
 
 * wishlist real

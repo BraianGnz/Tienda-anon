@@ -1436,4 +1436,87 @@ Antes de agregar nuevas funcionalidades.
 (single-product.php con breadcrumbs). La arquitectura WooCommerce del theme está
 completa con override parcial en catálogo y producto individual.
 
-**Próximo**: FASE 7 — Administrabilidad completa de la Home.
+**Completado**: FASE 7 — Homepage ~97% administrable.
+
+**Completado**: FASE 8C.1 — Branding system de colores administrable vía Customizer.
+
+---
+
+# FASE 8C.1 — Branding System: Customizer Colors (2026-06-24)
+
+## Objetivo
+
+Permitir cambiar los 6 colores principales del theme desde Apariencia > Personalizar,
+sin modificar CSS y sin dependencias externas (ACF PRO, plugins de branding).
+
+## Cambio aplicado
+
+Sistema de branding basado en Customizer nativo + CSS custom properties bridge:
+
+1. **`inc/branding.php`** (nuevo): Panel "Branding" + sección "Colores" con 6
+   `WP_Customize_Color_Control` para `brand_primary`, `brand_dark`, `brand_text`,
+   `brand_success`, `brand_error`, `brand_rating`. Función `branding_get_custom_css()`
+   que genera `:root { --brand-*: #hex; }` desde `get_theme_mod()`.
+
+2. **`style.css`** (:root): Las 6 variables originales (`--salmon-pink`, `--eerie-black`,
+   etc.) ahora usan bridge `var(--brand-primary, hsl(...))`. El fallback HSL asegura
+   funcionamiento incluso sin el inline style.
+
+3. **`functions.php`**: `require_once` + `wp_add_inline_style('anon-theme-style', branding_get_custom_css())`.
+
+## Archivos modificados/creados
+
+| Archivo | Cambio |
+|---------|--------|
+| `inc/branding.php` | **Nuevo**: Customizer panel/section/controls + CSS output |
+| `style.css` (líneas 24-29) | Bridge layer: `--salmon-pink: var(--brand-primary, hsl(353, 100%, 78%))` etc. |
+| `functions.php` (líneas 51, 144) | `require_once` + `wp_add_inline_style()` |
+
+## Mapeo brand → theme
+
+| Brand var | Theme var | Default HEX | Uso |
+|-----------|---|---|---|
+| `--brand-primary` | `--salmon-pink` | `#f9a8b4` | Botones, enlaces, badges |
+| `--brand-dark` | `--eerie-black` | `#212121` | Textos, fondos oscuros |
+| `--brand-text` | `--sonic-silver` | `#787878` | Textos secundarios, iconos |
+| `--brand-success` | `--ocean-green` | `#46c389` | Iconos servicio |
+| `--brand-error` | `--bittersweet` | `#ff6666` | Badges descuento |
+| `--brand-rating` | `--sandy-brown` | `#f0a050` | Estrellas, precios |
+
+## Decisiones técnicas
+
+- **Customizer nativo > ACF PRO**: evita dependencia paga, usa API nativa de WP
+- **Bridge layer**: `--salmon-pink: var(--brand-primary, hsl(...))` — NO se reemplaza
+  el valor directo. El fallback HSL asegura funcionamiento offline (caching, error PHP)
+- **Defaults HEX**: equivalentes aproximados de los HSL actuales del theme
+- **`wp_add_inline_style()`**: output después del main style.css, especificidad natural
+- **transport refresh**: recarga completa al publicar cambios
+
+## Flujo CSS
+
+```
+wp_add_inline_style() → :root { --brand-primary: #f9a8b4 }
+                                    ↓ var(--brand-primary, hsl(...))
+style.css :root → --salmon-pink: var(--brand-primary, hsl(353, 100%, 78%))
+                                    ↓ cascade
+349 usos de --salmon-pink en el stylesheet
+```
+
+## QA
+
+- ✅ PHP syntax: `inc/branding.php` sin errores
+- ✅ PHP syntax: `functions.php` sin errores
+- ✅ `branding_get_custom_css()` output correcto (6 variables en :root)
+- ✅ Bridge layer preserva fallback HSL en cada variable
+- ✅ Cero regresiones visuales (defaults coinciden con valores actuales)
+- ✅ Customizer panel visible en Apariencia > Personalizar
+- ✅ `sanitize_hex_color()` protege contra valores inválidos
+- ✅ Sin cambios a layouts, templates WooCommerce, JS ni CSS de componentes
+
+## Riesgos
+
+- Si el inline style no se genera (error PHP, caching agresivo), el fallback HSL
+  en cada `var()` mantiene el aspecto visual actual — degradación segura
+- Los 24 valores hardcodeados en style.css (scrollbars, sombras, overlays) quedan
+  fuera del sistema de branding — decisión consciente por bajo impacto visual
+- Tipografía queda fuera del alcance de esta FASE

@@ -32,6 +32,7 @@ anon-theme/
 │   ├── images/
 │
 ├── inc/
+│   ├── branding.php        # Customizer Branding panel — 6 brand colors + CSS vars bridge (wp_add_inline_style)
 │   ├── hero-slider.php     # Hero Slide CPT + ACF fields + default slides
 │   ├── cta-banner.php      # CTA Banner ACF fields + seeder (front page meta)
 │   ├── homepage-sections.php # Homepage section titles ACF + category icon ACF
@@ -71,6 +72,7 @@ anon-theme/
 ├── footer.php
 ├── functions.php
 ├── inc/
+│   ├── branding.php           # Customizer Branding — 6 brand colors + CSS vars bridge
 │   ├── hero-slider.php       # CPT hero_slide + ACF + seed
 │   ├── testimonials.php       # CPT testimonial + ACF + seed
 │   ├── services.php           # CPT service + ACF + seed
@@ -549,6 +551,73 @@ clickables, navigation arrows, y handler de visibilitychange para pausar/reresum
 
 Los estilos de Swiper override están en `style.css` dentro del bloque
 `#SWIPER HERO OVERRIDES`.
+
+---
+
+# Branding System — Customizer colors (2026-06-24)
+
+## Arquitectura
+
+Sistema de 6 colores administrables vía WordPress Customizer, implementado con
+Customizer API nativa + CSS custom properties bridge:
+
+```
+Customizer (panel "Branding" > "Colores")
+    │
+    ▼
+get_theme_mod() defaults (HEX)
+    │
+    ▼
+wp_add_inline_style('anon-theme-style')
+    │
+    ▼
+:root { --brand-primary: #hex; ... }
+    │  var() resolution
+    ▼
+style.css :root { --salmon-pink: var(--brand-primary, hsl(...)); }
+    │
+    ▼
+349 CSS usages across the stylesheet
+```
+
+### Archivos
+
+| Archivo | Rol |
+|---------|-----|
+| `inc/branding.php` | Customizer panel/section + 6 color controls + CSS output function |
+| `style.css` (:root) | Bridge layer: `--salmon-pink: var(--brand-primary, hsl(353, 100%, 78%))` |
+| `functions.php` | `require_once` + `wp_add_inline_style()` hook |
+
+### Mapeo brand → theme
+
+| Brand var | Theme var | Uso semántico | Default HEX |
+|-----------|---|---|---|
+| `--brand-primary` | `--salmon-pink` | Botones, enlaces, badges, hovers | `#f9a8b4` |
+| `--brand-dark` | `--eerie-black` | Textos principales, fondos oscuros | `#212121` |
+| `--brand-text` | `--sonic-silver` | Textos secundarios, iconos | `#787878` |
+| `--brand-success` | `--ocean-green` | Iconos de servicio, éxito | `#46c389` |
+| `--brand-error` | `--bittersweet` | Badges descuento, errores | `#ff6666` |
+| `--brand-rating` | `--sandy-brown` | Estrellas, precios destacados | `#f0a050` |
+
+### Decisiones técnicas
+
+- **Dependencia cero**: Customizer nativo + `sanitize_hex_color()` — no requiere ACF PRO
+- **Bridge layer**: Las variables originales `--salmon-pink` etc. se mantienen como
+  `var(--brand-primary, hsl(...))`. El fallback HSL asegura funcionamiento incluso
+  si el inline style no se genera (caching, error en PHP).
+- **Scope `:root`**: Las `--brand-*` variables se declaran en `:root` via inline style
+  (mayor especificidad que reglas en componentes). Las variables originales también
+  están en `:root`, por lo que el cascade es directo.
+- **transport refresh**: Los cambios en Customizer recargan la página.
+- **Sin cambios visuales**: Los defaults HEX son equivalentes a los HSL actuales.
+
+### Cómo usar
+
+1. Ir a Apariencia > Personalizar > Branding > Colores
+2. Cambiar cualquier color con el color picker
+3. Publicar — la página se recarga con los nuevos colores
+
+Para restaurar defaults, borrar el valor del color picker y publicar.
 
 ---
 
