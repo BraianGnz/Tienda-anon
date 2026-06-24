@@ -21,12 +21,12 @@ Tags: e-commerce, woocommerce, gutenberg, blog, custom-menu, responsive-layout
 :root {
 
   --spanish-gray: hsl(0, 0%, 60%);
-  --sonic-silver: hsl(0, 0%, 47%);
-  --eerie-black: hsl(0, 0%, 13%);
-  --salmon-pink: hsl(353, 100%, 78%);
-  --sandy-brown: hsl(29, 90%, 65%);
-  --bittersweet: hsl(0, 100%, 70%);
-  --ocean-green: hsl(152, 51%, 52%);
+  --sonic-silver: var(--brand-text, hsl(0, 0%, 47%));
+  --eerie-black: var(--brand-dark, hsl(0, 0%, 13%));
+  --salmon-pink: var(--brand-primary, hsl(353, 100%, 78%));
+  --sandy-brown: var(--brand-rating, hsl(29, 90%, 65%));
+  --bittersweet: var(--brand-error, hsl(0, 100%, 70%));
+  --ocean-green: var(--brand-success, hsl(152, 51%, 52%));
   --davys-gray: hsl(0, 0%, 33%);
   --cultured: hsl(0, 0%, 93%);
   --white: hsl(0, 100%, 100%);

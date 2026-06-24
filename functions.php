@@ -48,6 +48,8 @@ function anon_theme_scripts() {
         wp_get_theme()->get('Version')
     );
 
+    wp_add_inline_style('anon-theme-style', branding_get_custom_css());
+
     wp_enqueue_style(
         'anon-theme-google-fonts',
         'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap',
@@ -139,6 +141,7 @@ function anon_theme_excerpt_more($more) {
 }
 add_filter('excerpt_more', 'anon_theme_excerpt_more');
 
+require_once get_template_directory() . '/inc/branding.php';
 require_once get_template_directory() . '/inc/hero-slider.php';
 require_once get_template_directory() . '/inc/cta-banner.php';
 require_once get_template_directory() . '/inc/homepage-sections.php';
