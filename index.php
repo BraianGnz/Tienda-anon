@@ -25,7 +25,7 @@
       the_posts_pagination();
     else :
       ?>
-      <p><?php esc_html_e('No content found.', 'anon-theme'); ?></p>
+      <p><?php esc_html_e('No se encontró contenido.', 'anon-theme'); ?></p>
     <?php endif; ?>
   </div>
 

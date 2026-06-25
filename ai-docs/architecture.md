@@ -42,6 +42,9 @@ anon-theme/
 │   ├── footer-contact.php  # Footer Contact + Social ACF fields + seeder
 │   └── footer-menus.php    # Footer menus walkers (Footer_Brand_Walker, Footer_Column_Walker) + seeder
 │
+├── languages/
+│   └── anon-theme.pot          # POT file — 53 theme strings, textdomain anon-theme
+│
 ├── ai-docs/
 │
 ├── template-parts/

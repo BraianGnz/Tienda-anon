@@ -39,7 +39,7 @@ if (!empty($product_cats) && !is_wp_error($product_cats)) :
             <p class="category-item-amount">(<?php echo esc_html($cat->count); ?>)</p>
           </div>
 
-          <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="category-btn">Ver más</a>
+          <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="category-btn"><?php esc_html_e('Ver más', 'anon-theme'); ?></a>
 
         </div>
 

@@ -10,7 +10,7 @@
       <?php endif; ?>
       <div class="blog-content">
         <h1 class="title"><?php the_title(); ?></h1>
-        <p class="blog-meta"><?php echo esc_html(get_the_date()); ?> &mdash; <?php esc_html_e('by', 'anon-theme'); ?> <?php the_author(); ?></p>
+        <p class="blog-meta"><?php echo esc_html(get_the_date()); ?> &mdash; <?php esc_html_e('por', 'anon-theme'); ?> <?php the_author(); ?></p>
         <?php the_content(); ?>
         <?php
         the_post_navigation(array(

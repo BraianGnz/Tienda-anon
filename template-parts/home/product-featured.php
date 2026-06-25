@@ -4,7 +4,7 @@
   $front_id = (int) get_option('page_on_front');
   $deal_title = $front_id ? get_field('home_deal_title', $front_id) : '';
   if (!$deal_title) {
-      $deal_title = 'Oferta del día';
+      $deal_title = __('Oferta del día', 'anon-theme');
   }
   ?>
   <h2 class="title"><?php echo esc_html($deal_title); ?></h2>

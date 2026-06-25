@@ -548,6 +548,22 @@ en la DB.
 
 ---
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-25)
+
+### FASE 9A: Internacionalización completa (i18n)
+
+1. ✅ Auditoría completa de strings hardcodeados: 53 strings del theme identificados
+2. ✅ `functions.php`: `load_theme_textdomain()` + `__()` en register_nav_menus, register_sidebar, fallback menu
+3. ✅ `header.php`: promo text, search placeholder, menu title — `esc_html_e()` / `esc_attr_e()`
+4. ✅ `footer.php`: 7 strings — section titles, payment alt, copyright
+5. ✅ `index.php`, `single.php`, `archive.php`, `search.php`, `404.php`: 9 strings
+6. ✅ `inc/branding.php`: 8 Customizer labels — `__()`
+7. ✅ `template-parts/home/`: 9 archivos — 15 strings (testimonials, banners, product-grid, sidebar, categories, blog, product-minimal, product-featured)
+8. ✅ Generado `languages/anon-theme.pot` con 53 strings, UTF-8 sin BOM
+9. ✅ PHP syntax: 23 archivos validados sin errores
+
+**Decisión**: Todos los strings visibles del theme usan textdomain `anon-theme`. Strings WooCommerce (~180) se delegan al sistema oficial de traducciones. ACF labels y seed data no se traducen (admin-facing / contenido). Idioma por defecto: español (msgid en español).
+
 # Baja prioridad
 
 * wishlist real

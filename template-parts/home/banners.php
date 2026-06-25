@@ -16,10 +16,10 @@ if (function_exists('get_field') && $post_id) {
 }
 
 if (empty($cta_image))       { $cta_image       = $img_base . '/cta-banner.jpg'; }
-if (empty($cta_badge))       { $cta_badge       = '25% Discount'; }
-if (empty($cta_title))       { $cta_title       = 'Summer collection'; }
-if (empty($cta_text))        { $cta_text        = 'Starting @ $10'; }
-if (empty($cta_button_text)) { $cta_button_text = 'Shop now'; }
+if (empty($cta_badge))       { $cta_badge       = __('25% OFF', 'anon-theme'); }
+if (empty($cta_title))       { $cta_title       = __('Colección de verano', 'anon-theme'); }
+if (empty($cta_text))        { $cta_text        = __('Desde $10', 'anon-theme'); }
+if (empty($cta_button_text)) { $cta_button_text = __('Comprar ahora', 'anon-theme'); }
 if (empty($cta_button_url))  { $cta_button_url  = '#'; }
 ?>
 <div class="cta-container">

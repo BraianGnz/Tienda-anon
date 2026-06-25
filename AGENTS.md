@@ -6,8 +6,7 @@ WordPress + WooCommerce starter theme. LocalWP on Windows.
 
 - **Path**: `wp-content/themes/anon-theme`
 - **No build step**. Plain PHP + CSS. Edit files, refresh browser.
-- - **NO existen overrides en `woocommerce/`** — ese directorio no existe.
-El shop usa templates default de WooCommerce. Todo el estilo se controla desde la sección `#WOOCOMMERCE` en `style.css`.
+- **`woocommerce/`**: Existe con `archive-product.php` y `single-product.php` (breadcrumbs funcionales).
 - **No JS framework**. Vanilla JS from `html-template/assets/js/script.js`.
 - **No package manager**. No `package.json`, no `composer.json`.
 
@@ -22,6 +21,7 @@ El shop usa templates default de WooCommerce. Todo el estilo se controla desde l
 | `woocommerce.php` | Thin wrapper — calls `woocommerce_content()`. |
 | `style.css` | Monolithic stylesheet. CSS custom properties at top (bridge layer `--salmon-pink: var(--brand-primary, hsl(...))`). All component + WC styles here. |
 | `header.php` / `footer.php` | Global header/footer with navigation, search, cart. |
+| `languages/anon-theme.pot` | POT file — 53 theme strings, textdomain `anon-theme`. Spanish (es) as default language. |
 
 ## Badge system (front-page.php product grid)
 

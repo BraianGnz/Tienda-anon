@@ -4,7 +4,7 @@
 
       <div class="container">
 
-        <h2 class="footer-category-title">Brand directory</h2>
+        <h2 class="footer-category-title"><?php esc_html_e('Directorio de marcas', 'anon-theme'); ?></h2>
 
         <?php
         wp_nav_menu(array(
@@ -37,7 +37,7 @@
         <ul class="footer-nav-list">
 
           <li class="footer-nav-item">
-            <h2 class="nav-title">Popular Categories</h2>
+            <h2 class="nav-title"><?php esc_html_e('Categorías populares', 'anon-theme'); ?></h2>
           </li>
 
           <?php
@@ -55,7 +55,7 @@
         <ul class="footer-nav-list">
 
           <li class="footer-nav-item">
-            <h2 class="nav-title">Our Company</h2>
+            <h2 class="nav-title"><?php esc_html_e('Nuestra empresa', 'anon-theme'); ?></h2>
           </li>
 
           <?php
@@ -73,7 +73,7 @@
         <ul class="footer-nav-list">
 
           <li class="footer-nav-item">
-            <h2 class="nav-title">Contact</h2>
+            <h2 class="nav-title"><?php esc_html_e('Contacto', 'anon-theme'); ?></h2>
           </li>
 
           <?php
@@ -122,7 +122,7 @@
         <ul class="footer-nav-list">
 
           <li class="footer-nav-item">
-            <h2 class="nav-title">Follow Us</h2>
+            <h2 class="nav-title"><?php esc_html_e('Seguinos', 'anon-theme'); ?></h2>
           </li>
 
           <?php
@@ -167,10 +167,10 @@
 
       <div class="container">
 
-        <img src="<?php echo esc_url(get_template_directory_uri() . '/html-template/assets/images/payment.png'); ?>" alt="payment method" class="payment-img">
+        <img src="<?php echo esc_url(get_template_directory_uri() . '/html-template/assets/images/payment.png'); ?>" alt="<?php esc_attr_e('método de pago', 'anon-theme'); ?>" class="payment-img">
 
         <p class="copyright">
-          Copyright &copy; <?php echo date('Y'); ?> <a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a> all rights reserved.
+          Copyright &copy; <?php echo date('Y'); ?> <a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a> <?php esc_html_e('Todos los derechos reservados.', 'anon-theme'); ?>
         </p>
 
       </div>

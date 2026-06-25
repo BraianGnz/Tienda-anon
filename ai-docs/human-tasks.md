@@ -153,6 +153,25 @@ Revisar manualmente:
 
 ---
 
+# QA para FASE 9A — Internacionalización (i18n)
+
+Revisar manualmente:
+
+* **Header**: texto promocional "Envío gratis ✓ Esta semana por pedidos mayores a $55", placeholder "Buscá tu producto...", menú móvil título "Menú"
+* **Footer**: "Directorio de marcas", "Categorías populares", "Nuestra empresa", "Contacto", "Seguinos", payment img alt "método de pago", copyright "Todos los derechos reservados."
+* **Sidebar**: título "Categorías", tooltip "Stock disponible", best sellers heading "Más vendidos"
+* **Homepage sections**: testimonios "Testimonios", quotes img alt "comillas", "Nuestros servicios", banners "25% OFF" / "Colección de verano" / "Desde $10" / "Comprar ahora", CTA badge/title/text/button, "Novedades", "Oferta del día", "Nuevos productos", categories "Ver más", blog "Blog"/"Por", producto badge "% OFF"
+* **Single post**: "por Autor", "← Anterior", "Siguiente →"
+* **404**: "Página no encontrada", "La página que buscas no existe o ha sido movida.", "Ir al Inicio", "Ir a la Tienda"
+* **Search**: "Resultados para: "X"", "No encontramos resultados para: "X""
+* **Archive**: "No se encontraron publicaciones en este archivo."
+* **Admin > Customizer**: Branding panel, Colores section, 6 color labels en español
+* **Admin > Menús**: Primary Menu, Footer Menu, Footer Brand Directory, etc.
+* **Admin > Widgets**: Sidebar widget area
+* **POT file**: `languages/anon-theme.pot` — verificar que contiene 53 strings con encoding UTF-8 correcto (especialmente caracteres acentuados)
+
+---
+
 # Aprendizaje prioritario actual
 
 Estudiar:

@@ -13,7 +13,7 @@
     $front_id = (int) get_option('page_on_front');
     $na_title = $front_id ? get_field('home_new_arrivals_title', $front_id) : '';
     if (!$na_title) {
-        $na_title = 'Novedades';
+        $na_title = __('Novedades', 'anon-theme');
     }
     echo '<div class="product-showcase">';
     echo '<h2 class="title">' . esc_html($na_title) . '</h2>';

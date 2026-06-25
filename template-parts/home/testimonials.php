@@ -19,7 +19,7 @@ if ($testimonials_query->have_posts()) :
 ?>
 <div class="testimonial">
 
-  <h2 class="title">testimonial</h2>
+  <h2 class="title"><?php esc_html_e('Testimonios', 'anon-theme'); ?></h2>
 
   <?php while ($testimonials_query->have_posts()) : $testimonials_query->the_post(); ?>
 
@@ -40,7 +40,7 @@ if ($testimonials_query->have_posts()) :
       ?>
     </p>
 
-    <img src="<?php echo $img; ?>/icons/quotes.svg" alt="quotation" class="quotation-img" width="26">
+    <img src="<?php echo $img; ?>/icons/quotes.svg" alt="<?php esc_attr_e('comillas', 'anon-theme'); ?>" class="quotation-img" width="26">
 
     <p class="testimonial-desc"><?php echo esc_html(get_the_content()); ?></p>
 
@@ -66,7 +66,7 @@ if ($services_query->have_posts()) :
 
 <div class="service">
 
-  <h2 class="title">Our Services</h2>
+  <h2 class="title"><?php esc_html_e('Nuestros servicios', 'anon-theme'); ?></h2>
 
   <div class="service-container">
 

@@ -69,7 +69,7 @@ function hero_slider_acf_fields() {
                 'label'         => 'Texto del botón',
                 'name'          => 'slide_button_text',
                 'type'          => 'text',
-                'default_value' => 'Shop now',
+                'default_value' => 'Comprar ahora',
             ),
             array(
                 'key'           => 'field_slide_button_url',

@@ -4,7 +4,7 @@
   $front_id = (int) get_option('page_on_front');
   $grid_title = $front_id ? get_field('home_new_products_title', $front_id) : '';
   if (!$grid_title) {
-      $grid_title = 'Nuevos productos';
+      $grid_title = __('Nuevos productos', 'anon-theme');
   }
   ?>
   <h2 class="title"><?php echo esc_html($grid_title); ?></h2>
@@ -33,7 +33,7 @@
           $regular_price = $product->get_regular_price();
           if ($sale_price && $regular_price && $regular_price > 0) {
             $discount = round((($regular_price - $sale_price) / $regular_price) * 100);
-            $badge_html = '<span class="showcase-badge discount">' . $discount . '% OFF</span>';
+            $badge_html = '<span class="showcase-badge discount">' . $discount . esc_html__('% OFF', 'anon-theme') . '</span>';
           }
         }
         else {

@@ -1,0 +1,172 @@
+# anon-theme POT file
+# Copyright (C) 2026
+# This file is distributed under the same license as the anon-theme package.
+msgid ""
+msgstr ""
+"Project-Id-Version: anon-theme\n"
+"POT-Creation-Date: 2026-06-25 23:30+0200\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "% OFF"
+msgstr ""
+
+msgid "25% OFF"
+msgstr ""
+
+msgid "Anterior"
+msgstr ""
+
+msgid "Blog"
+msgstr ""
+
+msgid "Branding"
+msgstr ""
+
+msgid "Buscá tu producto..."
+msgstr ""
+
+msgid "Categorías"
+msgstr ""
+
+msgid "Categorías populares"
+msgstr ""
+
+msgid "Colección de verano"
+msgstr ""
+
+msgid "Color de error / descuento"
+msgstr ""
+
+msgid "Color de texto secundario"
+msgstr ""
+
+msgid "Color de valoración"
+msgstr ""
+
+msgid "Color de éxito"
+msgstr ""
+
+msgid "Color oscuro"
+msgstr ""
+
+msgid "Color principal"
+msgstr ""
+
+msgid "Colores"
+msgstr ""
+
+msgid "Comprar ahora"
+msgstr ""
+
+msgid "Contacto"
+msgstr ""
+
+msgid "Desde $10"
+msgstr ""
+
+msgid "Directorio de marcas"
+msgstr ""
+
+msgid "Envío gratis"
+msgstr ""
+
+msgid "Esta semana por pedidos mayores a $55"
+msgstr ""
+
+msgid "Footer Brand Directory"
+msgstr ""
+
+msgid "Footer Menu"
+msgstr ""
+
+msgid "Footer Our Company"
+msgstr ""
+
+msgid "Footer Popular Categories"
+msgstr ""
+
+msgid "Inicio"
+msgstr ""
+
+msgid "Ir a la Tienda"
+msgstr ""
+
+msgid "Ir al Inicio"
+msgstr ""
+
+msgid "La página que buscas no existe o ha sido movida."
+msgstr ""
+
+msgid "Main sidebar area"
+msgstr ""
+
+msgid "Menú"
+msgstr ""
+
+msgid "Más vendidos"
+msgstr ""
+
+msgid "No se encontraron publicaciones en este archivo."
+msgstr ""
+
+msgid "No se encontró contenido."
+msgstr ""
+
+msgid "Novedades"
+msgstr ""
+
+msgid "Nuestra empresa"
+msgstr ""
+
+msgid "Nuestros servicios"
+msgstr ""
+
+msgid "Nuevos productos"
+msgstr ""
+
+msgid "Oferta del día"
+msgstr ""
+
+msgid "Por"
+msgstr ""
+
+msgid "Primary Menu"
+msgstr ""
+
+msgid "Página no encontrada"
+msgstr ""
+
+msgid "Seguinos"
+msgstr ""
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Siguiente"
+msgstr ""
+
+msgid "Stock disponible"
+msgstr ""
+
+msgid "Testimonios"
+msgstr ""
+
+msgid "Todos los derechos reservados."
+msgstr ""
+
+msgid "Ver más"
+msgstr ""
+
+msgid "comillas"
+msgstr ""
+
+msgid "método de pago"
+msgstr ""
+
+msgid "por"
+msgstr ""
+

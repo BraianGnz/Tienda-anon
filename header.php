@@ -56,8 +56,8 @@
             if ($header_promo_text) {
                 echo esc_html($header_promo_text);
             } else {
-                ?><b>Free Shipping</b>
-            This Week Order Over - $55<?php
+                ?><b><?php esc_html_e('Envío gratis', 'anon-theme'); ?></b>
+            <?php esc_html_e('Esta semana por pedidos mayores a $55', 'anon-theme'); ?><?php
             }
             ?>
           </p>
@@ -86,7 +86,7 @@
         <div class="header-search-container">
 
           <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-            <input type="search" name="s" class="search-field" placeholder="Enter your product name..." value="<?php echo get_search_query(); ?>">
+            <input type="search" name="s" class="search-field" placeholder="<?php esc_attr_e('Buscá tu producto...', 'anon-theme'); ?>" value="<?php echo get_search_query(); ?>">
             <button type="submit" class="search-btn">
               <ion-icon name="search-outline"></ion-icon>
             </button>
@@ -165,7 +165,7 @@
     <nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
 
       <div class="menu-top">
-        <h2 class="menu-title">Menu</h2>
+        <h2 class="menu-title"><?php esc_html_e('Menú', 'anon-theme'); ?></h2>
 
         <button class="menu-close-btn" data-mobile-menu-close-btn>
           <ion-icon name="close-outline"></ion-icon>

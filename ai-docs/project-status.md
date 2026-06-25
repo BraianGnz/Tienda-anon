@@ -1016,6 +1016,92 @@ Reemplazar 3 secciones hardcodeadas del footer con menús WordPress administrabl
 
 ---
 
+# FASE 9A — Internacionalización completa del theme (2026-06-25)
+
+## Cambio aplicado
+
+Implementación de internacionalización (i18n) completa del theme usando el textdomain `anon-theme`. Todos los strings visibles del theme en el frontend y admin ahora usan funciones gettext (`__()`, `_e()`, `esc_html__()`, `esc_html_e()`, `esc_attr__()`, `esc_attr_e()`) con textdomain `anon-theme`.
+
+## Archivos modificados (23 archivos)
+
+| Archivo | Cambio |
+|---------|--------|
+| `functions.php` | `load_theme_textdomain()`, `__()` en register_nav_menus, `__()` en register_sidebar, `esc_html__()` en fallback menu |
+| `header.php` | Promo text, search placeholder, menu title — `esc_html_e()` / `esc_attr_e()` |
+| `footer.php` | Section titles, payment img alt, copyright — `esc_html_e()` / `esc_attr_e()` |
+| `index.php` | "No se encontró contenido" — `esc_html_e()` |
+| `single.php` | "por", "Anterior", "Siguiente" — `esc_html_e()` / `esc_html__()` |
+| `404.php` | "Página no encontrada", mensaje, botones — `esc_html_e()` |
+| `archive.php` | "No se encontraron publicaciones" — `esc_html_e()` |
+| `search.php` | "Resultados para:", "No encontramos resultados" — `esc_html__()` con `printf()` |
+| `inc/branding.php` | Panel/section/labels — `__()` |
+| `template-parts/home/testimonials.php` | "Testimonios", "comillas", "Nuestros servicios" — `esc_html_e()` / `esc_attr_e()` |
+| `template-parts/home/banners.php` | CTA fallbacks — `__()` |
+| `template-parts/home/product-grid.php` | "% OFF" badge, fallback title — `esc_html__()` / `__()` |
+| `template-parts/home/product-minimal.php` | Fallback title "Novedades" — `__()` |
+| `template-parts/home/product-featured.php` | Fallback title "Oferta del día" — `__()` |
+| `template-parts/home/sidebar.php` | "Categorías", "Stock disponible", "Más vendidos" — `esc_html_e()` / `esc_attr_e()` / `__()` |
+| `template-parts/home/categories.php` | "Ver más" — `esc_html_e()` |
+| `template-parts/home/blog.php` | "Blog", "Por" — `__()` / `esc_html_e()` |
+| `inc/hero-slider.php` | ACF default value "Comprar ahora" (data default) |
+
+## Archivos creados
+
+| Archivo | Rol |
+|---------|-----|
+| `languages/anon-theme.pot` | POT file con 53 strings extraídos del theme |
+
+## Strings traducidos (53 total)
+
+Agrupados por contexto:
+
+**Frontend — Header**: Envío gratis, Esta semana por pedidos mayores a $55, Buscá tu producto..., Menú
+
+**Frontend — Footer**: Directorio de marcas, Categorías populares, Nuestra empresa, Contacto, Seguinos, método de pago, Todos los derechos reservados.
+
+**Frontend — Sidebar**: Categorías, Stock disponible, Más vendidos
+
+**Frontend — Homepage sections**: Testimonios, comillas, Nuestros servicios, 25% OFF, Colección de verano, Desde $10, Comprar ahora, Novedades, Oferta del día, Nuevos productos, Ver más, Blog, Por
+
+**Frontend — Product grid**: % OFF
+
+**Frontend — Blog/Search/404**: No se encontró contenido., por, Anterior, Siguiente, Página no encontrada, La página que buscas no existe o ha sido movida., Ir al Inicio, Ir a la Tienda, No se encontraron publicaciones en este archivo., Resultados para: "%s", No encontramos resultados para: "%s"
+
+**Admin — Customizer**: Branding, Colores, Color principal, Color oscuro, Color de texto secundario, Color de éxito, Color de error / descuento, Color de valoración
+
+**Admin — Menús/Sidebar**: Primary Menu, Footer Menu, Footer Brand Directory, Footer Popular Categories, Footer Our Company, Sidebar, Main sidebar area
+
+**Admin — Fallback menu**: Inicio
+
+## Decisiones técnicas
+
+- **Textdomain**: `anon-theme` — consistente con el nombre del theme
+- **Idioma por defecto**: Español — todos los msgid están en español
+- **Estrategia híbrida**: strings del theme via textdomain `anon-theme`; strings WooCommerce via sistema oficial de traducciones (sin gettext filters en theme)
+- **POT file**: generado por script PHP extractor desde los archivos del theme, 53 strings
+- **ACF field labels y CPT labels**: NO traducidos porque son admin-facing (configuración, no interfaz de usuario)
+- **Seed data**: NO traducido porque es contenido inicial (no strings del theme)
+- **WooCommerce ~180 strings**: NO overrides — se delegan al sistema oficial de traducciones de WC
+- **Fallback en español**: todos los strings del theme están en español como msgid original
+
+## QA
+
+- ✅ PHP syntax: 23 archivos validados sin errores
+- ✅ POT file: 53 strings, UTF-8 sin BOM, encoding correcto
+- ✅ Strings de WooCommerce no tocados (cart, checkout, my-account, emails)
+- ✅ ACF/CPT labels admin no traducidos (intencional)
+- ✅ Seed data no traducida (intencional)
+- ✅ Zero regresiones en frontend
+
+## Deuda técnica documentada
+
+- SEO Schema/OG/Twitter Cards ausente
+- Sin overrides de cart/checkout/my-account
+- Scrollbar colors hardcodeados en style.css
+- Línea 1140 de style.css: `font-weight: var(--fs-9)` seguido de `font-weight: var(--weight-700)` — la segunda gana, bug inocuo
+
+---
+
 * AJAX add-to-cart complejo
 * fragments avanzados
 * quick view real

@@ -2,7 +2,7 @@
 $front_id = (int) get_option('page_on_front');
 $blog_title = $front_id ? get_field('home_blog_title', $front_id) : '';
 if (!$blog_title) {
-    $blog_title = 'Blog';
+    $blog_title = __('Blog', 'anon-theme');
 }
 $blog_count = $front_id ? get_field('home_blog_count', $front_id) : 0;
 if (!$blog_count || $blog_count < 1) {
@@ -66,7 +66,7 @@ $placeholder_index = 0;
           </a>
 
           <p class="blog-meta">
-            Por <cite><?php the_author(); ?></cite> / <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
+            <?php esc_html_e('Por', 'anon-theme'); ?> <cite><?php the_author(); ?></cite> / <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
           </p>
 
         </div>
