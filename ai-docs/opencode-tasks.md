@@ -564,6 +564,25 @@ en la DB.
 
 **Decisión**: Todos los strings visibles del theme usan textdomain `anon-theme`. Strings WooCommerce (~180) se delegan al sistema oficial de traducciones. ACF labels y seed data no se traducen (admin-facing / contenido). Idioma por defecto: español (msgid en español).
 
+# ~~Alta prioridad~~ (COMPLETADO 2026-06-25)
+
+### FASE 9B: Localización WooCommerce
+
+1. ✅ Auditoría WPLANG/locale: `es_ES` detectado, `woocommerce-es_ES.mo` presente
+2. ✅ Verificado `load_theme_textdomain()` en functions.php — correcto
+3. ✅ Verificado WooCommerce override templates (single-product.php, archive-product.php) — sin strings hardcodeados, usan funciones nativas WC
+4. ✅ Auditados todos los archivos PHP del theme — detectados 3 strings WC bypassando traducciones:
+   - `template-parts/woocommerce/deal-product-card.php:29` — `"Agregar al carrito"` → `$product->add_to_cart_text()`
+   - `template-parts/home/product-grid.php:29` — `"Agotado"` → `esc_html__('Out of stock', 'woocommerce')`
+   - `template-parts/home/product-grid.php:43` — `"Nuevo"` → `esc_html__('Nuevo', 'anon-theme')`
+5. ✅ POT actualizado: 54 strings con textdomain anon-theme
+6. ✅ PHP syntax validado en archivos modificados
+7. ✅ Sin overrides de templates WooCommerce
+8. ✅ Sin modificar cart, checkout, my-account, emails
+9. ✅ Documentada estrategia definitiva de i18n en project-status.md
+
+**Decisión**: Estrategia híbrida consolidada — strings del theme via textdomain `anon-theme`, strings WooCommerce via textdomain nativo `woocommerce`. Producto puntuales (add-to-cart text, stock status) usan `$product->add_to_cart_text()` y `__()` con textdomain `woocommerce`. Locales `es_ES`, `it_IT`, `en_US` soportados sin cambios de código.
+
 # Baja prioridad
 
 * wishlist real

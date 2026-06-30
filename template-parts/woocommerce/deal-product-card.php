@@ -26,7 +26,7 @@ if (!$product || !($product instanceof WC_Product)) {
       <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
         <form action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post" class="cart">
           <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>">
-          <button type="submit" class="add-cart-btn">Agregar al carrito</button>
+          <button type="submit" class="add-cart-btn"><?php echo esc_html($product->add_to_cart_text()); ?></button>
         </form>
       <?php endif; ?>
     </div>

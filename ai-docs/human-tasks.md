@@ -172,6 +172,45 @@ Revisar manualmente:
 
 ---
 
+# QA para FASE 9B — Localización WooCommerce
+
+Revisar:
+
+* **Deal of the Day** (homepage): botón "Agregar al carrito" debe mostrar el texto traducido según locale activo (WC traduce "Add to cart" automáticamente)
+* **Product grid** (homepage): producto agotado debe mostrar "Agotado" en es_ES, "Esaurito" en it_IT, "Out of stock" en en_US
+* **Product grid** (homepage): badge "Nuevo" debe estar presente (usa textdomain anon-theme)
+* **Shop page** (`/shop/`): breadcrumbs, título, sorting, pagination en español
+* **Categoría** (`/?product_cat=medias`): breadcrumbs, título, descripción en español
+* **Single product**: breadcrumbs, tabs (Descripción, Valoraciones), add-to-cart button, related products en español
+* **Cart**: todos los textos en español (WC nativo)
+* **Checkout**: todos los textos en español (WC nativo)
+* **My Account**: todos los textos en español (WC nativo)
+* **Change locale to it_IT**: descargar `woocommerce-it_IT.mo` de WP.org, verificar textos en italiano
+* **POT file**: `languages/anon-theme.pot` — 54 strings, UTF-8 sin BOM
+
+**Nota**: Las traducciones de WooCommerce requieren descargar los archivos .mo/.po oficiales desde translate.wordpress.org. El theme no incluye traducciones de WooCommerce.
+
+---
+
+# QA para 9B — Verificación de archivos modificados
+
+```bash
+# Verificar sintaxis PHP de archivos modificados
+php -l template-parts/woocommerce/deal-product-card.php
+php -l template-parts/home/product-grid.php
+
+# Verificar que las funciones WC existen
+# $product->add_to_cart_text() — método estándar de WC_Product desde WC 2.x
+# __( 'Out of stock', 'woocommerce' ) — string estándar del textdomain woocommerce
+
+# Verificar POT
+# languages/anon-theme.pot debe contener 54 strings
+# Debe incluir "Nuevo" con textdomain anon-theme
+# No debe incluir "Out of stock" ni "Agregar al carrito" (pertenecen a WC)
+```
+
+---
+
 # Aprendizaje prioritario actual
 
 Estudiar:

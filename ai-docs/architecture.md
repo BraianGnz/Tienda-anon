@@ -43,7 +43,7 @@ anon-theme/
 │   └── footer-menus.php    # Footer menus walkers (Footer_Brand_Walker, Footer_Column_Walker) + seeder
 │
 ├── languages/
-│   └── anon-theme.pot          # POT file — 53 theme strings, textdomain anon-theme
+│   └── anon-theme.pot          # POT file — 54 theme strings, textdomain anon-theme
 │
 ├── ai-docs/
 │
@@ -623,6 +623,41 @@ style.css :root { --salmon-pink: var(--brand-primary, hsl(...)); }
 Para restaurar defaults, borrar el valor del color picker y publicar.
 
 ---
+
+---
+
+# Estrategia de internacionalización (i18n)
+
+## Modelo híbrido
+
+| Tipo de strings | Textdomain | Mecanismo |
+|-----------------|-----------|-----------|
+| Strings del theme | `anon-theme` | `load_theme_textdomain()` + `languages/anon-theme.pot` |
+| Strings WooCommerce | `woocommerce` | `load_plugin_textdomain()` nativo de WC |
+| Strings WordPress core | `default` | `load_default_textdomain()` nativo de WP |
+| Add-to-cart button | `woocommerce` | `$product->add_to_cart_text()` — método nativo del producto |
+| Product stock status | `woocommerce` | `__( 'Out of stock', 'woocommerce' )` |
+| ACF field labels | — | NO traducidos (admin-facing) |
+| CPT labels | — | NO traducidos (admin-facing) |
+| Seed data | — | NO traducido (contenido, no strings del theme) |
+
+## Flujo de carga
+
+```
+Site locale: es_ES (o it_IT, en_US)
+    │
+    ├── WP core       → wp-content/languages/es_ES.mo
+    ├── WooCommerce   → wp-content/languages/plugins/woocommerce-es_ES.mo
+    └── anon-theme    → wp-content/themes/anon-theme/languages/anon-theme-es_ES.mo
+```
+
+## Requisitos para traducción
+
+- El POT (`languages/anon-theme.pot`) contiene 54 strings con textdomain `anon-theme`
+- Los .mo/.po se generan desde el POT usando Poedit, Loco Translate o WP-CLI
+- Los archivos deben nombrarse `anon-theme-{locale}.mo` (ej: `anon-theme-it_IT.mo`)
+- El locale se detecta automáticamente de `WPLANG` (wp-config) o `site_locale` (DB)
+- WooCommerce y WP core proveen sus propias traducciones oficiales
 
 # Gutenberg
 

@@ -125,6 +125,9 @@ msgstr ""
 msgid "Nuestros servicios"
 msgstr ""
 
+msgid "Nuevo"
+msgstr ""
+
 msgid "Nuevos productos"
 msgstr ""
 

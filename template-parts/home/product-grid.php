@@ -26,7 +26,7 @@
         $badge_html = '';
 
         if (!$product->is_in_stock()) {
-          $badge_html = '<span class="showcase-badge out-of-stock">Agotado</span>';
+          $badge_html = '<span class="showcase-badge out-of-stock">' . esc_html__('Out of stock', 'woocommerce') . '</span>';
         }
         elseif ($product->is_on_sale()) {
           $sale_price    = $product->get_sale_price();
@@ -40,7 +40,7 @@
           $post_date = get_post_time('U', false, get_the_ID());
           $thirty_days_ago = strtotime('-30 days');
           if ($post_date && $post_date > $thirty_days_ago) {
-            $badge_html = '<span class="showcase-badge new">Nuevo</span>';
+            $badge_html = '<span class="showcase-badge new">' . esc_html__('Nuevo', 'anon-theme') . '</span>';
           }
         }
 

@@ -1093,6 +1093,75 @@ Agrupados por contexto:
 - ✅ Seed data no traducida (intencional)
 - ✅ Zero regresiones en frontend
 
+---
+
+# FASE 9B — Localización WooCommerce (2026-06-25)
+
+## Cambio aplicado
+
+Auditoría y corrección de strings WooCommerce en el theme para asegurar compatibilidad total con las traducciones oficiales de WooCommerce. No se modificaron templates de WooCommerce.
+
+## Auditoría de locale
+
+| Elemento | Estado |
+|----------|--------|
+| `WPLANG` en wp-config.php | No definido (se usa DB, detectado `es_ES`) |
+| WP core translations | `es_ES.mo` presente en `wp-content/languages/` |
+| WC plugin translations | `woocommerce-es_ES.mo` presente en `wp-content/languages/plugins/` |
+| Theme `load_theme_textdomain()` | ✅ Correcto en `functions.php:5` |
+| WooCommerce `load_plugin_textdomain()` | ✅ Automático via WooCommerce (no modificado) |
+
+## Correcciones aplicadas
+
+| Archivo | Línea | Antes | Después |
+|---------|-------|-------|---------|
+| `template-parts/woocommerce/deal-product-card.php` | 29 | `"Agregar al carrito"` hardcoded | `esc_html($product->add_to_cart_text())` — respeta traducciones WC |
+| `template-parts/home/product-grid.php` | 29 | `"Agotado"` hardcoded | `esc_html__('Out of stock', 'woocommerce')` — usa textdomain WC |
+| `template-parts/home/product-grid.php` | 43 | `"Nuevo"` hardcoded | `esc_html__('Nuevo', 'anon-theme')` — usa textdomain theme |
+
+## Estrategia definitiva de internacionalización
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ESTRATEGIA DE i18n                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Strings del theme   → textdomain 'anon-theme'              │
+│                       → load_theme_textdomain()             │
+│                       → POT file: languages/anon-theme.pot  │
+│                                                             │
+│  Strings WC          → textdomain 'woocommerce'             │
+│                       → load_plugin_textdomain() (nativo)   │
+│                       → woocommerce-es_ES.mo en /languages/ │
+│                                                             │
+│  Strings WP core     → textdomain 'default'                 │
+│                       → es_ES.mo en /languages/             │
+│                                                             │
+│  Producto puntuales  → $product->add_to_cart_text()        │
+│  (add-to-cart,       → __() con textdomain 'woocommerce'    │
+│   out of stock)      → respetan locale activo               │
+│                                                             │
+│  ACF labels/CPT      → NO traducidos (admin-facing)         │
+│  Seed data           → NO traducido (contenido, no theme)   │
+│                                                             │
+│  Locales soportados: es_ES (default), it_IT, en_US          │
+│  Sin modificaciones de código por cambio de locale          │
+│                                                             │
+│  Los .mo/.po se generan desde el POT con herramientas       │
+│  externas (Poedit, Loco Translate, WP-CLI).                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## QA post-corrección
+
+- ✅ `$product->add_to_cart_text()` disponible en WC 3.x+
+- ✅ PHP syntax: 2 archivos modificados validados sin errores
+- ✅ POT actualizado: 54 strings con textdomain anon-theme
+- ✅ Strings WC (Out of stock, add-to-cart) NO en POT (pertenecen a textdomain woocommerce)
+- ✅ Sin overrides de templates WooCommerce
+- ✅ Sin modificar cart, checkout, my-account, emails
+- ✅ Sin plugins agregados
+
 ## Deuda técnica documentada
 
 - SEO Schema/OG/Twitter Cards ausente
